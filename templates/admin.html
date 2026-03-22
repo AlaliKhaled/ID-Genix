@@ -171,12 +171,31 @@
     <!-- Chart.js Configuration -->
     <script>
         const ctx = document.getElementById('statusChart').getContext('2d');
-        const countNew = {{ statuses['جديد'] }};
-        const countProg = {{ statuses['قيد التنفيذ'] }};
-        const countDone = {{ statuses['مكتمل'] }};
+        const countNew = {{ statuses.get('جديد', 0) }};
+        const countProg = {{ statuses.get('قيد التنفيذ', 0) }};
+        const countDone = {{ statuses.get('مكتمل', 0) }};
         
-        // Render chart only if there is data
-        if(countNew > 0 || countProg > 0 || countDone > 0) {
+        if (countNew === 0 && countProg === 0 && countDone === 0) {
+            // Render a default empty chart state (Gray ring) if no data
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['لا توجد طلبات'],
+                    datasets: [{
+                        data: [1],
+                        backgroundColor: ['rgba(255, 255, 255, 0.05)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    cutout: '75%'
+                }
+            });
+        } else {
+            // Render actual data
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
