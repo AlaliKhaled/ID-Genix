@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة الإدارة - ID-Genix</title>
+    <!-- Switch back to Cairo font as requested -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+        body {
+            background-color: #09090b;
+            color: #f1f5f9;
+        }
+        
+        .navbar-custom {
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 5px 12px 5px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+        .logo-id { 
+            background: linear-gradient(135deg, #00d2ff, #8e44ad);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-left: 6px;
+            font-family: sans-serif !important;
+        }
+        .logo-genix { 
+            color: #ffffff; 
+            font-weight: 900; 
+            font-size: 1.3rem; 
+            font-family: sans-serif !important;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+        }
+        .table {
+            color: #f1f5f9;
+        }
+        .table-hover tbody tr:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        /* --- THE ULTIMATE OVERRIDE REQUESTED BY USER --- */
+        h1, h2, h3, h4, h5, h6, p, a, span, button {
+            letter-spacing: normal !important;
+            word-spacing: normal !important;
+            font-family: 'Cairo', sans-serif !important;
+            display: inline-block; /* لضمان تماسك الحروف في بعض المتصفحات */
+            unicode-bidi: isolate;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom mb-5 sticky-top">
+        <div class="container">
+            <a class="logo-container" href="/">
+                <span class="logo-id">ID</span><span class="logo-genix">Genix</span> 
+            </a>
+            <span class="opacity-75 fs-6 ms-3 text-white">| Advanced Control Panel</span>
+            <div class="ms-auto text-white">
+                <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-4"><i class="fa-solid fa-right-from-bracket ms-1"></i> إنهاء الجلسة الآمنة</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        
+        <!-- Statistics Section with Chart.js -->
+        <div class="row mb-5 g-4 align-items-center">
+            <div class="col-md-6">
+                <div>
+                    <h2 class="fw-bold mb-2"><i class="fa-solid fa-server ms-2" style="color:#3b82f6;"></i> مركز العمليات والبيانات</h2>
+                    <p class="text-muted small">لوحة التحكم التفاعلية والمشفرة لطلبات العملاء.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card p-3 shadow-lg d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <div style="width: 200px; height: 200px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="ms-4">
+                        <h6 class="fw-bold mb-3 text-white">مؤشرات الطلبات الحية</h6>
+                        <span class="badge bg-primary px-3 py-2 mb-2 d-block text-start"><i class="fa-solid fa-circle me-1 small"></i> جديد ({{ statuses['جديد'] }})</span>
+                        <span class="badge bg-warning text-dark px-3 py-2 mb-2 d-block text-start"><i class="fa-solid fa-circle me-1 small"></i> جاري التنفيذ ({{ statuses['قيد التنفيذ'] }})</span>
+                        <span class="badge bg-success px-3 py-2 d-block text-start"><i class="fa-solid fa-circle me-1 small"></i> مكتمل ({{ statuses['مكتمل'] }})</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive glass-card p-4 shadow-lg mb-5">
+            <h5 class="fw-bold mb-4 text-white"><i class="fa-solid fa-table-list text-primary ms-2"></i> جميع طلبات المشاريع الواردة</h5>
+            <table class="table table-hover align-middle table-borderless">
+                <thead style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                    <tr>
+                        <th class="py-3">#</th>
+                        <th class="py-3">العميل</th>
+                        <th class="py-3">الهاتف / الإيميل</th>
+                        <th class="py-3">الخدمة المطلوبة</th>
+                        <th class="py-3" style="width: 30%;">تفاصيل المشروع</th>
+                        <th class="py-3">التاريخ</th>
+                        <th class="py-3 text-center">الإجراء والحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <th scope="row" class="py-4">{{ task.id }}</th>
+                        <td class="fw-bold" style="color:#a5b4fc;">{{ task.client_name }}</td>
+                        <td class="py-4">
+                            <span class="d-block small"><i class="fa-solid fa-phone text-muted me-1"></i> <a href="tel:{{ task.phone }}" class="text-light text-decoration-none" dir="ltr">{{ task.phone }}</a></span>
+                            <span class="d-block small text-muted opacity-75"><i class="fa-solid fa-envelope text-muted me-1"></i> <a href="mailto:{{ task.email }}" class="text-muted text-decoration-none" dir="ltr">{{ task.email }}</a></span>
+                        </td>
+                        <td class="py-4"><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary">{{ task.service_type }}</span></td>
+                        <td class="text-light opacity-75 py-4 small">{{ task.details }}</td>
+                        <td dir="ltr" class="text-end text-muted small py-4"><i class="fa-regular fa-clock me-1"></i> {{ task.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td class="py-4">
+                            <!-- Dynamic Status Update Form -->
+                            <form action="/admin/update_status/{{ task.id }}" method="POST">
+                                <select name="status" class="form-select form-select-sm {{ 'bg-primary text-light' if task.status == 'جديد' else ('bg-success text-light' if task.status == 'مكتمل' else 'bg-warning text-dark fw-bold') }} border-0" onchange="this.form.submit()">
+                                    <option value="جديد" {% if task.status == 'جديد' %}selected{% endif %}>جديد (New)</option>
+                                    <option value="قيد التنفيذ" {% if task.status == 'قيد التنفيذ' %}selected{% endif %}>قيد التنفيذ (In Progress)</option>
+                                    <option value="مكتمل" {% if task.status == 'مكتمل' %}selected{% endif %}>مكتمل (Completed)</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-inbox mb-3 opacity-25" style="font-size: 3rem;"></i><br>لا توجد طلبات واردة في قاعدة البيانات حالياً.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center pb-4 border-opacity-25">
+        <p class="small text-muted mb-3 fw-bold" style="color: #ffd700 !important; font-size: 1.05rem;">Developed by Eng. Khaled Al-Ali 💻</p>
+    </footer>
+
+    <!-- Chart.js Configuration -->
+    <script>
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        const countNew = {{ statuses['جديد'] }};
+        const countProg = {{ statuses['قيد التنفيذ'] }};
+        const countDone = {{ statuses['مكتمل'] }};
+        
+        // Render chart only if there is data
+        if(countNew > 0 || countProg > 0 || countDone > 0) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['جديد', 'قيد التنفيذ', 'مكتمل'],
+                    datasets: [{
+                        data: [countNew, countProg, countDone],
+                        backgroundColor: ['#0d6efd', '#ffc107', '#198754'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false } 
+                    },
+                    cutout: '75%'
+                }
+            });
+        }
+    </script>
+</body>
+</html>

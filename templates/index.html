@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-Genix - Modern Tech Innovation</title>
+    <!-- Switch back to Cairo font as requested -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #09090b;
+            --card-glass: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #3b82f6;
+            --neon-purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 5px 12px 5px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+        .logo-id { 
+            background: linear-gradient(135deg, #00d2ff, #8e44ad);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-left: 6px;
+            font-family: sans-serif !important;
+        }
+        .logo-genix { 
+            color: #ffffff; 
+            font-weight: 900; 
+            font-size: 1.3rem; 
+            font-family: sans-serif !important;
+        }
+        
+        .nav-link { color: var(--text-muted); font-weight: 700; transition: color 0.3s; }
+        .nav-link:hover { color: var(--text-main); }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .btn-pulse {
+            animation: pulseGlow 2s infinite;
+            border-color: rgba(59, 130, 246, 0.8) !important;
+        }
+
+        .hero-section {
+            position: relative;
+            padding: 150px 0 100px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .hero-title {
+            font-weight: 900;
+            font-size: 4.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+            min-height: 140px; 
+        }
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+            color: #3b82f6;
+            -webkit-text-fill-color: initial;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .btn-glow {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 800;
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-glow:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 25px -5px rgba(139, 92, 246, 0.9);
+            color: white;
+        }
+
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            height: 100%;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .service-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4));
+            transition: transform 0.5s ease;
+        }
+        .glass-card:hover .service-img {
+            transform: translateZ(20px) scale(1.1) rotate(5deg);
+        }
+
+        .section-title {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            /* removed standard display to let override apply */
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 2px;
+        }
+
+        .text-muted-custom { color: var(--text-muted); line-height: 1.8; }
+
+        .modal-content.glass-modal {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            border-radius: 24px;
+        }
+        .form-control-dark {
+            background: rgba(0,0,0,0.3) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: white !important;
+            border-radius: 12px;
+            padding: 12px 15px;
+        }
+        .form-control-dark:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+            border-color: var(--neon-blue) !important;
+        }
+
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .portfolio-item {
+            position: relative; border-radius: 20px; overflow: hidden; height: 280px;
+            background: var(--card-glass); border: 1px solid var(--card-border); cursor: pointer;
+        }
+        .portfolio-bg { 
+            width: 100%; height: 100%; 
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%);
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.5s ease;
+        }
+        .portfolio-overlay {
+            position: absolute; top:0; left:0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.2) 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
+            opacity: 0; transition: 0.4s ease; backdrop-filter: blur(4px);
+        }
+        .portfolio-item:hover .portfolio-bg { transform: scale(1.1); filter: brightness(1.2); }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 30px; left: 30px;
+            background: #25D366; color: white;
+            width: 65px; height: 65px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1050; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+        }
+        .whatsapp-btn:hover { transform: scale(1.15) rotate(-5deg); color: white; }
+
+        .hidden-element { opacity: 0; }
+
+        /* --- THE ULTIMATE OVERRIDE REQUESTED BY USER --- */
+        h1, h2, h3, h4, h5, h6, p, a, span, button {
+            letter-spacing: normal !important;
+            word-spacing: normal !important;
+            font-family: 'Cairo', sans-serif !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <a href="https://wa.me/966500000000?text=مرحباً فريق ID-Genix، أريد الاستفسار عن خدماتكم." class="whatsapp-btn target-blank animate__animated animate__bounceIn animate__delay-2s">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="logo-container" href="/">
+                <span class="logo-id">ID</span><span class="logo-genix">Genix</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars text-white fs-4"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#services">خدماتنا</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">المعرض والذكاء الاصطناعي</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#why-us">لماذا نحن</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-light rounded-pill px-4 fw-bold btn-pulse" href="#" onclick="openOrderModal('استشارة عامة')">اطلب الآن</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="hero-title" id="typewriter-text"><span class="cursor-blink">|</span></h1>
+            <p class="lead mt-4 mb-5 text-muted-custom w-75 mx-auto animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1.2rem;">
+                نحن نصمم أنظمة وتجارب رقمية متكاملة مدعومة بالذكاء الاصطناعي المتقدم لترتقي بأعمالك إلى آفاق غير مسبوقة.
+            </p>
+            <div class="animate__animated animate__zoomIn animate__delay-2s">
+                <a href="#services" class="btn btn-glow">استكشف خدماتنا <i class="fa-solid fa-arrow-left ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="container py-5 mt-5">
+        <div class="text-center">
+            <h2 class="section-title">الحلول التقنية</h2>
+        </div>
+        <div class="row g-4 justify-content-center mt-3">
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp">
+                <div class="glass-card text-center" onclick="openOrderModal('تطوير المنصات')">
+                    <img src="{{ url_for('static', filename='images/website.png') }}" class="service-img" alt="Website">
+                    <h4 class="fw-bold mb-3">تطوير المنصات والمواقع</h4>
+                    <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.1s">
+                <div class="glass-card text-center" onclick="openOrderModal('الهوية البصرية')">
+                    <img src="{{ url_for('static', filename='images/identity.png') }}" class="service-img" alt="Identity">
+                    <h4 class="fw-bold mb-3">الهوية البصرية</h4>
+                    <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
+                <div class="glass-card text-center" onclick="openOrderModal('حلول الذكاء الاصطناعي')">
+                    <img src="{{ url_for('static', filename='images/ai.png') }}" class="service-img" alt="AI">
+                    <h4 class="fw-bold mb-3">حلول الذكاء الاصطناعي</h4>
+                    <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.3s">
+                <div class="glass-card text-center" onclick="openOrderModal('تطوير تطبيقات الجوال')">
+                    <img src="{{ url_for('static', filename='images/mobile.png') }}" class="service-img" alt="Mobile">
+                    <h4 class="fw-bold mb-3">تطبيقات الجوال المتقدمة</h4>
+                    <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
+                <div class="glass-card text-center" onclick="openOrderModal('تحليل البيانات الضخمة')">
+                    <img src="{{ url_for('static', filename='images/data.png') }}" class="service-img" alt="Data">
+                    <h4 class="fw-bold mb-3">تحليل البيانات الضخمة (Big Data)</h4>
+                    <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
+                </div>
+            </div>
+            <!-- Service 6: Social Media -->
+            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.5s">
+                <div class="glass-card text-center" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">
+                    <img src="{{ url_for('static', filename='images/social_media.png') }}" class="service-img" alt="Social Media">
+                    <h4 class="fw-bold mb-3">إدارة حسابات التواصل الذكية</h4>
+                    <p class="text-muted-custom small">أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Portfolio Section -->
+    <section id="portfolio" class="container py-5 my-5">
+        <div class="text-center">
+            <h2 class="section-title">إبداعاتنا التقنية</h2>
+            <p class="text-muted-custom mb-5">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي المتطورة التي نستخدمها.</p>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item hidden-element" data-animation="animate__zoomIn">
+                <div class="portfolio-bg"><i class="fa-solid fa-play text-primary opacity-50" style="font-size: 5rem;"></i></div>
+                <div class="portfolio-overlay">
+                    <span class="badge bg-primary mb-2" style="width: fit-content;">توليد الفيديو / AI</span>
+                    <h4 class="fw-bold m-0">نماذج إعلانية حركية</h4>
+                </div>
+            </div>
+            <div class="portfolio-item hidden-element" data-animation="animate__zoomIn" data-delay="0.1s">
+                <div class="portfolio-bg"><i class="fa-solid fa-image text-info opacity-50" style="font-size: 5rem;"></i></div>
+                <div class="portfolio-overlay">
+                    <span class="badge bg-info text-dark mb-2" style="width: fit-content;">رسم وتصميم / AI</span>
+                    <h4 class="fw-bold m-0">تصميم البيئات الافتراضية</h4>
+                </div>
+            </div>
+            <div class="portfolio-item hidden-element" data-animation="animate__zoomIn" data-delay="0.2s">
+                <div class="portfolio-bg"><i class="fa-solid fa-code text-warning opacity-50" style="font-size: 5rem;"></i></div>
+                <div class="portfolio-overlay">
+                    <span class="badge bg-warning text-dark mb-2" style="width: fit-content;">توليد الأكواد / LLM</span>
+                    <h4 class="fw-bold m-0">تطبيقات منسوجة ذاتياً</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="why-us" class="container py-5 my-5">
+        <div class="text-center">
+            <h2 class="section-title">لماذا نحن؟</h2>
+        </div>
+        <div class="row g-4 mt-3">
+            <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp">
+                <div class="glass-card text-center p-4">
+                    <i class="fa-solid fa-network-wired fs-1 text-primary mb-3"></i>
+                    <h4 class="fw-bold">بنية تحتية متطورة</h4>
+                    <p class="text-muted-custom small">نقدم حلولاً برمجية متكاملة تعتمد على أحدث تقنيات السحاب والذكاء الاصطناعي لضمان استقرار ونمو أعمالكم.</p>
+                </div>
+            </div>
+            <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
+                <div class="glass-card text-center p-4">
+                    <i class="fa-solid fa-shield-halved fs-1 text-info mb-3"></i>
+                    <h4 class="fw-bold">تشفير وأمان فائق</h4>
+                    <p class="text-muted-custom small">نظام أمني متين يضمن سرية الأعمال ومعلومات عملائك بأقصى مستويات التشفير للبيانات وحمايتها.</p>
+                </div>
+            </div>
+            <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
+                <div class="glass-card text-center p-4">
+                    <i class="fa-solid fa-headset fs-1 text-success mb-3"></i>
+                    <h4 class="fw-bold">ارتباط مستمر</h4>
+                    <p class="text-muted-custom small">فريق مخصص للتواصل الدائم والدعم الفني، يشاركك مراحل التطور لضمان خروج المنتج كما تتمنى تماماً.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-5 mt-5 border-top border-secondary border-opacity-25" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
+        <p class="mb-3 text-muted-custom fw-bold">© 2026 المؤسسة التقنية للذكاء الاصطناعي والشبكات.</p>
+        <p class="small text-muted-custom mb-3 fw-bold" style="color: #ffd700 !important; font-size: 1.05rem;">Developed by Eng. Khaled Al-Ali 💻</p>
+        <a href="/login" class="text-decoration-none text-muted opacity-25 small mt-2 d-inline-block" style="transition: 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.25"><i class="fa-solid fa-lock"></i> وصول الإدارة</a>
+    </footer>
+
+    <!-- Comprehensive Order Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-modal animate__animated animate__zoomIn">
+                <div class="modal-header border-bottom border-secondary border-opacity-25 py-3">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-rocket ms-2 text-primary"></i> تسجيل طلب مشروع تقني</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5" id="modalBodyForm">
+                    <form id="quickOrderForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light opacity-75 small">الاسم الكامل أو اسم الجهة <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-dark" id="modalName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light opacity-75 small">الخدمة المرتبطة بالشأن <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-dark text-primary" id="modalService" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light opacity-75 small">رقم الهاتف للتواصل <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="tel" class="form-control form-control-dark border-start-0" id="modalPhone" required dir="ltr" placeholder="+966 5X XXX XXXX">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light opacity-75 small">البريد الإلكتروني <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" class="form-control form-control-dark border-start-0" id="modalEmail" required dir="ltr" placeholder="example@domain.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4 mt-2">
+                            <label class="form-label text-light opacity-75 small">نظرة عامة على متطلبات المشروع <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-dark" id="modalDetails" rows="4" required placeholder="يرجى كتابة تفاصيل المشكلة التقنية أو فكرة المشروع باختصار لفهم أعمق للحل المناسب..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-glow w-100 py-3 fs-5" id="submitBtn">تأكيد إرسال الطلب الآمن <i class="fa-solid fa-paper-plane ms-2"></i></button>
+                    </form>
+                </div>
+                
+                <!-- Success State (Hidden initially) -->
+                <div class="modal-body p-5 text-center d-none" id="modalBodySuccess">
+                    <i class="fa-regular fa-circle-check text-success mb-3 animate__animated animate__bounceIn" style="font-size: 6rem;"></i>
+                    <h3 class="fw-bold animate__animated animate__fadeInUp">تم استلام طلبك بنجاح وفي أمان!</h3>
+                    <p class="text-muted-custom mt-3 animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1.1rem;">
+                        يسرنا اختيارك لمعايير الجودة التقنية.<br>لقد تم إبلاغ فريق المطورين والإدارة بشكل فوري وسيتم التواصل معك قريباً.
+                    </p>
+                    <button class="btn btn-primary mt-4 px-5 py-2 rounded-pill animate__animated animate__fadeInUp animate__delay-2s fw-bold" data-bs-dismiss="modal">العودة للموقع</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <script>
+        // JS Typewriter Effect for Hero
+        const textToType = "تقنيات المستقبل،\nنلهم بها الواقع.";
+        const speed = 80; 
+        let i = 0;
+        let currentText = "";
+        function typeWriter() {
+            const el = document.getElementById("typewriter-text");
+            if (i < textToType.length) {
+                let char = textToType.charAt(i);
+                if (char === '\n') {
+                    currentText += "<br>";
+                } else {
+                    currentText += char;
+                }
+                el.innerHTML = currentText + '<span class="cursor-blink">|</span>';
+                i++;
+                setTimeout(typeWriter, speed);
+            } else {
+                el.innerHTML = currentText;
+            }
+        }
+        setTimeout(typeWriter, 500);
+
+        // Initialize Particles.js
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#00d2ff", "#3a7bd5", "#8e44ad"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 4, "random": true },
+                "line_linked": { "enable": true, "distance": 140, "color": "#8b5cf6", "opacity": 0.2, "width": 1.5 },
+                "move": { "enable": true, "speed": 2.5, "direction": "none", "random": true, "out_mode": "out" }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
+                "modes": { "grab": { "distance": 220, "line_linked": { "opacity": 0.5 } } }
+            },
+            "retina_detect": true
+        });
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const anim = el.getAttribute('data-animation');
+                    const delay = el.getAttribute('data-delay');
+                    if (delay) el.style.animationDelay = delay;
+                    el.classList.remove('hidden-element');
+                    el.classList.add('animate__animated', anim);
+                    obs.unobserve(el);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.hidden-element').forEach(el => observer.observe(el));
+
+        const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+        function openOrderModal(serviceName) {
+            document.getElementById('modalService').value = serviceName;
+            document.getElementById('modalBodyForm').classList.remove('d-none');
+            document.getElementById('modalBodySuccess').classList.add('d-none');
+            orderModal.show();
+        }
+
+        document.getElementById('quickOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> جاري الإرسال والمصادقة...';
+            btn.disabled = true;
+
+            const requestData = {
+                client_name: document.getElementById('modalName').value,
+                phone: document.getElementById('modalPhone').value,
+                email: document.getElementById('modalEmail').value,
+                service_type: document.getElementById('modalService').value,
+                details: document.getElementById('modalDetails').value
+            };
+
+            fetch('/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('modalBodyForm').classList.add('d-none');
+                    document.getElementById('modalBodySuccess').classList.remove('d-none');
+                    document.getElementById('quickOrderForm').reset();
+                } else {
+                    alert('خطأ من الخادم: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث مشكلة في شبكتك أثناء الاتصال بسيرفراتنا.');
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

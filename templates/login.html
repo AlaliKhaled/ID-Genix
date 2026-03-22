@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول - ID-Genix</title>
+    <!-- Switch back to Cairo font as requested -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #09090b 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 18px 8px 22px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            margin-bottom: 2rem;
+        }
+        .logo-id { 
+            background: linear-gradient(135deg, #00d2ff, #8e44ad);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.6rem;
+            margin-left: 8px;
+            font-family: sans-serif !important;
+        }
+        .logo-genix { 
+            color: #ffffff; 
+            font-weight: 900; 
+            font-size: 1.7rem; 
+            font-family: sans-serif !important;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        .form-control {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+        }
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+        .btn-neon {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn-neon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
+            color: white;
+        }
+
+        /* --- THE ULTIMATE OVERRIDE REQUESTED BY USER --- */
+        h1, h2, h3, h4, h5, h6, p, a, span, button {
+            letter-spacing: normal !important;
+            word-spacing: normal !important;
+            font-family: 'Cairo', sans-serif !important;
+            display: inline-block; /* لضمان تماسك الحروف في بعض المتصفحات */
+            unicode-bidi: isolate;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="logo-container">
+        <span class="logo-id">ID</span><span class="logo-genix">Genix</span>
+    </div>
+
+    <div class="glass-panel text-center">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} bg-opacity-75 text-start border-0 rounded-3 text-light" style="background: rgba(255,255,255,0.1);">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <div class="mb-3 text-start">
+                <label class="form-label opacity-75 small">اسم المستخدم</label>
+                <input type="text" name="username" class="form-control" autocomplete="off" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label class="form-label opacity-75 small">كلمة المرور</label>
+                <input type="password" name="password" class="form-control" autocomplete="off" required>
+            </div>
+            <div class="form-check text-start mb-4">
+                <input class="form-check-input border-secondary" type="checkbox" name="remember" id="rememberCheck" style="background-color: rgba(255,255,255,0.1);">
+                <label class="form-check-label opacity-75 small text-light" for="rememberCheck">تذكرني للتسجيل السريع مستقبلاً</label>
+            </div>
+            <button type="submit" class="btn btn-neon w-100 py-3 fw-bold">الدخول للنظام المدرع <i class="fa-solid fa-lock ms-2"></i></button>
+            <a href="/" class="d-block mt-4 text-decoration-none text-light opacity-50 small">العودة للموقع</a>
+        </form>
+    </div>
+    
+    <div class="mt-5 text-center">
+        <p class="small text-muted mb-3 fw-bold" style="color: #ffd700 !important; font-size: 1.05rem;">Developed by Eng. Khaled Al-Ali 💻</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
