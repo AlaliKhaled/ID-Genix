@@ -156,7 +156,13 @@ def logout():
 @app.route('/admin-portal-secure-88')
 @requires_auth
 def admin_dashboard():
-    tasks = Task.query.order_by(Task.date.desc()).all()
+    try:
+        tasks = Task.query.order_by(Task.date.desc()).all()
+    except Exception as e:
+        tasks = []
+        print(f"[Admin Dashboard Error] Database query failed: {e}")
+        flash('تعذر جلب البيانات. يرجى التأكد من اتصال قاعدة البيانات.', 'danger')
+
     # 5. Advanced Dashboard Stats
     statuses = {'جديد': 0, 'قيد التنفيذ': 0, 'مكتمل': 0}
     for t in tasks:
@@ -179,7 +185,12 @@ def update_status(task_id):
         flash(f'تم تحديث حالة الطلب #{task.id} بنجاح!', 'success')
     return redirect(url_for('admin_dashboard'))
 
-if __name__ == '__main__':
-    with app.app_context():
+# Create database tables automatically (Crucial for Gunicorn/Render deployments)
+with app.app_context():
+    try:
         db.create_all()
+    except Exception as e:
+        print(f"Failed to create DB tables: {e}")
+
+if __name__ == '__main__':
     app.run(debug=True)
