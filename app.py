@@ -113,16 +113,17 @@ def order():
     try:
         db.session.add(new_task)
         db.session.commit()
-        # 4. Instant Email Notification
-        send_admin_email(new_task)
+        # 4. Instant Email Notification (Temporarily disabled for Safe Mode)
+        # send_admin_email(new_task)
         
         if request.is_json:
-            return jsonify({'success': True, 'message': 'تم استلام طلبك بنجاح!'})
+            return jsonify({'success': True, 'status': 'success', 'message': 'تم استلام طلبك بنجاح!'})
         else:
             return redirect(url_for('index', success=1))
     except Exception as e:
+        print(f"Server Error placing order: {e}")
         if request.is_json:
-            return jsonify({'success': False, 'message': 'حدث خطأ في الخادم'}), 500
+            return jsonify({'success': False, 'status': 'error'}), 500
         else:
             flash('حدث خطأ أثناء إرسال الطلب.', 'danger')
             return redirect(url_for('index'))
@@ -188,6 +189,8 @@ def update_status(task_id):
 # Create database tables automatically (Crucial for Gunicorn/Render deployments)
 with app.app_context():
     try:
+        # Force recreate tables to fix Schema mismatches (phone, email fields)
+        db.drop_all()
         db.create_all()
     except Exception as e:
         print(f"Failed to create DB tables: {e}")
