@@ -210,9 +210,9 @@
         }
 
         .portfolio-wrapper { 
-            width: 100%; height: 80vh; position: relative;
+            width: 100vw; height: 80vh; position: relative; margin-left: calc(-50vw + 50%);
             background: transparent; z-index: 5;
-            overflow: hidden !important; margin-bottom: 3rem; /* Critical Mobile Width Restraint */
+            overflow: hidden; margin-bottom: 3rem; 
             pointer-events: none; /* Mouse slips deeply into background particles */
         }
         .portfolio-slider { 
@@ -412,10 +412,7 @@
         </div>
         
         <div class="portfolio-wrapper">
-            <!-- Dual-Engine: Dedicated Portfolio Canvas -->
-            <div id="particles-portfolio" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events: none;"></div>
-            
-            <div class="swiper portfolio-slider" style="position: relative; z-index: 1;">
+            <div class="swiper portfolio-slider" style="position: relative; z-index: 5;">
                 <div class="swiper-wrapper">
                     {% for image in portfolio_images %}
                     <div class="swiper-slide">
@@ -586,39 +583,29 @@
             },
             on: {
                 setTranslate: function (swiper, translate) {
-                    // Motion Sync: Invert translate math to match hand movement (-1 factor)
+                    // Vector Sync: Invert translate math to match hand movement
                     if(window.swiperVortexDebounce) clearTimeout(window.swiperVortexDebounce);
                     window.swiperVortexDebounce = setTimeout(() => {
-                        targetParticleTrans = translate * -0.2; 
+                        targetParticleTrans = translate * -1; 
                     }, 10);
                 },
-                sliderMove: function () {
-                    // Tear lines actively during touch drag
-                    if (window.pJSDom && window.pJSDom.length > 1) {
-                        const localPjs = window.pJSDom[1].pJS;
-                        localPjs.particles.line_linked.enable = false;
-                        localPjs.particles.move.speed = 10;
-                    }
-                },
-                slideChange: function () {
-                    // Full Disintegration Engine (Boolean Tear)
-                    if (window.pJSDom && window.pJSDom.length > 1) {
-                        const localPjs = window.pJSDom[1].pJS;
-                        localPjs.particles.line_linked.enable = false; // Tear geometric fabric immediately
-                        localPjs.particles.move.speed = 15; // Acceleration burst towards next slide
+                slideChangeTransitionStart: function () {
+                    // Advanced Particle Disintegration Logic
+                    if (window.pJSDom && window.pJSDom.length > 0) {
+                        const pjs = window.pJSDom[0].pJS;
+                        pjs.particles.line_linked.enable = false; 
+                        pjs.particles.move.speed = 15; 
                     }
                 },
                 slideChangeTransitionEnd: function () {
-                    // Crystalline Reassembly & 20 Particle Push
-                    if (window.pJSDom && window.pJSDom.length > 1) {
-                        const localPjs = window.pJSDom[1].pJS;
-                        localPjs.particles.line_linked.enable = true; // Reconnect points
-                        localPjs.particles.move.speed = 2.5; // Stable float state
-                        if(localPjs.fn.modes.pushParticles) {
-                            localPjs.fn.modes.pushParticles(20, localPjs.interactivity.mouse);
-                        }
+                    // Re-assembles the network around the new active slide
+                    if (window.pJSDom && window.pJSDom.length > 0) {
+                        const pjs = window.pJSDom[0].pJS;
+                        pjs.particles.line_linked.enable = true; 
+                        pjs.particles.line_linked.opacity = 0.6; 
+                        pjs.particles.move.speed = 3; 
                     }
-                    window.dispatchEvent(new Event('resize')); // Flush array state cleanly
+                    window.dispatchEvent(new Event('resize')); 
                 },
                 reachEnd: function() {
                     setTimeout(() => {
@@ -652,9 +639,6 @@
             if (window.pJSDom && window.pJSDom.length > 0) {
                 window.pJSDom[0].pJS.particles.move.speed = 2.5;
                 window.pJSDom[0].pJS.particles.line_linked.opacity = 0.4;
-            }
-            if (window.pJSDom && window.pJSDom.length > 1) {
-                window.pJSDom[1].pJS.particles.move.speed = 2.5;
             }
         }
 
@@ -719,23 +703,7 @@
             "retina_detect": true
         });
 
-        // Initialize Local Portfolio Particles.js (Dual Engine)
-        particlesJS("particles-portfolio", {
-            "particles": {
-                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#8b5cf6"] },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#8b5cf6", "opacity": 0.5, "width": 1.5 },
-                "move": { "enable": true, "speed": 2.5, "direction": "none", "random": true, "out_mode": "out" }
-            },
-            "interactivity": {
-                "detect_on": "window",
-                "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }
-            },
-            "retina_detect": true
-        });
+
 
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
