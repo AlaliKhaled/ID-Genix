@@ -213,6 +213,9 @@
             overflow: hidden; margin-bottom: 3rem; 
             pointer-events: none; /* Mouse slips deeply into background particles */
         }
+        .swiper-wrapper {
+            transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important;
+        }
         .portfolio-slider { 
             width: 100%; height: 100%; 
             overflow: visible !important;
@@ -553,23 +556,23 @@
             slidesPerView: 'auto',
             loop: false,
             parallax: true,
-            speed: 800, // Matched seamlessly to hover integration loop
+            speed: 1000, // Smooth transition pace
+            edgeSwipeThreshold: 20, // Extreme swipe sensitivity
+            cssMode: false, // Ensures cubic-bezier can dominate the vector curve
             pagination: { el: '.swiper-pagination', clickable: true },
             creativeEffect: {
                 perspective: true,
                 limitProgress: 3,
                 prev: {
                     shadow: true,
-                    translate: [0, 0, -800], // Deep background depth
-                    rotate: [0, -45, 0], // RotateY -45deg
-                    scale: 0.5,
+                    translate: ['-150%', 0, -800], 
+                    rotate: [0, 45, 0], 
                     opacity: 0
                 },
                 next: {
                     shadow: true,
-                    translate: [0, 0, -800], // Enter from depth
-                    rotate: [0, 45, 0], // RotateY 45deg
-                    scale: 0.5,
+                    translate: ['150%', 0, -800], 
+                    rotate: [0, -45, 0], 
                     opacity: 0
                 }
             },
@@ -648,7 +651,7 @@
             hoverScrollInterval = setInterval(() => {
                 if(direction === 'next') portfolioSwiper.slideNext();
                 else portfolioSwiper.slidePrev();
-            }, 800); // Sync loop with Swiper transition speed
+            }, 1000); // Sync loop with Swiper transition speed
         }
 
         function stopHoverScroll() {
