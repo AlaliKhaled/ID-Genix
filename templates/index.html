@@ -35,6 +35,7 @@
             position: fixed;
             top: -25%; left: -25%; width: 150%; height: 150%; /* Massive canvas for vortex rotation */
             z-index: -1;
+            pointer-events: all;
             transition: transform 0.1s ease-out; /* Smooth follow for Swiper */
         }
 
@@ -208,11 +209,13 @@
             background: rgba(10, 10, 15, 0.6);
             display: flex; justify-content: center; align-items: center;
             overflow: visible; margin-bottom: 3rem; border-radius: 24px;
+            pointer-events: none; /* Allows hover events to reach particles logic */
         }
         .portfolio-slider { 
             margin: 0 auto; width: 100%; height: 100%; 
             display: flex; justify-content: center; align-items: center; 
             overflow: visible !important; padding: 50px 0; 
+            pointer-events: auto; /* Maintains swiper grabbing */
         }
         
         .swiper-slide { 
@@ -527,7 +530,7 @@
                 setTranslate: function (swiper, translate) {
                     const particlesEl = document.getElementById('particles-js');
                     if (particlesEl) {
-                        const rotZ = translate * 0.02;
+                        const rotZ = translate * -0.02; // Inverted for physical drag mapping
                         particlesEl.style.transform = `rotateZ(${rotZ}deg) scale(1.4)`;
                     }
                 },
