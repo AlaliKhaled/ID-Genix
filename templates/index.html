@@ -535,44 +535,17 @@
                     }
                 },
                 slideChangeTransitionStart: function () {
-                    // Fluid Particle Ecosystem with Elastic Easing (Tweening)
+                    // Morphing start - Disassembly
                     if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        const targetSpeed = 10;
-                        const originalSpeed = 2.5;
-                        const targetDist = 200; // Elastic stretch distance
-                        const originalDist = 140; 
-                        
-                        // Prevent multi-queue issues
-                        if(window.particleTweenInterval) clearInterval(window.particleTweenInterval);
-                        if(window.particleTweenTimeout) clearTimeout(window.particleTweenTimeout);
-                        
-                        let step = 0;
-                        // Tension buildup phase (Fade in fast speed and stretch)
-                        window.particleTweenInterval = setInterval(() => {
-                            step += 0.1;
-                            if(step >= 1) {
-                                clearInterval(window.particleTweenInterval);
-                                // Relieve tension phase (Smooth dropoff)
-                                window.particleTweenTimeout = setTimeout(() => {
-                                    let stepDown = 0;
-                                    const downInterval = setInterval(() => {
-                                        stepDown += 0.05;
-                                        if(stepDown >= 1) {
-                                            clearInterval(downInterval);
-                                            pjs.particles.move.speed = originalSpeed;
-                                            pjs.particles.line_linked.distance = originalDist;
-                                        } else {
-                                            pjs.particles.move.speed = targetSpeed - ((targetSpeed - originalSpeed) * stepDown);
-                                            pjs.particles.line_linked.distance = targetDist - ((targetDist - originalDist) * stepDown);
-                                        }
-                                    }, 30);
-                                }, 200);
-                            } else {
-                                pjs.particles.move.speed = originalSpeed + ((targetSpeed - originalSpeed) * step);
-                                pjs.particles.line_linked.distance = originalDist + ((targetDist - originalDist) * step);
-                            }
-                        }, 20);
+                        window.pJSDom[0].pJS.particles.line_linked.enable = false;
+                        window.pJSDom[0].pJS.particles.move.speed = 15;
+                    }
+                },
+                slideChangeTransitionEnd: function () {
+                    // Morphing end - Reassembly
+                    if (window.pJSDom && window.pJSDom.length > 0) {
+                        window.pJSDom[0].pJS.particles.line_linked.enable = true;
+                        window.pJSDom[0].pJS.particles.move.speed = 2.5;
                     }
                 },
                 reachEnd: function() {
