@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- GLightbox CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <style>
         :root {
@@ -31,8 +33,9 @@
 
         #particles-js {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: -5%; width: 110%; height: 100%;
             z-index: -1;
+            transition: transform 0.1s ease-out; /* Smooth follow for Swiper */
         }
 
         .navbar-custom {
@@ -200,19 +203,20 @@
             border-color: var(--neon-blue) !important;
         }
 
-        .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        @media (max-width: 768px) { .portfolio-grid { grid-template-columns: 1fr; } }
+        .portfolio-slider { width: 100%; padding-top: 50px; padding-bottom: 50px; overflow: hidden; }
+        .swiper-slide { width: 320px; height: 320px; border-radius: 20px; }
+        @media (max-width: 768px) { .swiper-slide { width: 280px; height: 280px; } }
         
         .portfolio-item {
             position: relative; border-radius: 20px; overflow: hidden; cursor: pointer;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease; display: block; width: 100%; height: 100%;
         }
         .portfolio-item img {
             width: 100%; height: 100%; aspect-ratio: 1/1; object-fit: cover;
-            display: block; border-radius: 20px; transition: transform 0.5s ease;
+            display: block; border-radius: 20px; transition: transform 0.8s ease;
         }
-        .portfolio-item:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4); }
-        .portfolio-item:hover img { transform: scale(1.05); }
+        .portfolio-item:hover { transform: translateY(-10px); box-shadow: 0 10px 40px rgba(168, 85, 247, 0.5); }
+        .portfolio-item:hover img { transform: scale(1.1); }
 
         .portfolio-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -220,7 +224,11 @@
             opacity: 0; transition: opacity 0.4s ease; backdrop-filter: blur(3px); border-radius: 20px;
         }
         .portfolio-item:hover .portfolio-overlay { opacity: 1; }
-        .overlay-text { font-family: 'Cairo', sans-serif !important; color: white; font-size: 1.5rem; font-weight: 700; }
+        
+        .overlay-content { text-align: center; transform: translateY(20px); opacity: 0; transition: all 0.4s ease; transition-delay: 0.1s; }
+        .portfolio-item:hover .overlay-content { transform: translateY(0); opacity: 1; }
+        .overlay-title { font-family: 'Cairo', sans-serif !important; color: white; font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 1px !important; }
+        .overlay-subtitle { font-family: 'Cairo', sans-serif !important; color: rgba(255,255,255,0.7); font-size: 1rem; }
         
         .whatsapp-btn {
             position: fixed;
@@ -339,21 +347,31 @@
         </div>
     </section>
 
-    <!-- AI Portfolio Section -->
-    <section id="portfolio" class="container py-5 my-5">
+    <!-- AI Portfolio Section (Premium Interactive Swiper) -->
+    <section id="portfolio" class="container-fluid py-5 my-5 overflow-hidden">
         <div class="text-center">
             <h2 class="section-title">إبداعاتنا التقنية</h2>
             <p class="text-muted-custom mb-5">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي المتطورة التي نستخدمها.</p>
         </div>
-        <div class="portfolio-grid">
-            {% for image in portfolio_images %}
-            <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
-                <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="تصميم إبداعي بالذكاء الاصطناعي" loading="lazy">
-                <div class="portfolio-overlay">
-                    <span class="overlay-text">توسيع العرض 🔍</span>
+        
+        <div class="swiper portfolio-slider">
+            <div class="swiper-wrapper">
+                {% for image in portfolio_images %}
+                <div class="swiper-slide">
+                    <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
+                        <div data-swiper-parallax="-30%" style="width:140%; height:100%; position:absolute; left:-20%; top:0;">
+                            <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Production" loading="lazy">
+                        </div>
+                        <div class="portfolio-overlay">
+                            <div class="overlay-content">
+                                <h4 class="overlay-title">AI Production</h4>
+                                <span class="overlay-subtitle">انقر للعرض 🔍</span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </section>
 
@@ -455,6 +473,34 @@
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
     <script>const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true });</script>
+    <!-- Swiper JS & Init -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const portfolioSwiper = new Swiper('.portfolio-slider', {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            loop: true,
+            parallax: true,
+            speed: 800,
+            coverflowEffect: {
+                rotate: 20,
+                stretch: 0,
+                depth: 250,
+                modifier: 1,
+                slideShadows: true,
+            },
+            on: {
+                setTranslate: function (swiper, translate) {
+                    const particlesEl = document.getElementById('particles-js');
+                    if (particlesEl) {
+                        particlesEl.style.transform = `translateX(${translate * 0.03}px)`;
+                    }
+                }
+            }
+        });
+    </script>
     
     <script>
         // JS Typewriter Effect for Hero
