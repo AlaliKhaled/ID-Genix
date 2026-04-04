@@ -32,12 +32,11 @@
         }
 
         #particles-js {
-            position: fixed;
+            position: fixed !important;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1 !important; /* Absolute layer isolation requirement */
-            pointer-events: none; /* Relies strictly on Window event hooks */
+            z-index: -1; /* Keep it behind everything */
+            pointer-events: all; /* Ensure it feels the mouse */
         }
-        #particles-js canvas { pointer-events: none !important; }
         
         .hero-section { position: relative; z-index: 10; }
 
@@ -209,7 +208,7 @@
 
         .portfolio-wrapper { 
             width: 100vw; height: 80vh; position: relative; margin-left: calc(-50vw + 50%);
-            background: transparent; z-index: 5;
+            background: transparent !important; z-index: 5;
             overflow: hidden; margin-bottom: 3rem; 
             pointer-events: none; /* Mouse slips deeply into background particles */
         }
@@ -248,7 +247,7 @@
         .swiper-pagination-bullet-active { background: #8b5cf6 !important; box-shadow: 0 0 10px #8b5cf6; }
 
         .swiper-slide { 
-            width: 100%; height: 100%; aspect-ratio: 1/1; 
+            width: 85%; height: 100%; aspect-ratio: 1/1; 
             max-width: 450px; max-height: 70vh;
             display: flex; justify-content: center; align-items: center; 
             pointer-events: auto; /* Active touchable UI regions only */
@@ -570,21 +569,12 @@
                 }
             },
             on: {
-                setTranslate: function (swiper, translate) {
-                    // Fluid Interaction Logic (The 'Wave' Effect)
+                touchMove: function (swiper) {
+                    // Fluid Particle Response (Zero Block Motion)
                     if (window.pJSDom && window.pJSDom.length > 0) {
                         const pjs = window.pJSDom[0].pJS;
-                        let windSpeed = Math.abs(swiper.translate - swiper.previousTranslate) * 0.4;
-                        if(windSpeed > 20) windSpeed = 20;
-                        if(windSpeed < 2.5) windSpeed = 2.5;
-                        
-                        pjs.particles.move.speed = windSpeed;
-                        pjs.particles.line_linked.opacity = 0.5 - (windSpeed / 50); // Fluid dimming
-                        
-                        // Dynamic Re-spawning (Anti-Displacement)
-                        if(windSpeed > 12 && pjs.fn.modes.pushParticles) {
-                             pjs.fn.modes.pushParticles(1, pjs.interactivity.mouse);
-                        }
+                        pjs.particles.move.speed = 12; // Increase speed during swipe
+                        pjs.particles.line_linked.opacity = 0.2; // Decrease opacity
                     }
                 },
                 slideChangeTransitionStart: function () {
