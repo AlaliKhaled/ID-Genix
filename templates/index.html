@@ -209,13 +209,18 @@
             display: flex; justify-content: center; align-items: center;
             overflow: hidden; margin-bottom: 3rem; border-radius: 24px;
         }
-        .portfolio-slider { width: 100%; height: 100%; padding-top: 50px; padding-bottom: 50px; }
+        .portfolio-slider { margin: 0 auto; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; padding: 20px 0; }
         
         .swiper-slide { 
             width: 100%; height: 100%; 
-            max-width: 400px; max-height: 400px; 
+            max-width: 500px; max-height: 500px; 
             aspect-ratio: 1/1; 
-            display: flex; justify-content: center; margin: 0 auto;
+            display: flex; justify-content: center; align-items: center; margin: 0 auto;
+            /* Inactive slides blur */
+            filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 0.8s ease, opacity 0.8s ease;
+        }
+        .swiper-slide-active {
+            filter: blur(0px) brightness(1); opacity: 1 !important; z-index: 10;
         }
         @media (max-width: 768px) { .swiper-slide { max-width: 300px; max-height: 300px; } }
         
@@ -503,36 +508,59 @@
             speed: 850,
             creativeEffect: {
                 perspective: true,
-                limitProgress: 8, // How many slides visible deep into the spiral
+                limitProgress: 3, // Visual focus on top 3 deep slides
                 prev: {
-                    translate: [0, '-120%', 300], // Slides above pop towards the camera and fade out
+                    translate: [0, '-120%', 300],
                     rotate: [0, 0, -10],
                     opacity: 0,
                     scale: 1.2
                 },
                 next: {
-                    // 3D Helix/Spiral calculation: Right, Down, Deep, and Y-Rotated
-                    translate: ['45%', '35%', -400],
-                    rotate: [0, -45, 10], // Spiral wrapping angle
-                    opacity: 1,
-                    scale: 0.85
+                    // Aggressive Spiral Depth logic
+                    translate: ['60%', '30%', -800],
+                    rotate: [0, -45, 10], // 45deg rotation
+                    opacity: 0.9,
+                    scale: 0.7
                 }
             },
             on: {
                 setTranslate: function (swiper, translate) {
-                    // Vortex Particles Background Link
                     const particlesEl = document.getElementById('particles-js');
                     if (particlesEl) {
-                        // Converts vertical swipe distance into a circular vortex spin
                         const rotZ = translate * 0.015;
                         particlesEl.style.transform = `rotateZ(${rotZ}deg) scale(1.4)`;
                     }
                 },
+                slideChangeTransitionStart: function () {
+                    // Hyper-Reactive Particles Logic
+                    if (window.pJSDom && window.pJSDom.length > 0) {
+                        const pjs = window.pJSDom[0].pJS;
+                        const originalOpacity = 0.2; 
+                        
+                        // Increase network sync visibility
+                        pjs.particles.line_linked.opacity = 0.8;
+                        
+                        // Particle Explosion
+                        try {
+                            if (pjs.fn && pjs.fn.modes && pjs.fn.modes.pushParticles) {
+                                // Push particles at center
+                                pjs.fn.modes.pushParticles(20, window.innerWidth / 2, window.innerHeight / 2);
+                            }
+                        } catch(e) {}
+                        
+                        clearTimeout(window.particleBurstTimeout);
+                        window.particleBurstTimeout = setTimeout(() => {
+                            if (window.pJSDom && window.pJSDom.length > 0) {
+                                window.pJSDom[0].pJS.particles.line_linked.opacity = originalOpacity;
+                            }
+                        }, 800);
+                    }
+                },
                 reachEnd: function() {
-                    // Automatic transition to footer when helix concludes
+                    // Seamless Flow scroll logic
                     setTimeout(() => {
                         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    }, 800);
+                    }, 500);
                 }
             }
         });
