@@ -203,30 +203,44 @@
             border-color: var(--neon-blue) !important;
         }
 
-        .portfolio-slider { width: 100%; height: 80vh; padding-top: 20px; padding-bottom: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .swiper-slide { width: 100%; max-width: 500px; height: 100%; max-height: 500px; border-radius: 20px; margin: 0 auto; display: flex; justify-content: center; }
-        @media (max-width: 768px) { .swiper-slide { max-width: 320px; max-height: 400px; } }
+        .portfolio-wrapper { 
+            width: 100%; height: 80vh; 
+            background: rgba(10, 10, 15, 0.6);
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; margin-bottom: 3rem; border-radius: 24px;
+        }
+        .portfolio-slider { width: 100%; height: 100%; padding-top: 50px; padding-bottom: 50px; }
+        
+        .swiper-slide { 
+            width: 100%; height: 100%; 
+            max-width: 400px; max-height: 400px; 
+            aspect-ratio: 1/1; 
+            display: flex; justify-content: center; margin: 0 auto;
+        }
+        @media (max-width: 768px) { .swiper-slide { max-width: 300px; max-height: 300px; } }
         
         .portfolio-item {
-            position: relative; border-radius: 20px; overflow: hidden; cursor: pointer;
-            transition: transform 0.4s ease, box-shadow 0.4s ease; display: block; width: 100%; height: 100%;
+            position: relative; overflow: hidden; cursor: pointer; display: block; width: 100%; height: 100%;
+            border-radius: 25px; transition: transform 0.4s ease;
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.5);
         }
         .portfolio-item img {
-            width: 100%; height: 100%; aspect-ratio: 1/1; object-fit: cover;
-            display: block; border-radius: 20px; transition: transform 0.8s ease;
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; border-radius: 25px; transition: transform 0.8s ease;
         }
-        .portfolio-item:hover { box-shadow: 0 10px 40px rgba(168, 85, 247, 0.5); }
+        .portfolio-item:hover { transform: translateY(-10px) scale(1.02); }
         .portfolio-item:hover img { transform: scale(1.05); }
 
         .portfolio-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.4s ease; border-radius: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
+            display: flex; align-items: flex-start; justify-content: center; 
+            opacity: 0; transition: opacity 0.4s ease; border-radius: 25px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 60%);
+            padding-top: 30px;
         }
         .portfolio-item:hover .portfolio-overlay { opacity: 1; }
         
-        .overlay-content { text-align: center; transform: translateY(20px); opacity: 0; transition: all 0.4s ease; mix-blend-mode: difference; }
+        .overlay-content { text-align: center; transform: translateY(-20px); opacity: 0; transition: all 0.4s ease; mix-blend-mode: color-dodge; }
         .portfolio-item:hover .overlay-content { transform: translateY(0); opacity: 1; }
         .overlay-title { font-family: 'Cairo', sans-serif !important; color: white; font-size: 2.3rem; font-weight: 900; margin-bottom: 8px; letter-spacing: 2px !important; text-transform: uppercase; }
         .overlay-subtitle { font-family: 'sans-serif' !important; color: white; font-size: 1rem; letter-spacing: 5px; font-weight: 300; }
@@ -349,27 +363,29 @@
     </section>
 
     <!-- AI Portfolio Section (Premium Interactive Swiper) -->
-    <section id="portfolio" class="container-fluid py-5 my-5 overflow-hidden">
+    <section id="portfolio" class="container py-5 my-5">
         <div class="text-center">
             <h2 class="section-title">إبداعاتنا التقنية</h2>
             <p class="text-muted-custom mb-5">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي المتطورة التي نستخدمها.</p>
         </div>
         
-        <div class="swiper portfolio-slider">
-            <div class="swiper-wrapper">
-                {% for image in portfolio_images %}
-                <div class="swiper-slide">
-                    <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
-                        <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Brand Identity" loading="lazy">
-                        <div class="portfolio-overlay">
-                            <div class="overlay-content">
-                                <h4 class="overlay-title">BRAND IDENTITY</h4>
-                                <span class="overlay-subtitle">CLICK TO EXPLORE</span>
+        <div class="portfolio-wrapper">
+            <div class="swiper portfolio-slider">
+                <div class="swiper-wrapper">
+                    {% for image in portfolio_images %}
+                    <div class="swiper-slide">
+                        <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
+                            <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Brand Identity" loading="lazy">
+                            <div class="portfolio-overlay">
+                                <div class="overlay-content">
+                                    <h4 class="overlay-title">BRAND IDENTITY</h4>
+                                    <span class="overlay-subtitle">CLICK TO EXPLORE</span>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
     </section>
@@ -477,33 +493,40 @@
     <script>
         const portfolioSwiper = new Swiper('.portfolio-slider', {
             direction: 'vertical',
-            effect: 'creative',
+            mousewheel: true,
+            keyboard: true,
+            effect: 'coverflow',
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: 'auto',
             loop: true,
             speed: 800,
-            creativeEffect: {
-                prev: {
-                    translate: [0, '-120%', -500],
-                    opacity: 0
-                },
-                next: {
-                    translate: [0, '100%', 0]
-                }
+            coverflowEffect: {
+                rotate: 30, // Light depth rotation per user spec
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows: false // Relying purely on internal glowing neon borders
             },
             on: {
-                slideChange: function () {
+                slideChangeTransitionStart: function () {
+                    // Mute/Unmute elements in sync with particles burst
                     if (window.pJSDom && window.pJSDom.length > 0) {
                         const originalSpeed = 2.5; 
-                        window.pJSDom[0].pJS.particles.move.speed = 15;
+                        
+                        // Data Disruption Effect: Fast Particles
+                        window.pJSDom[0].pJS.particles.move.speed = 18;
+                        window.pJSDom[0].pJS.particles.line_linked.color_rgb_line = {r: 255, g: 0, b: 255}; // Deep neon pink/purple lines
                         
                         clearTimeout(window.particleSpeedTimeout);
                         window.particleSpeedTimeout = setTimeout(() => {
                             if (window.pJSDom && window.pJSDom.length > 0) {
+                                // Resume stabilization
                                 window.pJSDom[0].pJS.particles.move.speed = originalSpeed;
+                                // Hex #8b5cf6 is roughly {r:139, g:92, b:246}
+                                window.pJSDom[0].pJS.particles.line_linked.color_rgb_line = {r: 139, g: 92, b: 246};
                             }
-                        }, 800);
+                        }, 1000); // Effect duration 1s
                     }
                 }
             }
