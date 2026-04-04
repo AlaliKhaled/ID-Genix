@@ -84,7 +84,9 @@ def requires_auth(f):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    portfolio_dir = os.path.join(app.static_folder, 'portfolio')
+    portfolio_images = os.listdir(portfolio_dir) if os.path.exists(portfolio_dir) else []
+    return render_template('index.html', portfolio_images=portfolio_images)
 
 @app.route('/order', methods=['POST'])
 def order():
