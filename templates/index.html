@@ -209,12 +209,15 @@
             display: flex; justify-content: center; align-items: center;
             overflow: hidden; margin-bottom: 3rem; border-radius: 24px;
         }
-        .portfolio-slider { margin: 0 auto; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; padding: 20px 0; }
+        .portfolio-slider { 
+            margin: 0 auto; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; padding: 20px 0; 
+        }
         
         .swiper-slide { 
-            width: 100%; height: 100%; 
-            max-width: 500px; max-height: 500px; 
-            aspect-ratio: 1/1; 
+            width: 100%; aspect-ratio: 1/1; 
+            max-width: 450px; 
             display: flex; justify-content: center; align-items: center; margin: 0 auto;
             /* Inactive slides blur */
             filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 0.8s ease, opacity 0.8s ease;
@@ -222,7 +225,7 @@
         .swiper-slide-active {
             filter: blur(0px) brightness(1); opacity: 1 !important; z-index: 10;
         }
-        @media (max-width: 768px) { .swiper-slide { max-width: 300px; max-height: 300px; } }
+        @media (max-width: 768px) { .swiper-slide { max-width: 85%; } }
         
         .portfolio-item {
             position: relative; overflow: hidden; cursor: pointer; display: block; width: 100%; height: 100%;
@@ -238,15 +241,14 @@
 
         .portfolio-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: flex-start; justify-content: center; 
-            opacity: 0; transition: opacity 0.4s ease; border-radius: 25px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 60%);
-            padding-top: 30px;
+            display: flex; align-items: center; justify-content: center; 
+            opacity: 0; transition: opacity 0.6s ease; border-radius: 25px;
+            background: rgba(0,0,0,0.5);
         }
         .portfolio-item:hover .portfolio-overlay { opacity: 1; }
         
-        .overlay-content { text-align: center; transform: translateY(-20px); opacity: 0; transition: all 0.4s ease; mix-blend-mode: color-dodge; }
-        .portfolio-item:hover .overlay-content { transform: translateY(0); opacity: 1; }
+        .overlay-content { text-align: center; opacity: 0; transition: opacity 0.6s ease; mix-blend-mode: color-dodge; }
+        .portfolio-item:hover .overlay-content { opacity: 1; }
         .overlay-title { font-family: 'Cairo', sans-serif !important; color: white; font-size: 2.3rem; font-weight: 900; margin-bottom: 8px; letter-spacing: 2px !important; text-transform: uppercase; }
         .overlay-subtitle { font-family: 'sans-serif' !important; color: white; font-size: 1rem; letter-spacing: 5px; font-weight: 300; }
         
@@ -497,7 +499,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         const portfolioSwiper = new Swiper('.portfolio-slider', {
-            direction: 'vertical',
+            direction: 'horizontal',
             mousewheel: true,
             keyboard: true,
             effect: 'creative',
@@ -508,59 +510,43 @@
             speed: 850,
             creativeEffect: {
                 perspective: true,
-                limitProgress: 3, // Visual focus on top 3 deep slides
+                limitProgress: 3,
                 prev: {
-                    translate: [0, '-120%', 300],
-                    rotate: [0, 0, -10],
-                    opacity: 0,
-                    scale: 1.2
+                    shadow: true,
+                    translate: ['-120%', 0, -500],
+                    rotate: [0, 0, -30],
                 },
                 next: {
-                    // Aggressive Spiral Depth logic
-                    translate: ['60%', '30%', -800],
-                    rotate: [0, -45, 10], // 45deg rotation
-                    opacity: 0.9,
-                    scale: 0.7
+                    shadow: true,
+                    translate: ['120%', 0, -500],
+                    rotate: [0, 0, 30],
                 }
             },
             on: {
                 setTranslate: function (swiper, translate) {
                     const particlesEl = document.getElementById('particles-js');
                     if (particlesEl) {
-                        const rotZ = translate * 0.015;
+                        const rotZ = translate * 0.02;
                         particlesEl.style.transform = `rotateZ(${rotZ}deg) scale(1.4)`;
                     }
                 },
                 slideChangeTransitionStart: function () {
-                    // Hyper-Reactive Particles Logic
                     if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        const originalOpacity = 0.2; 
-                        
-                        // Increase network sync visibility
-                        pjs.particles.line_linked.opacity = 0.8;
-                        
-                        // Particle Explosion
-                        try {
-                            if (pjs.fn && pjs.fn.modes && pjs.fn.modes.pushParticles) {
-                                // Push particles at center
-                                pjs.fn.modes.pushParticles(20, window.innerWidth / 2, window.innerHeight / 2);
-                            }
-                        } catch(e) {}
+                        const originalSpeed = 2.5; 
+                        window.pJSDom[0].pJS.particles.move.speed = 15;
                         
                         clearTimeout(window.particleBurstTimeout);
                         window.particleBurstTimeout = setTimeout(() => {
                             if (window.pJSDom && window.pJSDom.length > 0) {
-                                window.pJSDom[0].pJS.particles.line_linked.opacity = originalOpacity;
+                                window.pJSDom[0].pJS.particles.move.speed = originalSpeed;
                             }
-                        }, 800);
+                        }, 1000);
                     }
                 },
                 reachEnd: function() {
-                    // Seamless Flow scroll logic
                     setTimeout(() => {
                         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    }, 500);
+                    }, 800);
                 }
             }
         });
