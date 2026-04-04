@@ -212,11 +212,10 @@
         .portfolio-wrapper { 
             width: 100%; height: 80vh; position: relative;
             background: transparent; z-index: 5;
-            overflow: visible; margin-bottom: 3rem;
+            overflow: hidden !important; margin-bottom: 3rem; /* Critical Mobile Width Restraint */
             pointer-events: none; /* Mouse slips deeply into background particles */
         }
         .portfolio-slider { 
-            display: flex; justify-content: center; align-items: center;
             width: 100%; height: 100%; 
             overflow: visible !important;
             pointer-events: none; /* Transparent non-slider bounds */
@@ -413,7 +412,10 @@
         </div>
         
         <div class="portfolio-wrapper">
-            <div class="swiper portfolio-slider">
+            <!-- Dual-Engine: Dedicated Portfolio Canvas -->
+            <div id="particles-portfolio" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events: none;"></div>
+            
+            <div class="swiper portfolio-slider" style="position: relative; z-index: 1;">
                 <div class="swiper-wrapper">
                     {% for image in portfolio_images %}
                     <div class="swiper-slide">
@@ -590,21 +592,31 @@
                         targetParticleTrans = translate * -0.2; 
                     }, 10);
                 },
+                sliderMove: function () {
+                    // Tear lines actively during touch drag
+                    if (window.pJSDom && window.pJSDom.length > 1) {
+                        const localPjs = window.pJSDom[1].pJS;
+                        localPjs.particles.line_linked.enable = false;
+                        localPjs.particles.move.speed = 10;
+                    }
+                },
                 slideChange: function () {
-                    // True Disintegration Engine (Boolean Tear)
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        pjs.particles.line_linked.enable = false; // Tear geometric fabric immediately
-                        pjs.particles.move.speed = 15; // Acceleration burst towards next slide
+                    // Full Disintegration Engine (Boolean Tear)
+                    if (window.pJSDom && window.pJSDom.length > 1) {
+                        const localPjs = window.pJSDom[1].pJS;
+                        localPjs.particles.line_linked.enable = false; // Tear geometric fabric immediately
+                        localPjs.particles.move.speed = 15; // Acceleration burst towards next slide
                     }
                 },
                 slideChangeTransitionEnd: function () {
-                    // Crystalline Reassembly 
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        pjs.particles.line_linked.enable = true; // Reconnect points
-                        pjs.particles.line_linked.opacity = 0.5; // Crystallized stable density
-                        pjs.particles.move.speed = 3; // Stable float state
+                    // Crystalline Reassembly & 20 Particle Push
+                    if (window.pJSDom && window.pJSDom.length > 1) {
+                        const localPjs = window.pJSDom[1].pJS;
+                        localPjs.particles.line_linked.enable = true; // Reconnect points
+                        localPjs.particles.move.speed = 2.5; // Stable float state
+                        if(localPjs.fn.modes.pushParticles) {
+                            localPjs.fn.modes.pushParticles(20, localPjs.interactivity.mouse);
+                        }
                     }
                     window.dispatchEvent(new Event('resize')); // Flush array state cleanly
                 },
@@ -640,6 +652,9 @@
             if (window.pJSDom && window.pJSDom.length > 0) {
                 window.pJSDom[0].pJS.particles.move.speed = 2.5;
                 window.pJSDom[0].pJS.particles.line_linked.opacity = 0.4;
+            }
+            if (window.pJSDom && window.pJSDom.length > 1) {
+                window.pJSDom[1].pJS.particles.move.speed = 2.5;
             }
         }
 
@@ -700,6 +715,24 @@
                     "grab": { "distance": 250, "line_linked": { "opacity": 1 } }, // Magnetic hover attraction
                     "push": { "particles_nb": 4 } 
                 }
+            },
+            "retina_detect": true
+        });
+
+        // Initialize Local Portfolio Particles.js (Dual Engine)
+        particlesJS("particles-portfolio", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#8b5cf6"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#8b5cf6", "opacity": 0.5, "width": 1.5 },
+                "move": { "enable": true, "speed": 2.5, "direction": "none", "random": true, "out_mode": "out" }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }
             },
             "retina_detect": true
         });
