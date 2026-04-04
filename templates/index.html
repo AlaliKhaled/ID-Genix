@@ -207,20 +207,20 @@
             width: 100%; height: 80vh; 
             background: rgba(10, 10, 15, 0.6);
             display: flex; justify-content: center; align-items: center;
-            overflow: hidden; margin-bottom: 3rem; border-radius: 24px;
+            overflow: visible; margin-bottom: 3rem; border-radius: 24px;
         }
         .portfolio-slider { 
             margin: 0 auto; width: 100%; height: 100%; 
             display: flex; justify-content: center; align-items: center; 
-            overflow: hidden; padding: 20px 0; 
+            overflow: visible !important; padding: 50px 0; 
         }
         
         .swiper-slide { 
-            width: 100%; aspect-ratio: 1/1; 
-            max-width: 450px; 
+            width: 100%; height: auto; aspect-ratio: 1/1; 
+            max-width: 450px; max-height: 70vh;
             display: flex; justify-content: center; align-items: center; margin: 0 auto;
             /* Inactive slides blur */
-            filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 0.8s ease, opacity 0.8s ease;
+            filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 1.2s ease, opacity 1.2s ease;
         }
         .swiper-slide-active {
             filter: blur(0px) brightness(1); opacity: 1 !important; z-index: 10;
@@ -507,19 +507,20 @@
             centeredSlides: true,
             slidesPerView: 'auto',
             loop: false,
-            speed: 850,
+            parallax: true,
+            speed: 1200, // Super smooth cinematic transition
             creativeEffect: {
                 perspective: true,
                 limitProgress: 3,
                 prev: {
                     shadow: true,
-                    translate: ['-120%', 0, -500],
-                    rotate: [0, 0, -30],
+                    translate: ['-110%', 0, -800], // Exteme depth focus
+                    rotate: [0, 0, -15], // Subtle elegance
                 },
                 next: {
                     shadow: true,
-                    translate: ['120%', 0, -500],
-                    rotate: [0, 0, 30],
+                    translate: ['110%', 0, -800],
+                    rotate: [0, 0, 15],
                 }
             },
             on: {
@@ -531,16 +532,44 @@
                     }
                 },
                 slideChangeTransitionStart: function () {
+                    // Fluid Particle Ecosystem with Elastic Easing (Tweening)
                     if (window.pJSDom && window.pJSDom.length > 0) {
-                        const originalSpeed = 2.5; 
-                        window.pJSDom[0].pJS.particles.move.speed = 15;
+                        const pjs = window.pJSDom[0].pJS;
+                        const targetSpeed = 10;
+                        const originalSpeed = 2.5;
+                        const targetDist = 200; // Elastic stretch distance
+                        const originalDist = 140; 
                         
-                        clearTimeout(window.particleBurstTimeout);
-                        window.particleBurstTimeout = setTimeout(() => {
-                            if (window.pJSDom && window.pJSDom.length > 0) {
-                                window.pJSDom[0].pJS.particles.move.speed = originalSpeed;
+                        // Prevent multi-queue issues
+                        if(window.particleTweenInterval) clearInterval(window.particleTweenInterval);
+                        if(window.particleTweenTimeout) clearTimeout(window.particleTweenTimeout);
+                        
+                        let step = 0;
+                        // Tension buildup phase (Fade in fast speed and stretch)
+                        window.particleTweenInterval = setInterval(() => {
+                            step += 0.1;
+                            if(step >= 1) {
+                                clearInterval(window.particleTweenInterval);
+                                // Relieve tension phase (Smooth dropoff)
+                                window.particleTweenTimeout = setTimeout(() => {
+                                    let stepDown = 0;
+                                    const downInterval = setInterval(() => {
+                                        stepDown += 0.05;
+                                        if(stepDown >= 1) {
+                                            clearInterval(downInterval);
+                                            pjs.particles.move.speed = originalSpeed;
+                                            pjs.particles.line_linked.distance = originalDist;
+                                        } else {
+                                            pjs.particles.move.speed = targetSpeed - ((targetSpeed - originalSpeed) * stepDown);
+                                            pjs.particles.line_linked.distance = targetDist - ((targetDist - originalDist) * stepDown);
+                                        }
+                                    }, 30);
+                                }, 200);
+                            } else {
+                                pjs.particles.move.speed = originalSpeed + ((targetSpeed - originalSpeed) * step);
+                                pjs.particles.line_linked.distance = originalDist + ((targetDist - originalDist) * step);
                             }
-                        }, 1000);
+                        }, 20);
                     }
                 },
                 reachEnd: function() {
