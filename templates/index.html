@@ -33,13 +33,18 @@
 
         #particles-js {
             position: fixed;
-            top: -25%; left: -25%; width: 150%; height: 150%; /* Massive canvas for vortex rotation */
-            z-index: -1;
-            pointer-events: all;
-            transition: transform 0.1s ease-out; /* Smooth follow for Swiper */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1 !important; /* Absolute layer isolation requirement */
+            pointer-events: none; /* Relies strictly on Window event hooks */
+            will-change: transform; 
+            transition: transform 0.1s ease-out; 
         }
+        #particles-js canvas { pointer-events: none !important; }
+        
+        .hero-section { position: relative; z-index: 10; }
 
-        .navbar-custom {
+        .navbar-custom { 
+            position: relative; z-index: 10;
             background: rgba(9, 9, 11, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -205,23 +210,51 @@
         }
 
         .portfolio-wrapper { 
-            width: 100%; height: 80vh; 
-            background: rgba(10, 10, 15, 0.6);
-            display: flex; justify-content: center; align-items: center;
-            overflow: visible; margin-bottom: 3rem; border-radius: 24px;
-            pointer-events: none; /* Allows hover events to reach particles logic */
+            width: 100%; height: 80vh; position: relative;
+            background: transparent; z-index: 5;
+            overflow: visible; margin-bottom: 3rem;
+            pointer-events: none; /* Mouse slips deeply into background particles */
         }
         .portfolio-slider { 
-            margin: 0 auto; width: 100%; height: 100%; 
-            display: flex; justify-content: center; align-items: center; 
-            overflow: visible !important; padding: 50px 0; 
-            pointer-events: auto; /* Maintains swiper grabbing */
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; 
+            overflow: visible !important;
+            pointer-events: none; /* Transparent non-slider bounds */
         }
         
+        /* Neon Navigation Arrows & Pagination */
+        .portfolio-hover-nav {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            width: 55px; height: 55px;
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: #fff; font-size: 1.2rem;
+            z-index: 15; cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto; /* Active hover layer */
+        }
+        .portfolio-hover-nav:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.8);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), inset 0 0 10px rgba(139, 92, 246, 0.4);
+            color: #c084fc;
+        }
+        .hover-nav-left { left: 4%; }
+        .hover-nav-right { right: 4%; }
+
+        .swiper-pagination { bottom: 0 !important; pointer-events: auto; }
+        .swiper-pagination-bullet { background: rgba(255, 255, 255, 0.5) !important; width: 10px; height: 10px; }
+        .swiper-pagination-bullet-active { background: #8b5cf6 !important; box-shadow: 0 0 10px #8b5cf6; }
+
         .swiper-slide { 
-            width: 100%; height: auto; aspect-ratio: 1/1; 
+            width: 100%; height: 100%; aspect-ratio: 1/1; 
             max-width: 450px; max-height: 70vh;
-            display: flex; justify-content: center; align-items: center; margin: 0 auto;
+            display: flex; justify-content: center; align-items: center; 
+            pointer-events: auto; /* Active touchable UI regions only */
             /* Inactive slides blur */
             filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 1.2s ease, opacity 1.2s ease;
         }
@@ -236,7 +269,7 @@
             box-shadow: 0 10px 40px rgba(168, 85, 247, 0.5);
         }
         .portfolio-item img {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%; height: 100%; object-fit: contain; /* Exact uncropped visibility */
             display: block; border-radius: 25px; transition: transform 0.8s ease;
         }
         .portfolio-item:hover { transform: translateY(-10px) scale(1.02); }
@@ -396,7 +429,13 @@
                     </div>
                     {% endfor %}
                 </div>
+                <!-- Interactive Mobile Pagination -->
+                <div class="swiper-pagination d-md-none"></div>
             </div>
+            
+            <!-- Neon Hover Logic Arrows (Desktop Only) -->
+            <div class="portfolio-hover-nav hover-nav-left d-none d-md-flex" id="hoverNavLeft"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="portfolio-hover-nav hover-nav-right d-none d-md-flex" id="hoverNavRight"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
     </section>
 
@@ -501,9 +540,25 @@
     <!-- Swiper JS & Init -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+        // Vector Smoothing Logic (60fps Engine) - Translation Sync
+        let targetParticleTrans = 0;
+        let currentParticleTrans = 0;
+        function animateParticlesSync() {
+            currentParticleTrans += (targetParticleTrans - currentParticleTrans) * 0.05;
+            const particlesEl = document.getElementById('particles-js');
+            if (particlesEl) {
+                particlesEl.style.transform = `translateX(${currentParticleTrans}px)`; /* Clean linear translation */
+            }
+            requestAnimationFrame(animateParticlesSync);
+        }
+        requestAnimationFrame(animateParticlesSync);
+
         const portfolioSwiper = new Swiper('.portfolio-slider', {
             direction: 'horizontal',
-            mousewheel: true,
+            mousewheel: false, /* Frees up true vertical scroll native behaviors */
+            nested: true,
+            touchStartPreventDefault: false, /* Avoid intercepting user native scroll swipes */
+            touchReleaseOnEdges: true, /* Releases scroll locks on mobiles */
             keyboard: true,
             effect: 'creative',
             grabCursor: true,
@@ -511,7 +566,8 @@
             slidesPerView: 'auto',
             loop: false,
             parallax: true,
-            speed: 1200, // Super smooth cinematic transition
+            speed: 800, // Matched seamlessly to hover integration loop
+            pagination: { el: '.swiper-pagination', clickable: true },
             creativeEffect: {
                 perspective: true,
                 limitProgress: 3,
@@ -528,25 +584,29 @@
             },
             on: {
                 setTranslate: function (swiper, translate) {
-                    const particlesEl = document.getElementById('particles-js');
-                    if (particlesEl) {
-                        const rotZ = translate * -0.02; // Inverted for physical drag mapping
-                        particlesEl.style.transform = `rotateZ(${rotZ}deg) scale(1.4)`;
-                    }
+                    // Motion Sync: Invert translate math to match hand movement (-1 factor)
+                    if(window.swiperVortexDebounce) clearTimeout(window.swiperVortexDebounce);
+                    window.swiperVortexDebounce = setTimeout(() => {
+                        targetParticleTrans = translate * -0.2; 
+                    }, 10);
                 },
-                slideChangeTransitionStart: function () {
-                    // Morphing start - Disassembly
+                slideChange: function () {
+                    // True Disintegration Engine (Boolean Tear)
                     if (window.pJSDom && window.pJSDom.length > 0) {
-                        window.pJSDom[0].pJS.particles.line_linked.enable = false;
-                        window.pJSDom[0].pJS.particles.move.speed = 15;
+                        const pjs = window.pJSDom[0].pJS;
+                        pjs.particles.line_linked.enable = false; // Tear geometric fabric immediately
+                        pjs.particles.move.speed = 15; // Acceleration burst towards next slide
                     }
                 },
                 slideChangeTransitionEnd: function () {
-                    // Morphing end - Reassembly
+                    // Crystalline Reassembly 
                     if (window.pJSDom && window.pJSDom.length > 0) {
-                        window.pJSDom[0].pJS.particles.line_linked.enable = true;
-                        window.pJSDom[0].pJS.particles.move.speed = 2.5;
+                        const pjs = window.pJSDom[0].pJS;
+                        pjs.particles.line_linked.enable = true; // Reconnect points
+                        pjs.particles.line_linked.opacity = 0.5; // Crystallized stable density
+                        pjs.particles.move.speed = 3; // Stable float state
                     }
+                    window.dispatchEvent(new Event('resize')); // Flush array state cleanly
                 },
                 reachEnd: function() {
                     setTimeout(() => {
@@ -555,6 +615,43 @@
                 }
             }
         });
+
+        // Hover Interaction Navigation Engine
+        let hoverScrollInterval;
+        const navRight = document.getElementById('hoverNavRight');
+        const navLeft = document.getElementById('hoverNavLeft');
+
+        function triggerHoverScroll(direction) {
+            // Speed up particles to simulate data acceleration
+            if (window.pJSDom && window.pJSDom.length > 0) {
+                window.pJSDom[0].pJS.particles.move.speed = 12;
+                window.pJSDom[0].pJS.particles.line_linked.opacity = 0.8;
+            }
+            // Loop slides continuously
+            hoverScrollInterval = setInterval(() => {
+                if(direction === 'next') portfolioSwiper.slideNext();
+                else portfolioSwiper.slidePrev();
+            }, 800); // Sync loop with Swiper transition speed
+        }
+
+        function stopHoverScroll() {
+            clearInterval(hoverScrollInterval);
+            // Calm particles geometry
+            if (window.pJSDom && window.pJSDom.length > 0) {
+                window.pJSDom[0].pJS.particles.move.speed = 2.5;
+                window.pJSDom[0].pJS.particles.line_linked.opacity = 0.4;
+            }
+        }
+
+        if(navRight && navLeft) {
+            navRight.addEventListener('mouseenter', () => { portfolioSwiper.slideNext(); triggerHoverScroll('next'); });
+            navRight.addEventListener('mouseleave', stopHoverScroll);
+            navRight.addEventListener('click', () => portfolioSwiper.slideNext());
+
+            navLeft.addEventListener('mouseenter', () => { portfolioSwiper.slidePrev(); triggerHoverScroll('prev'); });
+            navLeft.addEventListener('mouseleave', stopHoverScroll);
+            navLeft.addEventListener('click', () => portfolioSwiper.slidePrev());
+        }
     </script>
     
     <script>
@@ -585,17 +682,24 @@
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#00d2ff", "#3a7bd5", "#8e44ad"] },
+                "color": { "value": ["#8b5cf6", "#c084fc", "#00d2ff"] }, // Brand neon priority
                 "shape": { "type": "circle" },
                 "opacity": { "value": 0.5, "random": true },
                 "size": { "value": 4, "random": true },
-                "line_linked": { "enable": true, "distance": 140, "color": "#8b5cf6", "opacity": 0.2, "width": 1.5 },
+                "line_linked": { "enable": true, "distance": 180, "color": "#8b5cf6", "opacity": 0.4, "width": 1.5 }, // Steady geometry
                 "move": { "enable": true, "speed": 2.5, "direction": "none", "random": true, "out_mode": "out" }
             },
             "interactivity": {
                 "detect_on": "window",
-                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
-                "modes": { "grab": { "distance": 220, "line_linked": { "opacity": 0.5 } } }
+                "events": { 
+                    "onhover": { "enable": true, "mode": "grab" }, 
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": { 
+                    "grab": { "distance": 250, "line_linked": { "opacity": 1 } }, // Magnetic hover attraction
+                    "push": { "particles_nb": 4 } 
+                }
             },
             "retina_detect": true
         });
