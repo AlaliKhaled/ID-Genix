@@ -36,8 +36,6 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1 !important; /* Absolute layer isolation requirement */
             pointer-events: none; /* Relies strictly on Window event hooks */
-            will-change: transform; 
-            transition: transform 0.1s ease-out; 
         }
         #particles-js canvas { pointer-events: none !important; }
         
@@ -539,18 +537,8 @@
     <!-- Swiper JS & Init -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Vector Smoothing Logic (60fps Engine) - Translation Sync
-        let targetParticleTrans = 0;
-        let currentParticleTrans = 0;
-        function animateParticlesSync() {
-            currentParticleTrans += (targetParticleTrans - currentParticleTrans) * 0.05;
-            const particlesEl = document.getElementById('particles-js');
-            if (particlesEl) {
-                particlesEl.style.transform = `translateX(${currentParticleTrans}px)`; /* Clean linear translation */
-            }
-            requestAnimationFrame(animateParticlesSync);
-        }
-        requestAnimationFrame(animateParticlesSync);
+        // Solid-Block displacement has been scrubbed completely.
+        // Background particles will now react fluidly globally via Wind Vectors.
 
         const portfolioSwiper = new Swiper('.portfolio-slider', {
             direction: 'horizontal',
@@ -583,11 +571,21 @@
             },
             on: {
                 setTranslate: function (swiper, translate) {
-                    // Vector Sync: Invert translate math to match hand movement
-                    if(window.swiperVortexDebounce) clearTimeout(window.swiperVortexDebounce);
-                    window.swiperVortexDebounce = setTimeout(() => {
-                        targetParticleTrans = translate * -1; 
-                    }, 10);
+                    // Fluid Interaction Logic (The 'Wave' Effect)
+                    if (window.pJSDom && window.pJSDom.length > 0) {
+                        const pjs = window.pJSDom[0].pJS;
+                        let windSpeed = Math.abs(swiper.translate - swiper.previousTranslate) * 0.4;
+                        if(windSpeed > 20) windSpeed = 20;
+                        if(windSpeed < 2.5) windSpeed = 2.5;
+                        
+                        pjs.particles.move.speed = windSpeed;
+                        pjs.particles.line_linked.opacity = 0.5 - (windSpeed / 50); // Fluid dimming
+                        
+                        // Dynamic Re-spawning (Anti-Displacement)
+                        if(windSpeed > 12 && pjs.fn.modes.pushParticles) {
+                             pjs.fn.modes.pushParticles(1, pjs.interactivity.mouse);
+                        }
+                    }
                 },
                 slideChangeTransitionStart: function () {
                     // Advanced Particle Disintegration Logic
@@ -598,12 +596,25 @@
                     }
                 },
                 slideChangeTransitionEnd: function () {
-                    // Re-assembles the network around the new active slide
+                    // Centered Magnetic Re-assembly
                     if (window.pJSDom && window.pJSDom.length > 0) {
                         const pjs = window.pJSDom[0].pJS;
                         pjs.particles.line_linked.enable = true; 
                         pjs.particles.line_linked.opacity = 0.6; 
                         pjs.particles.move.speed = 3; 
+                        
+                        // Force center grab effect
+                        pjs.interactivity.events.onhover.mode = 'grab';
+                        pjs.interactivity.mouse.pos_x = window.innerWidth / 2;
+                        pjs.interactivity.mouse.pos_y = window.innerHeight / 2;
+                        pjs.interactivity.status = 'mousemove';
+                        
+                        setTimeout(() => {
+                            pjs.interactivity.status = 'mouseleave';
+                            // Restore basic grab setting logic dynamically
+                            pjs.interactivity.mouse.pos_x = 0;
+                            pjs.interactivity.mouse.pos_y = 0;
+                        }, 2000);
                     }
                     window.dispatchEvent(new Event('resize')); 
                 },
