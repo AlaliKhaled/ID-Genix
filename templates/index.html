@@ -33,7 +33,7 @@
 
         #particles-js {
             position: fixed;
-            top: 0; left: -5%; width: 110%; height: 100%;
+            top: -25%; left: -25%; width: 150%; height: 150%; /* Massive canvas for vortex rotation */
             z-index: -1;
             transition: transform 0.1s ease-out; /* Smooth follow for Swiper */
         }
@@ -495,39 +495,44 @@
             direction: 'vertical',
             mousewheel: true,
             keyboard: true,
-            effect: 'coverflow',
+            effect: 'creative',
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: 'auto',
-            loop: true,
-            speed: 800,
-            coverflowEffect: {
-                rotate: 30, // Light depth rotation per user spec
-                stretch: 0,
-                depth: 100,
-                modifier: 1,
-                slideShadows: false // Relying purely on internal glowing neon borders
+            loop: false,
+            speed: 850,
+            creativeEffect: {
+                perspective: true,
+                limitProgress: 8, // How many slides visible deep into the spiral
+                prev: {
+                    translate: [0, '-120%', 300], // Slides above pop towards the camera and fade out
+                    rotate: [0, 0, -10],
+                    opacity: 0,
+                    scale: 1.2
+                },
+                next: {
+                    // 3D Helix/Spiral calculation: Right, Down, Deep, and Y-Rotated
+                    translate: ['45%', '35%', -400],
+                    rotate: [0, -45, 10], // Spiral wrapping angle
+                    opacity: 1,
+                    scale: 0.85
+                }
             },
             on: {
-                slideChangeTransitionStart: function () {
-                    // Mute/Unmute elements in sync with particles burst
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const originalSpeed = 2.5; 
-                        
-                        // Data Disruption Effect: Fast Particles
-                        window.pJSDom[0].pJS.particles.move.speed = 18;
-                        window.pJSDom[0].pJS.particles.line_linked.color_rgb_line = {r: 255, g: 0, b: 255}; // Deep neon pink/purple lines
-                        
-                        clearTimeout(window.particleSpeedTimeout);
-                        window.particleSpeedTimeout = setTimeout(() => {
-                            if (window.pJSDom && window.pJSDom.length > 0) {
-                                // Resume stabilization
-                                window.pJSDom[0].pJS.particles.move.speed = originalSpeed;
-                                // Hex #8b5cf6 is roughly {r:139, g:92, b:246}
-                                window.pJSDom[0].pJS.particles.line_linked.color_rgb_line = {r: 139, g: 92, b: 246};
-                            }
-                        }, 1000); // Effect duration 1s
+                setTranslate: function (swiper, translate) {
+                    // Vortex Particles Background Link
+                    const particlesEl = document.getElementById('particles-js');
+                    if (particlesEl) {
+                        // Converts vertical swipe distance into a circular vortex spin
+                        const rotZ = translate * 0.015;
+                        particlesEl.style.transform = `rotateZ(${rotZ}deg) scale(1.4)`;
                     }
+                },
+                reachEnd: function() {
+                    // Automatic transition to footer when helix concludes
+                    setTimeout(() => {
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    }, 800);
                 }
             }
         });
