@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- GLightbox CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Swiper CSS Removed for Performance -> Custom CSS3D Implemented -->
     
     <style>
         :root {
@@ -147,12 +146,16 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            /* 3D Hardware acceleration for Tilt */
+            transform-style: preserve-3d;
+            transform: translateZ(0); 
+            will-change: transform, box-shadow;
         }
         .glass-card:hover {
-            transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            /* Neon Glow Edge Animation */
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), inset 0 0 12px rgba(59, 130, 246, 0.2);
         }
         
         .service-img {
@@ -162,9 +165,20 @@
             margin-bottom: 25px;
             filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4));
             transition: transform 0.5s ease;
+            /* Float above card for 3D depth */
+            transform: translateZ(50px);
         }
         .glass-card:hover .service-img {
-            transform: translateZ(20px) scale(1.1) rotate(5deg);
+            transform: translateZ(80px) scale(1.1) rotate(5deg);
+        }
+        
+        .tilt-icon {
+            display: inline-block;
+            transition: transform 0.5s ease;
+            transform: translateZ(30px);
+        }
+        .glass-card:hover .tilt-icon {
+            transform: translateZ(60px) scale(1.1);
         }
 
         .section-title {
@@ -207,75 +221,98 @@
             border-color: var(--neon-blue) !important;
         }
 
-        .portfolio-wrapper { 
-            width: 100vw; height: 80vh; position: relative; margin-left: calc(-50vw + 50%);
-            background: transparent !important; z-index: 5;
-            overflow: hidden; margin-bottom: 3rem; 
-            pointer-events: none; /* Mouse slips deeply into background particles */
+        /* 3D Glassy Spiral Gallery Engine */
+        .carousel-3d-wrapper {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1500px;
+            z-index: 5;
         }
-        .swiper-wrapper {
-            transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important;
+        .carousel-3d-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: pan-y;
+            cursor: grab;
         }
-        .portfolio-slider { 
-            width: 100%; height: 100%; 
-            overflow: visible !important;
-            pointer-events: none; /* Transparent non-slider bounds */
+        .carousel-3d-container:active { cursor: grabbing; }
+        .carousel-3d-spinner {
+            position: relative;
+            width: 320px;
+            height: 480px;
+            transform-style: preserve-3d;
+            transition: none; /* Controlled purely via JS physics loop */
+            user-select: none;
+            -webkit-user-select: none;
+            transform-origin: 50% 50%;
+        }
+        @media (max-width: 768px) {
+            .carousel-3d-spinner {
+                width: 250px;
+                height: 380px;
+            }
+        }
+        .carousel-3d-item {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            backface-visibility: visible;
+            transform-origin: 50% 50%;
         }
         
-        /* Neon Navigation Arrows & Pagination */
-        .swiper-button-next, .swiper-button-prev {
+        .nav-btn {
             position: absolute;
             top: 50%; transform: translateY(-50%); z-index: 10;
-            width: 55px; height: 55px;
+            width: 60px; height: 60px;
             background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            color: #fff; font-size: 1.2rem;
+            color: #fff; font-size: 1.4rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            pointer-events: auto; /* Active hover layer */
-            margin-top: 0;
         }
-        .swiper-button-next::after, .swiper-button-prev::after { display: none; }
-        .swiper-button-next:hover, .swiper-button-prev:hover {
+        .nav-btn:hover {
             background: rgba(139, 92, 246, 0.2);
             border-color: rgba(139, 92, 246, 0.8);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), inset 0 0 10px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.6), inset 0 0 15px rgba(139, 92, 246, 0.4);
             color: #c084fc;
+            transform: translateY(-50%) scale(1.1);
         }
-        .swiper-button-prev { left: 15% !important; right: auto !important; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
-        .swiper-button-next { right: 15% !important; left: auto !important; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
-
-        .swiper-pagination { bottom: 0 !important; pointer-events: auto; }
-        .swiper-pagination-bullet { background: rgba(255, 255, 255, 0.5) !important; width: 10px; height: 10px; }
-        .swiper-pagination-bullet-active { background: #8b5cf6 !important; box-shadow: 0 0 10px #8b5cf6; }
-
-        .swiper-slide { 
-            width: 85%; height: 100%; aspect-ratio: 1/1; 
-            max-width: 450px; max-height: 70vh;
-            display: flex; justify-content: center; align-items: center; 
-            pointer-events: auto; /* Active touchable UI regions only */
-            /* Inactive slides blur */
-            filter: blur(3px) brightness(0.5); opacity: 0.7; transition: filter 1.2s ease, opacity 1.2s ease;
-        }
-        .swiper-slide-active {
-            filter: blur(0px) brightness(1); opacity: 1 !important; z-index: 10;
-        }
-        @media (max-width: 768px) { .swiper-slide { max-width: 85%; } }
+        .nav-btn.left { left: 5%; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        .nav-btn.right { right: 5%; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
         
         .portfolio-item {
             position: relative; overflow: hidden; cursor: pointer; display: block; width: 100%; height: 100%;
-            border-radius: 25px; transition: transform 0.4s ease;
+            border-radius: 25px; transition: all 0.4s ease;
             box-shadow: 0 10px 50px rgba(168, 85, 247, 0.4);
+            border: 1px solid transparent;
+            /* Hardware accel & 3D layout */
+            transform-style: preserve-3d;
+            transform: translateZ(0); 
+            will-change: transform, box-shadow;
         }
         .portfolio-item img {
             width: 100%; height: 100%; object-fit: contain; /* Exact uncropped visibility */
             display: block; border-radius: 25px; transition: transform 0.8s ease;
+            transform: translateZ(30px);
         }
-        .portfolio-item:hover { transform: translateY(-10px) scale(1.02); }
-        .portfolio-item:hover img { transform: scale(1.05); }
+        /* Neon Glow Effect when active/hovered */
+        .portfolio-item:hover, .centered-glassy .portfolio-item { 
+            border-color: rgba(168, 85, 247, 0.7);
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6), inset 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+        .portfolio-item:hover img { transform: translateZ(60px) scale(1.05); }
 
         .portfolio-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -285,8 +322,8 @@
         }
         .portfolio-item:hover .portfolio-overlay { opacity: 1; }
         
-        .overlay-content { text-align: center; opacity: 0; transition: opacity 0.6s ease; mix-blend-mode: color-dodge; }
-        .english-text.fade-in { opacity: 1 !important; }
+        .overlay-content { text-align: center; opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; transform: translateY(20px); mix-blend-mode: color-dodge; }
+        .portfolio-item:hover .overlay-content { opacity: 1; transform: translateY(0); }
         .overlay-title { font-family: 'Cairo', sans-serif !important; color: white; font-size: 2.3rem; font-weight: 900; margin-bottom: 8px; letter-spacing: 2px !important; text-transform: uppercase; }
         .overlay-subtitle { font-family: 'sans-serif' !important; color: white; font-size: 1rem; letter-spacing: 5px; font-weight: 300; }
         
@@ -447,11 +484,11 @@
             <p class="text-muted-custom mb-5">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي المتطورة التي نستخدمها.</p>
         </div>
         
-        <div class="portfolio-wrapper">
-            <div class="swiper portfolio-slider" style="position: relative; z-index: 5;">
-                <div class="swiper-wrapper">
+        <div class="carousel-3d-wrapper">
+            <div class="carousel-3d-container" id="carousel3D">
+                <div class="carousel-3d-spinner" id="carouselSpinner">
                     {% for image in portfolio_images %}
-                    <div class="swiper-slide">
+                    <div class="carousel-3d-item">
                         <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
                             <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Brand Identity" loading="lazy">
                             <div class="portfolio-overlay">
@@ -464,13 +501,11 @@
                     </div>
                     {% endfor %}
                 </div>
-                <!-- Interactive Mobile Pagination -->
-                <div class="swiper-pagination d-md-none"></div>
             </div>
             
-            <!-- Neon Hover Logic Arrows (Desktop Only) -->
-            <div class="swiper-button-prev d-none d-md-flex" id="hoverNavLeft"><i class="fa-solid fa-chevron-left"></i></div>
-            <div class="swiper-button-next d-none d-md-flex" id="hoverNavRight"><i class="fa-solid fa-chevron-right"></i></div>
+            <!-- Neon Space Arrows (Desktop) -->
+            <button class="nav-btn left d-none d-md-flex" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-btn right d-none d-md-flex" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
     </section>
 
@@ -482,21 +517,21 @@
         <div class="row g-4 mt-3">
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp">
                 <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-network-wired fs-1 text-primary mb-3"></i>
+                    <i class="fa-solid fa-network-wired fs-1 text-primary mb-3 tilt-icon"></i>
                     <h4 class="fw-bold">بنية تحتية متطورة</h4>
                     <p class="text-muted-custom small">نقدم حلولاً برمجية متكاملة تعتمد على أحدث تقنيات السحاب والذكاء الاصطناعي لضمان استقرار ونمو أعمالكم.</p>
                 </div>
             </div>
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
                 <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-shield-halved fs-1 text-info mb-3"></i>
+                    <i class="fa-solid fa-shield-halved fs-1 text-info mb-3 tilt-icon"></i>
                     <h4 class="fw-bold">تشفير وأمان فائق</h4>
                     <p class="text-muted-custom small">نظام أمني متين يضمن سرية الأعمال ومعلومات عملائك بأقصى مستويات التشفير للبيانات وحمايتها.</p>
                 </div>
             </div>
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
                 <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-headset fs-1 text-success mb-3"></i>
+                    <i class="fa-solid fa-headset fs-1 text-success mb-3 tilt-icon"></i>
                     <h4 class="fw-bold">ارتباط مستمر</h4>
                     <p class="text-muted-custom small">فريق مخصص للتواصل الدائم والدعم الفني، يشاركك مراحل التطور لضمان خروج المنتج كما تتمنى تماماً.</p>
                 </div>
@@ -594,149 +629,106 @@
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
     <script>const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true });</script>
-    <!-- Swiper JS & Init -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Custom CSS3D Gallery implies Swiper removed -->
+    <!-- Vanilla Tilt JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <script>
         // Solid-Block displacement has been scrubbed completely.
         // Background particles will now react fluidly globally via Wind Vectors.
 
-        const portfolioSwiper = new Swiper('.portfolio-slider', {
-            direction: 'horizontal',
-            mousewheel: false, /* Frees up true vertical scroll native behaviors */
-            nested: true,
-            touchStartPreventDefault: false, /* Avoid intercepting user native scroll swipes */
-            touchReleaseOnEdges: true, /* Releases scroll locks on mobiles */
-            keyboard: true,
-            effect: 'creative',
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: 'auto',
-            loop: false,
-            parallax: true,
-            speed: 1000, // Smooth transition pace
-            edgeSwipeThreshold: 20, // Extreme swipe sensitivity
-            touchAngle: 45,
-            threshold: 5,
-            cssMode: false, // Ensures cubic-bezier can dominate the vector curve
-            pagination: { el: '.swiper-pagination', clickable: true },
-            creativeEffect: {
-                limitProgress: 5,
-                perspective: true,
-                prev: {
-                    translate: ['-120%', '-20%', -500],
-                    rotate: [0, 0, -20],
-                    opacity: 0,
-                },
-                next: {
-                    translate: ['120%', '20%', -500],
-                    rotate: [0, 0, 20],
-                    opacity: 0,
-                }
-            },
-            on: {
-                progress: function (swiper, progress) {
-                    // Motion Sensing Background (The Pulse)
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        if(typeof swiper.lastProgress === 'undefined') swiper.lastProgress = progress;
-                        let progressDelta = Math.abs(progress - swiper.lastProgress);
-                        swiper.lastProgress = progress;
-                        
-                        // Dynamically increase move.speed based on velocity
-                        let speed = 2.5 + (progressDelta * 500); 
-                        if(speed > 25) speed = 25;
-                        pjs.particles.move.speed = speed;
-                        
-                        // Temporarily decrease line_linked.opacity 
-                        pjs.particles.line_linked.opacity = Math.max(0.1, 0.6 - (speed/40)); 
-                    }
-                },
-                slideChangeTransitionStart: function () {
-                    // Advanced Particle Disintegration Logic & Text Reset
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        pjs.particles.line_linked.enable = false; 
-                        pjs.particles.move.speed = 15; 
-                    }
-                    document.querySelectorAll('.english-text').forEach(el => {
-                        el.classList.remove('fade-in');
-                    });
-                },
-                slideChangeTransitionEnd: function (swiper) {
-                    // Centered Magnetic Re-assembly
-                    if (window.pJSDom && window.pJSDom.length > 0) {
-                        const pjs = window.pJSDom[0].pJS;
-                        pjs.particles.line_linked.enable = true; 
-                        pjs.particles.line_linked.opacity = 0.6; 
-                        pjs.particles.move.speed = 3; 
-                        
-                        // Force center grab effect
-                        pjs.interactivity.events.onhover.mode = 'grab';
-                        pjs.interactivity.mouse.pos_x = window.innerWidth / 2;
-                        pjs.interactivity.mouse.pos_y = window.innerHeight / 2;
-                        pjs.interactivity.status = 'mousemove';
-                        
-                        setTimeout(() => {
-                            pjs.interactivity.status = 'mouseleave';
-                            // Restore basic grab setting logic dynamically
-                            pjs.interactivity.mouse.pos_x = 0;
-                            pjs.interactivity.mouse.pos_y = 0;
-                        }, 2000);
-                    }
-                    window.dispatchEvent(new Event('resize')); 
+        // 3D Space Spiral Gallery Engine
+        const spinner = document.getElementById('carouselSpinner');
+        const container = document.getElementById('carousel3D');
+        const items = document.querySelectorAll('.carousel-3d-item');
+        
+        if (items.length > 0) {
+            let currAngle = 0;
+            let targetAngle = 0;
+            const totalItems = items.length;
+            const theta = 360 / totalItems;
+            
+            // Adjust radius dynamically based on spinner width to maintain exact edges
+            let radius;
+            function updateRadius() {
+                radius = Math.round( (spinner.offsetWidth / 2) / Math.tan(Math.PI / totalItems) ) + 60;
+                items.forEach((item, index) => {
+                    const angle = theta * index;
+                    item.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+                });
+            }
+            updateRadius();
+            window.addEventListener('resize', updateRadius);
+    
+            // Physics Animation Loop
+            function rotateGallery() {
+                currAngle += (targetAngle - currAngle) * 0.05; 
+                spinner.style.transform = `translateZ(${-radius}px) rotateY(${-currAngle}deg)`;
+                
+                items.forEach((item, index) => {
+                    // Check angle relative to viewer
+                    const itemAngle = (theta * index) - currAngle;
+                    let normalized = itemAngle % 360;
+                    if (normalized > 180) normalized -= 360;
+                    if (normalized < -180) normalized += 360;
                     
-                    // Smart Text Timing
-                    if (swiper.slides[swiper.activeIndex]) {
-                        setTimeout(function() { 
-                            const activeTxt = swiper.slides[swiper.activeIndex].querySelector('.english-text');
-                            if(activeTxt) activeTxt.classList.add('fade-in'); 
-                        }, 1000);
+                    const absDeg = Math.abs(normalized);
+                    const isFront = absDeg < (theta / 2);
+                    
+                    if (isFront) {
+                        item.style.opacity = 1;
+                        item.style.filter = `blur(0px) brightness(1.1)`;
+                        item.style.pointerEvents = "auto";
+                        item.classList.add('centered-glassy');
+                    } else {
+                        const depthZ = absDeg / 180;
+                        item.style.opacity = Math.max(0.1, 1 - depthZ * 1.5);
+                        item.style.filter = `blur(${depthZ * 15}px) brightness(${1 - depthZ * 0.5})`;
+                        item.style.pointerEvents = "none";
+                        item.classList.remove('centered-glassy');
                     }
-                },
-
-                reachEnd: function() {
-                    setTimeout(() => {
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    }, 800);
-                }
+                });
+                requestAnimationFrame(rotateGallery);
             }
-        });
-
-        // Hover Interaction Navigation Engine
-        let hoverScrollInterval;
-        const navRight = document.getElementById('hoverNavRight');
-        const navLeft = document.getElementById('hoverNavLeft');
-
-        function triggerHoverScroll(direction) {
-            // Speed up particles to simulate data acceleration
-            if (window.pJSDom && window.pJSDom.length > 0) {
-                window.pJSDom[0].pJS.particles.move.speed = 12;
-                window.pJSDom[0].pJS.particles.line_linked.opacity = 0.8;
-            }
-            // Loop slides continuously
-            hoverScrollInterval = setInterval(() => {
-                if(direction === 'next') portfolioSwiper.slideNext();
-                else portfolioSwiper.slidePrev();
-            }, 1000); // Sync loop with Swiper transition speed
-        }
-
-        function stopHoverScroll() {
-            clearInterval(hoverScrollInterval);
-            // Calm particles geometry
-            if (window.pJSDom && window.pJSDom.length > 0) {
-                window.pJSDom[0].pJS.particles.move.speed = 2.5;
-                window.pJSDom[0].pJS.particles.line_linked.opacity = 0.4;
-            }
-        }
-
-        if(navRight && navLeft) {
-            navRight.addEventListener('mouseenter', () => { portfolioSwiper.slideNext(); triggerHoverScroll('next'); });
-            navRight.addEventListener('mouseleave', stopHoverScroll);
-            navRight.addEventListener('click', () => portfolioSwiper.slideNext());
-
-            navLeft.addEventListener('mouseenter', () => { portfolioSwiper.slidePrev(); triggerHoverScroll('prev'); });
-            navLeft.addEventListener('mouseleave', stopHoverScroll);
-            navLeft.addEventListener('click', () => portfolioSwiper.slidePrev());
+            rotateGallery();
+    
+            // Navigation (Desktop Buttons)
+            document.getElementById('spinLeft')?.addEventListener('click', () => targetAngle -= theta);
+            document.getElementById('spinRight')?.addEventListener('click', () => targetAngle += theta);
+    
+            // Touch Swiping (Mobile/Touch Physics)
+            let isDown = false;
+            let startX;
+            let startAngle;
+            
+            const handleDown = (e) => {
+                isDown = true;
+                startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                startAngle = targetAngle;
+                container.style.cursor = 'grabbing';
+            };
+            
+            const handleUp = () => {
+                if (!isDown) return;
+                isDown = false;
+                container.style.cursor = 'grab';
+                targetAngle = Math.round(targetAngle / theta) * theta;
+            };
+            
+            const handleMove = (e) => {
+                if (!isDown) return;
+                const x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                const dist = x - startX;
+                targetAngle = startAngle - (dist * 0.4); 
+            };
+    
+            container.addEventListener('mousedown', handleDown);
+            container.addEventListener('touchstart', handleDown, {passive: true});
+            
+            window.addEventListener('mouseup', handleUp);
+            window.addEventListener('touchend', handleUp);
+            
+            container.addEventListener('mousemove', handleMove);
+            container.addEventListener('touchmove', handleMove, {passive: true});
         }
     </script>
     
@@ -853,6 +845,20 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             });
+        });
+
+        // Initialize Vanilla-Tilt with Mobile Optimization Check
+        document.addEventListener('DOMContentLoaded', () => {
+            // Only apply tilt on non-touch (hover-capable) devices to save battery and performance on mobile
+            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                VanillaTilt.init(document.querySelectorAll(".glass-card, .portfolio-item"), {
+                    max: 15,
+                    speed: 400,
+                    glare: true,
+                    "max-glare": 0.3,
+                    scale: 1.05
+                });
+            }
         });
     </script>
 </body>
