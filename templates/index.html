@@ -86,10 +86,10 @@
         /* Service Cards Cube Setup */
         .service-img-wrap { width: 120px; height: 120px; }
         .service-img-wrap .cube { transform: translateZ(30px) rotateY(-15deg) rotateX(10deg); }
-        .glass-card:hover .service-img-wrap .cube {
+        .glass-card:hover .service-img-wrap .cube, .glass-card.in-focus .service-img-wrap .cube {
             transform: translateZ(80px) rotateY(-25deg) rotateX(15deg);
         }
-        .glass-card:hover .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
+        .glass-card:hover .cube-core-light, .glass-card.in-focus .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
         
         @keyframes corePulse {
             0% { transform: translate(-50%, -50%) translateZ(0px) scale(0.8); }
@@ -194,27 +194,35 @@
         }
 
         .glass-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: transparent !important;
             border: 1px solid var(--card-border);
             border-radius: 24px;
             padding: 40px 30px;
             height: 100%;
-            transition: all 0.4s ease;
+            transition: all 0.5s ease;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-            /* 3D Hardware acceleration for Tilt */
             transform-style: preserve-3d;
-            transform: translateZ(0); 
+            transform: translate3d(0,0,0); 
             will-change: transform, box-shadow;
         }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            /* Neon Glow Edge Animation */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: inherit;
+            transition: background 0.5s ease;
+            transform: translateZ(-1px);
+        }
+        .glass-card:hover, .glass-card.in-focus {
             border-color: rgba(59, 130, 246, 0.6);
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), inset 0 0 12px rgba(59, 130, 246, 0.2);
+        }
+        .glass-card:hover::before, .glass-card.in-focus::before {
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .service-img {
@@ -231,7 +239,7 @@
             transition: transform 0.5s ease;
             transform: translateZ(30px);
         }
-        .glass-card:hover .tilt-icon {
+        .glass-card:hover .tilt-icon, .glass-card.in-focus .tilt-icon {
             transform: translateZ(60px) scale(1.1);
         }
 
@@ -1039,6 +1047,25 @@
                 el.addEventListener('touchstart', triggerOn, {passive: true});
                 el.addEventListener('touchend', triggerOff);
             });
+
+            // Mobile Auto-Scroll Center Focus (Intersection Observer)
+            const focusObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const el = entry.target;
+                    if (entry.isIntersecting) {
+                        el.classList.add('in-focus');
+                        activeCubes.add(el);
+                    } else {
+                        el.classList.remove('in-focus');
+                        activeCubes.delete(el);
+                    }
+                });
+            }, {
+                rootMargin: '-35% 0px -35% 0px', // Strict center boundary (30% vertical safe zone)
+                threshold: 0
+            });
+            
+            document.querySelectorAll('.glass-card').forEach(el => focusObserver.observe(el));
         });
     </script>
 </body>
