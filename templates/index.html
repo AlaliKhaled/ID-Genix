@@ -58,7 +58,8 @@
         .face {
             position: absolute; left: 0; top: 0;
             display: flex; align-items: center; justify-content: center;
-            border-radius: inherit; backface-visibility: hidden;
+            border-radius: inherit;
+            /* Removed backface-visibility: hidden to fix iOS Safari black box rendering bug */
         }
         .face.front { transform: translateZ(10px); z-index: 2; width: 100%; height: 100%; }
         .face.back { transform: rotateY(180deg) translateZ(10px); width: 100%; height: 100%; }
@@ -596,9 +597,9 @@
                 </div>
             </div>
             
-            <!-- Neon Space Arrows (Responsive everywhere) -->
-            <button class="nav-btn left" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="nav-btn right" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- Neon Space Arrows (Desktop) -->
+            <button class="nav-btn left d-none d-md-flex" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-btn right d-none d-md-flex" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
     </section>
 
@@ -1013,6 +1014,20 @@
                 gyroscopeMinAngleY: -45,
                 gyroscopeMaxAngleY:  45
             });
+
+            // iOS 13+ Gyroscope Permission Request Fallback
+            // Apple requires explicit user permission triggered by a user action to use gyroscope
+            let gyroPermissionGranted = false;
+            document.body.addEventListener('click', () => {
+                if (!gyroPermissionGranted && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            gyroPermissionGranted = true;
+                        }
+                    }).catch(console.error);
+                }
+            }, { once: true });
 
             // Bind Neural Links Logic (Touch & Mouse equivalents)
             tiltElements.forEach(el => {
