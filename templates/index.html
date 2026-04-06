@@ -33,8 +33,66 @@
         #particles-js {
             position: fixed !important;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; /* Keep it behind everything */
+            z-index: -2; /* Keep it behind everything */
             pointer-events: all; /* Ensure it feels the mouse */
+        }
+        
+        #neural-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none;
+        }
+
+        /* 3D Glass Cube System */
+        .cube-container {
+            position: relative;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+        .cube {
+            position: relative; width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translate3d(0,0,0);
+            will-change: transform;
+        }
+        .face {
+            position: absolute; left: 0; top: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: inherit; backface-visibility: hidden;
+        }
+        .face.front { transform: translateZ(10px); z-index: 2; width: 100%; height: 100%; }
+        .face.back { transform: rotateY(180deg) translateZ(10px); width: 100%; height: 100%; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            box-shadow: inset 0 0 15px rgba(138, 43, 226, 0.1);
+        }
+        /* Thin Sides */
+        .face.left { width: 20px; height: 100%; left: -10px; transform: rotateY(-90deg); border-radius: 0; }
+        .face.right { width: 20px; height: 100%; right: -10px; left: auto; transform: rotateY(90deg); border-radius: 0; }
+        .face.top { height: 20px; width: 100%; top: -10px; transform: rotateX(90deg); border-radius: 0; }
+        .face.bottom { height: 20px; width: 100%; bottom: -10px; top: auto; transform: rotateX(-90deg); border-radius: 0; }
+        
+        .cube-core-light {
+            position: absolute; top: 50%; left: 50%; width: 60%; height: 60%;
+            transform: translate(-50%, -50%) translateZ(0px);
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.8) 0%, transparent 70%);
+            border-radius: 50%; filter: blur(25px); opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        /* Service Cards Cube Setup */
+        .service-img-wrap { width: 120px; height: 120px; }
+        .service-img-wrap .cube { transform: translateZ(30px); }
+        .glass-card:hover .service-img-wrap .cube {
+            transform: translateZ(80px) rotateY(15deg) rotateX(10deg);
+        }
+        .glass-card:hover .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
+        
+        @keyframes corePulse {
+            0% { transform: translate(-50%, -50%) translateZ(0px) scale(0.8); }
+            100% { transform: translate(-50%, -50%) translateZ(0px) scale(1.2); }
         }
         
         .hero-section { position: relative; z-index: 10; }
@@ -165,11 +223,6 @@
             margin-bottom: 25px;
             filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4));
             transition: transform 0.5s ease;
-            /* Float above card for 3D depth */
-            transform: translateZ(50px);
-        }
-        .glass-card:hover .service-img {
-            transform: translateZ(80px) scale(1.1) rotate(5deg);
         }
         
         .tilt-icon {
@@ -305,14 +358,14 @@
         .portfolio-item img {
             width: 100%; height: 100%; object-fit: contain; /* Exact uncropped visibility */
             display: block; border-radius: 25px; transition: transform 0.8s ease;
-            transform: translateZ(30px);
         }
         /* Neon Glow Effect when active/hovered */
         .portfolio-item:hover, .centered-glassy .portfolio-item { 
             border-color: rgba(168, 85, 247, 0.7);
             box-shadow: 0 0 35px rgba(168, 85, 247, 0.6), inset 0 0 15px rgba(168, 85, 247, 0.3);
         }
-        .portfolio-item:hover img { transform: translateZ(60px) scale(1.05); }
+        .portfolio-item:hover img { transform: scale(1.05); }
+        .portfolio-item:hover .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
 
         .portfolio-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -385,6 +438,7 @@
 <body>
 
     <div id="particles-js"></div>
+    <canvas id="neural-canvas"></canvas>
 
     <a href="https://wa.me/905527223847" target="_blank" class="whatsapp-btn animate__animated animate__bounceIn animate__delay-2s">
         <i class="fa-brands fa-whatsapp"></i>
@@ -433,43 +487,72 @@
         <div class="row g-4 justify-content-center mt-3">
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp">
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير المنصات')">
-                    <img src="{{ url_for('static', filename='images/website.png') }}" class="service-img" alt="Website">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/website.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Website"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">تطوير المنصات والمواقع</h4>
                     <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.1s">
                 <div class="glass-card text-center" onclick="openOrderModal('الهوية البصرية')">
-                    <img src="{{ url_for('static', filename='images/identity.png') }}" class="service-img" alt="Identity">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/identity.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Identity"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">الهوية البصرية</h4>
                     <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
                 <div class="glass-card text-center" onclick="openOrderModal('حلول الذكاء الاصطناعي')">
-                    <img src="{{ url_for('static', filename='images/ai.png') }}" class="service-img" alt="AI">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/ai.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="AI"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">حلول الذكاء الاصطناعي</h4>
                     <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.3s">
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير تطبيقات الجوال')">
-                    <img src="{{ url_for('static', filename='images/mobile.png') }}" class="service-img" alt="Mobile">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/mobile.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Mobile"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">تطبيقات الجوال المتقدمة</h4>
                     <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
                 <div class="glass-card text-center" onclick="openOrderModal('تحليل البيانات الضخمة')">
-                    <img src="{{ url_for('static', filename='images/data.png') }}" class="service-img" alt="Data">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/data.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Data"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">تحليل البيانات الضخمة (Big Data)</h4>
                     <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
                 </div>
             </div>
-            <!-- Service 6: Social Media -->
             <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.5s">
                 <div class="glass-card text-center" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">
-                    <img src="{{ url_for('static', filename='images/social_media.png') }}" class="service-img" alt="Social Media">
+                    <div class="cube-container service-img-wrap mx-auto mb-4">
+                        <div class="cube">
+                            <div class="face front"><img src="{{ url_for('static', filename='images/social_media.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Social Media"></div>
+                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
+                        </div>
+                    </div>
                     <h4 class="fw-bold mb-3">إدارة حسابات التواصل الذكية</h4>
                     <p class="text-muted-custom small">أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.</p>
                 </div>
@@ -489,13 +572,23 @@
                 <div class="carousel-3d-spinner" id="carouselSpinner">
                     {% for image in portfolio_images %}
                     <div class="carousel-3d-item">
-                        <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox" data-gallery="portfolio-gallery">
-                            <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Brand Identity" loading="lazy">
-                            <div class="portfolio-overlay">
-                                <div class="overlay-content english-text">
-                                    <h4 class="overlay-title">BRAND IDENTITY</h4>
-                                    <span class="overlay-subtitle">CLICK TO EXPLORE</span>
+                        <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox cube-container" data-gallery="portfolio-gallery">
+                            <div class="cube" style="width: 100%; height: 100%;">
+                                <div class="face front">
+                                    <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="AI Brand Identity" loading="lazy" style="width: 100%; height: 100%; object-fit: contain; border-radius: 25px;">
+                                    <div class="portfolio-overlay">
+                                        <div class="overlay-content english-text">
+                                            <h4 class="overlay-title">BRAND IDENTITY</h4>
+                                            <span class="overlay-subtitle">CLICK TO EXPLORE</span>
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="face back glass-panel"></div>
+                                <div class="face left glass-panel"></div>
+                                <div class="face right glass-panel"></div>
+                                <div class="face top glass-panel"></div>
+                                <div class="face bottom glass-panel"></div>
+                                <div class="cube-core-light pulse-dot"></div>
                             </div>
                         </a>
                     </div>
@@ -503,9 +596,9 @@
                 </div>
             </div>
             
-            <!-- Neon Space Arrows (Desktop) -->
-            <button class="nav-btn left d-none d-md-flex" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="nav-btn right d-none d-md-flex" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- Neon Space Arrows (Responsive everywhere) -->
+            <button class="nav-btn left" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-btn right" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
     </section>
 
@@ -847,18 +940,90 @@
             });
         });
 
-        // Initialize Vanilla-Tilt with Mobile Optimization Check
-        document.addEventListener('DOMContentLoaded', () => {
-            // Only apply tilt on non-touch (hover-capable) devices to save battery and performance on mobile
-            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-                VanillaTilt.init(document.querySelectorAll(".glass-card, .portfolio-item"), {
-                    max: 15,
-                    speed: 400,
-                    glare: true,
-                    "max-glare": 0.3,
-                    scale: 1.05
+        // Neural Link Canvas Logic
+        const neuralCanvas = document.getElementById('neural-canvas');
+        const ctx = neuralCanvas.getContext('2d');
+        let activeCubes = new Set(); 
+
+        function resizeCanvas() {
+            neuralCanvas.width = window.innerWidth;
+            neuralCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawNeuralLinks() {
+            ctx.clearRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+            
+            if (activeCubes.size > 0 && window.pJSDom && window.pJSDom.length > 0) {
+                const particles = window.pJSDom[0].pJS.particles.array;
+                
+                activeCubes.forEach(el => {
+                    const bounds = el.getBoundingClientRect();
+                    const cx = bounds.left + bounds.width / 2;
+                    const cy = bounds.top + bounds.height / 2;
+                    
+                    let distances = particles.map(p => {
+                        const dx = cx - p.x;
+                        const dy = cy - p.y;
+                        return { p, dist: dx*dx + dy*dy, px: p.x, py: p.y };
+                    });
+                    distances.sort((a, b) => a.dist - b.dist);
+                    const closest = distances.slice(0, 4);
+                    
+                    closest.forEach((link, i) => {
+                        let offset = (Date.now() / 1000 + i * 0.25) % 1; 
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.lineTo(link.px, link.py);
+                        ctx.strokeStyle = `rgba(138, 43, 226, ${0.5 * Math.max(0, 1 - link.dist/300000)})`;
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+
+                        const dotX = cx + (link.px - cx) * offset;
+                        const dotY = cy + (link.py - cy) * offset;
+                        ctx.beginPath();
+                        ctx.arc(dotX, dotY, 2.5, 0, Math.PI * 2);
+                        ctx.fillStyle = '#00d2ff';
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = '#00d2ff';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    });
                 });
             }
+            requestAnimationFrame(drawNeuralLinks);
+        }
+        drawNeuralLinks();
+
+        // Initialize Vanilla-Tilt with Gyroscope & Touch Enablement
+        document.addEventListener('DOMContentLoaded', () => {
+            const tiltElements = document.querySelectorAll(".glass-card, .portfolio-item");
+            
+            VanillaTilt.init(tiltElements, {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.3,
+                scale: 1.05,
+                gyroscope: true,
+                gyroscopeMinAngleX: -45,
+                gyroscopeMaxAngleX:  45,
+                gyroscopeMinAngleY: -45,
+                gyroscopeMaxAngleY:  45
+            });
+
+            // Bind Neural Links Logic (Touch & Mouse equivalents)
+            tiltElements.forEach(el => {
+                const triggerOn = () => activeCubes.add(el);
+                const triggerOff = () => activeCubes.delete(el);
+                
+                el.addEventListener('mouseenter', triggerOn);
+                el.addEventListener('mouseleave', triggerOff);
+                el.addEventListener('touchstart', triggerOn, {passive: true});
+                el.addEventListener('touchend', triggerOff);
+            });
         });
     </script>
 </body>
