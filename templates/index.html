@@ -302,6 +302,9 @@
                 background: transparent !important;
                 transition: none !important; /* Immediately execute physics mapping without animation trail */
             }
+            .glass-card .service-img {
+                transition: none !important; /* Destroy CSS transition delay tracking for continuous JS orbit plotting */
+            }
             .glass-card::before {
                 background: rgba(10, 10, 12, 0.6) !important;
                 -webkit-backdrop-filter: blur(10px) !important;
@@ -1206,16 +1209,35 @@
                     
                     const effectStrength = Math.abs(percent);
 
-                    // Smoother Stack Folding Math using Translate3D for GPU Accel
-                    const effectCurve = Math.pow(effectStrength, 1.2); 
-                    const translateZ = -(effectCurve * 20); 
-                    const rotateX = percent * 8; 
-                    const translateY = percent * 10; 
-                    const opacity = 1 - (effectStrength * 0.3); 
+                    // Deep Stack Folding Math using Translate3D for GPU Accel
+                    const effectCurve = Math.pow(effectStrength, 1.4); 
+                    // Deepen fold to -60px for a more pronounced stack
+                    const translateZ = -(effectCurve * 60); 
+                    const rotateX = percent * 10; 
+                    const translateY = percent * 12; 
+                    const opacity = 1 - (effectStrength * 0.4); 
                     
                     // Enforce translate3d for GPU hardware acceleration
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
+
+                    // True 3D Semi-Circular Orbit mapping for the inside Icon image
+                    const img = card.querySelector('.service-img');
+                    if (img) {
+                        // Cosine wave arch (peak 1.0 matching absolute center bounds)
+                        const floatArcBase = Math.cos(percent * Math.PI * 0.5); 
+                        // Extreme 45px Pop Forward strictly at Mid-Screen, dissolving away on edges
+                        const imgTranslateZ = floatArcBase * 45; 
+                        
+                        // Sine wave drifts the internal icon laterally opposite to the scroll curve
+                        const imgTranslateY = Math.sin(percent * Math.PI) * -15; 
+                        
+                        // Continuous Pan View (Looking around feeling natively hooked)
+                        const imgRotateY = percent * -25;
+                        const imgRotateX = percent * 10;
+
+                        img.style.transform = `translate3d(0, ${imgTranslateY}px, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
+                    }
                 });
                 ticking = false;
             };
