@@ -1185,27 +1185,11 @@
             // Stacked Folding Effect using requestAnimationFrame for GPU-synced Jitter-Free Mobile scrolling
             const scrollCards = document.querySelectorAll('.glass-card');
             let ticking = false;
-            let lastScrollPos = window.pageYOffset;
-            let lastTime = Date.now();
             
-            // Lerp (Linear Interpolation) states to eliminate jitter
-            const cardStates = new Map();
-            scrollCards.forEach((card, index) => {
-                cardStates.set(card, { currentPercent: 0, targetPercent: 0 });
-            });
-
-            const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
-
-            const updatePhysics = () => {
+            const handleScrollFold = () => {
                 const h = window.innerHeight;
                 scrollCards.forEach(card => {
-                    const state = cardStates.get(card);
-                    if (!state) return;
-
-                    // Smooth interpolation factor (0.1 = very smooth/heavy, 0.2 = responsive/sharp)
-                    state.currentPercent = lerp(state.currentPercent, state.targetPercent, 0.15);
-                    const percent = state.currentPercent;
-                    
+                    // Only apply on Mobile bounds to allow native desktop hover
                     if (window.innerWidth > 768) {
                         card.style.transform = '';
                         card.style.opacity = '1';
@@ -1213,60 +1197,45 @@
                         if (img) img.style.transform = '';
                         return;
                     }
+                    
+                    const rect = card.getBoundingClientRect();
+                    // Skip if completely out of view
+                    if (rect.bottom < -50 || rect.top > h + 50) return;
 
+                    // Perfect continuous mathematical interpolation from edge to edge (Zero Clamp Jump)
+                    const p = (h - rect.top) / (h + rect.height); // 0.0 at bottom edge to 1.0 at top edge
+                    let percent = (0.5 - p) * 2; // 1.0 at bottom, 0.0 at center, -1.0 at top
+                    
+                    // Minor safety clamp to prevent browser subpixel overflow glitches
+                    percent = Math.max(-1, Math.min(1, percent));
+                    
                     const effectStrength = Math.abs(percent);
+
+                    // Restore the preferred deep folding physics
                     const effectCurve = Math.pow(effectStrength, 1.4); 
                     const translateZ = -(effectCurve * 60); 
                     const rotateX = percent * 10; 
                     const translateY = percent * 12; 
                     const opacity = 1 - (effectStrength * 0.4); 
                     
+                    // Enforce translate3d for GPU hardware acceleration
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
 
+                    // True 3D Semi-Circular Orbit mapping for the inside Icon image
                     const img = card.querySelector('.service-img');
                     if (img) {
+                        // Cosine wave arch (peak 1.0 matching absolute center) Softened for refinement
                         const floatArcBase = Math.cos(percent * Math.PI * 0.5); 
-                        const imgTranslateZ = floatArcBase * 30; 
-                        const imgTranslateY = Math.sin(percent * Math.PI) * -10; 
+                        const imgTranslateZ = floatArcBase * 30; // 30px peak pop-out
+                        const imgTranslateY = Math.sin(percent * Math.PI) * -10; // vertical drift
                         const imgRotateY = percent * -15;
                         const imgRotateX = percent * 8;
 
                         img.style.transform = `translate3d(0, ${imgTranslateY}px, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
                     }
                 });
-
-                // Continue loop if still moving significantly
-                let stillMoving = false;
-                cardStates.forEach(state => {
-                    if (Math.abs(state.targetPercent - state.currentPercent) > 0.001) stillMoving = true;
-                });
-
-                if (stillMoving) {
-                    window.requestAnimationFrame(updatePhysics);
-                } else {
-                    ticking = false;
-                }
-            };
-            
-            const handleScrollFold = () => {
-                const h = window.innerHeight;
-                scrollCards.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    if (rect.bottom < -100 || rect.top > h + 100) return;
-
-                    const p = (h - rect.top) / (h + rect.height);
-                    let target = (0.5 - p) * 2;
-                    target = Math.max(-1, Math.min(1, target));
-                    
-                    const state = cardStates.get(card);
-                    if (state) state.targetPercent = target;
-                });
-
-                if (!ticking) {
-                    ticking = true;
-                    window.requestAnimationFrame(updatePhysics);
-                }
+                ticking = false;
             };
 
             window.addEventListener('scroll', () => {
