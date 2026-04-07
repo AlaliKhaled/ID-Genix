@@ -246,7 +246,10 @@
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
+            z-index: 100 !important; /* Ensure card is above background particles for touch */
+            pointer-events: auto !important;
         }
+        .glass-card * { pointer-events: none; } /* Let clicks bubble up to the card */
         .glass-card::before {
             content: '';
             position: absolute;
@@ -1221,16 +1224,15 @@
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
 
-                    // Refined Stable Floating for inner Icon - Constant and Subdued
+                    // Stable Fixed 3D Float for Mobile - No Drift, No Jitter
                     const img = card.querySelector('.service-img');
                     if (img) {
-                        // Very subtle hover effect that scales with screen focus
-                        const floatArcBase = Math.cos(percent * Math.PI * 0.5); 
-                        const imgTranslateZ = floatArcBase * 20; // Stable slight lift
+                        // High-performance fixed depth
+                        const imgTranslateZ = 30; 
                         
-                        // Keep orientation mostly flat but with a hint of 3D depth
-                        const imgRotateY = percent * -5;
-                        const imgRotateX = percent * 3;
+                        // Static refined orientation that doesn't oscillate with scroll sub-pixels
+                        const imgRotateY = -5;
+                        const imgRotateX = 5;
 
                         img.style.transform = `translate3d(0, 0, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
                     }
