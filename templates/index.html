@@ -15,19 +15,25 @@
     
     <style>
         :root {
-            --bg-dark: #09090b;
+            --bg-dark: #0a0a0c;
             --card-glass: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --neon-blue: #3b82f6;
+            --card-border: rgba(255, 255, 255, 0.05);
+            --neon-blue: #00f2ff;
             --neon-purple: #8b5cf6;
-            --text-main: #f8fafc;
+            --text-main: #f1f5f9;
             --text-muted: #94a3b8;
+        }
+
+        #services {
+            perspective: 1200px;
+            transform-style: preserve-3d;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         #particles-js {
@@ -35,11 +41,19 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2; /* Keep it behind everything */
             pointer-events: all; /* Ensure it feels the mouse */
+            background: transparent;
         }
         
         #neural-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; pointer-events: none;
+        }
+
+        /* Floating Animation for auto-trigger on mobile/desktop */
+        @keyframes customFloat {
+            0% { transform: translateY(0px) translateZ(10px); }
+            50% { transform: translateY(-10px) translateZ(10px); }
+            100% { transform: translateY(0px) translateZ(10px); }
         }
 
         /* 3D Glass Cube System */
@@ -84,12 +98,14 @@
         }
         
         /* Service Cards Cube Setup */
-        .service-img-wrap { width: 120px; height: 120px; }
-        .service-img-wrap .cube { transform: translateZ(30px) rotateY(-15deg) rotateX(10deg); }
-        .glass-card:hover .service-img-wrap .cube, .glass-card.in-focus .service-img-wrap .cube {
-            transform: translateZ(80px) rotateY(-25deg) rotateX(15deg);
-        }
-        .glass-card:hover .cube-core-light, .glass-card.in-focus .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
+        .service-img-wrap { width: 140px; height: 140px; margin: 0 auto; z-index: 10; display: flex; justify-content: center; position: relative; }
+        
+        /* Remove 3D boundaries for transparent PNG assets */
+        .service-img-wrap .face:not(.front) { display: none !important; }
+        .service-img-wrap .cube-core-light { display: none !important; }
+        
+        /* Removed customFloat animation from wrapping cube to allow precise image transformation */
+        .service-img-wrap .cube { transform: translateZ(5px); }
         
         @keyframes corePulse {
             0% { transform: translate(-50%, -50%) translateZ(0px) scale(0.8); }
@@ -100,7 +116,7 @@
 
         .navbar-custom { 
             position: relative; z-index: 10;
-            background: rgba(9, 9, 11, 0.7);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--card-border);
@@ -177,6 +193,12 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
+        @keyframes breathingGlowBtn {
+            0% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(0, 242, 255, 0.7), 0 0 15px rgba(139, 92, 246, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+        }
+
         .btn-glow {
             background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
             color: white;
@@ -184,13 +206,13 @@
             padding: 15px 40px;
             border-radius: 30px;
             font-weight: 800;
-            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: breathingGlowBtn 3s infinite;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .btn-glow:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 25px -5px rgba(139, 92, 246, 0.9);
             color: white;
+            animation-play-state: paused;
         }
 
         .glass-card {
@@ -199,50 +221,82 @@
             border-radius: 24px;
             padding: 40px 30px;
             height: 100%;
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
             transform: translate3d(0,0,0); 
             will-change: transform, box-shadow;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 24px;
         }
         .glass-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--card-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: inherit;
-            transition: background 0.5s ease;
+            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateZ(-1px);
         }
+        .glass-card > * {
+            position: relative;
+            z-index: 10;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            background-color: transparent !important;
+        }
         .glass-card:hover, .glass-card.in-focus {
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), inset 0 0 12px rgba(59, 130, 246, 0.2);
+            border-color: rgba(0, 210, 255, 0.6);
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 12px rgba(0, 210, 255, 0.2);
         }
         .glass-card:hover::before, .glass-card.in-focus::before {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.8);
         }
         
         .service-img {
-            width: 120px;
-            height: 120px;
+            max-width: 140px;
+            height: 140px;
+            width: 100%;
             object-fit: contain;
-            margin-bottom: 25px;
-            mix-blend-mode: screen; /* Effectively masks black background out making it transparent/holographic */
-            filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.8)); /* Neon glow emitting light */
-            background: transparent !important;
-            transition: transform 0.5s ease;
+            margin-bottom: 0;
+            mix-blend-mode: screen; 
+            filter: drop-shadow(0 0 18px rgba(0, 242, 255, 0.5));
+            background-color: transparent !important;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (min-width: 769px) {
+            .glass-card:hover .service-img {
+                transform: translateZ(30px) rotateY(-12deg) rotateX(12deg);
+                filter: drop-shadow(0 0 24px rgba(0, 242, 255, 0.7));
+            }
+        }
+        @media (max-width: 768px) {
+            .glass-card.in-focus .service-img {
+                transform: translateZ(10px) rotateY(-6deg) rotateX(6deg);
+                filter: drop-shadow(0 0 24px rgba(0, 242, 255, 0.6));
+            }
         }
         
         .tilt-icon {
             display: inline-block;
-            transition: transform 0.5s ease;
-            transform: translateZ(30px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateZ(5px);
+            mix-blend-mode: screen; /* Hologram Masking */
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
+            will-change: transform;
         }
         .glass-card:hover .tilt-icon, .glass-card.in-focus .tilt-icon {
-            transform: translateZ(60px) scale(1.1);
+            transform: translateZ(10px) scale(1.05);
         }
 
         .section-title {
@@ -444,6 +498,36 @@
             word-spacing: normal !important;
             font-family: 'Cairo', sans-serif !important;
         }
+
+        /* --- Landscape & Mobile Extreme Stabilization --- */
+        @media screen and (max-height: 480px), screen and (max-width: 900px) and (orientation: landscape) {
+            .glass-card, .portfolio-item {
+                transform: none !important;
+                transition: background-color 0.3s, border-color 0.3s !important;
+                will-change: auto;
+            }
+            .glass-card:hover, .glass-card.in-focus {
+                transform: scale(1.02) !important;
+                box-shadow: 0 0 15px rgba(0, 210, 255, 0.3) !important;
+            }
+            .service-img-wrap .cube, .tilt-icon {
+                transform: none !important;
+            }
+            .cube-container {
+                perspective: none;
+            }
+            .hero-section {
+                padding: 100px 0 50px;
+                min-height: auto;
+            }
+            .hero-title {
+                font-size: 3rem;
+                min-height: auto;
+            }
+            .section-title {
+                margin-bottom: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -500,7 +584,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير المنصات')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/website.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Website"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body6.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Website"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -512,7 +596,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('الهوية البصرية')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/identity.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Identity"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body3.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Identity"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -524,7 +608,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('حلول الذكاء الاصطناعي')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/ai.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="AI"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body1.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="AI"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -536,7 +620,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير تطبيقات الجوال')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/mobile.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Mobile"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body2.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Mobile"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -548,7 +632,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('تحليل البيانات الضخمة')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/data.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Data"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body5.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Data"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -560,7 +644,7 @@
                 <div class="glass-card text-center" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/social_media.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Social Media"></div>
+                            <div class="face front"><img src="{{ url_for('static', filename='images/body4.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Social Media"></div>
                             <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
                         </div>
                     </div>
@@ -1008,25 +1092,53 @@
         }
         drawNeuralLinks();
 
-        // Initialize Vanilla-Tilt with Gyroscope & Touch Enablement
+        // Initialize Context-Aware Vanilla-Tilt
         document.addEventListener('DOMContentLoaded', () => {
-            const tiltElements = document.querySelectorAll(".glass-card, .portfolio-item");
+            const isDesktop = window.innerWidth > 768;
             
-            VanillaTilt.init(tiltElements, {
-                max: 15,
-                speed: 400,
-                glare: true,
-                "max-glare": 0.3,
-                scale: 1.05,
-                gyroscope: true,
-                gyroscopeMinAngleX: -45,
-                gyroscopeMaxAngleX:  45,
-                gyroscopeMinAngleY: -45,
-                gyroscopeMaxAngleY:  45
-            });
+            if (isDesktop) {
+                // Desktop: Premium heavy tilt focused ONLY on interior holograms
+                const hqElements = document.querySelectorAll(".portfolio-item, .tilt-icon");
+                VanillaTilt.init(hqElements, {
+                    max: 5,
+                    speed: 500,
+                    perspective: 1500,
+                    glare: true,
+                    "max-glare": 0.15,
+                    scale: 1.02
+                });
+                
+                hqElements.forEach(el => {
+                    const triggerOn = () => activeCubes.add(el);
+                    const triggerOff = () => activeCubes.delete(el);
+                    el.addEventListener('mouseenter', triggerOn);
+                    el.addEventListener('mouseleave', triggerOff);
+                });
+            } else {
+                // Mobile: Robust overarching bounding tracking (fast Gyro interaction)
+                const mobileElements = document.querySelectorAll(".portfolio-item");
+                VanillaTilt.init(mobileElements, {
+                    max: 5,
+                    speed: 400,
+                    glare: true,
+                    "max-glare": 0.15,
+                    scale: 1.02,
+                    gyroscope: true,
+                    gyroscopeMinAngleX: -45,
+                    gyroscopeMaxAngleX:  45,
+                    gyroscopeMinAngleY: -45,
+                    gyroscopeMaxAngleY:  45
+                });
+                
+                mobileElements.forEach(el => {
+                    const triggerOn = () => activeCubes.add(el);
+                    const triggerOff = () => activeCubes.delete(el);
+                    el.addEventListener('touchstart', triggerOn, {passive: true});
+                    el.addEventListener('touchend', triggerOff);
+                });
+            }
 
             // iOS 13+ Gyroscope Permission Request Fallback
-            // Apple requires explicit user permission triggered by a user action to use gyroscope
             let gyroPermissionGranted = false;
             document.body.addEventListener('click', () => {
                 if (!gyroPermissionGranted && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -1038,17 +1150,6 @@
                     }).catch(console.error);
                 }
             }, { once: true });
-
-            // Bind Neural Links Logic (Touch & Mouse equivalents)
-            tiltElements.forEach(el => {
-                const triggerOn = () => activeCubes.add(el);
-                const triggerOff = () => activeCubes.delete(el);
-                
-                el.addEventListener('mouseenter', triggerOn);
-                el.addEventListener('mouseleave', triggerOff);
-                el.addEventListener('touchstart', triggerOn, {passive: true});
-                el.addEventListener('touchend', triggerOff);
-            });
 
             // Mobile Auto-Scroll Center Focus (Intersection Observer)
             const focusObserver = new IntersectionObserver((entries) => {
@@ -1063,11 +1164,12 @@
                     }
                 });
             }, {
-                rootMargin: '-35% 0px -35% 0px', // Strict center boundary (30% vertical safe zone)
-                threshold: 0
+                rootMargin: '-25% 0px -25% 0px', // Mid-screen intersection trigger
+                threshold: 0.1
             });
             
-            document.querySelectorAll('.glass-card').forEach(el => focusObserver.observe(el));
+            // Apply observer to all interactive cards on mobile and desktop for consistency
+            document.querySelectorAll('.glass-card, .portfolio-item').forEach(el => focusObserver.observe(el));
         });
     </script>
 </body>
