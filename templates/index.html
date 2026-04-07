@@ -282,10 +282,12 @@
             mix-blend-mode: screen; 
             filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.7)) drop-shadow(0 15px 15px rgba(0, 242, 255, 0.25)) drop-shadow(0 -5px 20px rgba(138, 43, 226, 0.3));
             background-color: transparent !important;
-            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             transform-style: preserve-3d;
             transform: translate3d(0,0,0);
             will-change: transform, filter;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             position: relative;
             z-index: 10;
         }
@@ -1183,8 +1185,22 @@
             // Stacked Folding Effect using requestAnimationFrame for GPU-synced Jitter-Free Mobile scrolling
             const scrollCards = document.querySelectorAll('.glass-card');
             let ticking = false;
+            let lastScrollPos = window.pageYOffset;
+            let lastTime = Date.now();
             
             const handleScrollFold = () => {
+                const now = Date.now();
+                const currentScrollPos = window.pageYOffset;
+                const scrollDelta = Math.abs(currentScrollPos - lastScrollPos);
+                const timeDelta = now - lastTime;
+                const velocity = scrollDelta / timeDelta; // px/ms
+
+                lastScrollPos = currentScrollPos;
+                lastTime = now;
+
+                // Disable during rapid scroll to prevent jank (velocity threshold: 3px/ms)
+                const isScrollingFast = velocity > 3;
+
                 const h = window.innerHeight;
                 scrollCards.forEach(card => {
                     // Only apply on Mobile bounds to allow native desktop hover
@@ -1200,6 +1216,9 @@
                     // Skip if completely out of view
                     if (rect.bottom < 0 || rect.top > h) return;
 
+                    // If scrolling fast, keep current state or simplify
+                    if (isScrollingFast) return;
+
                     // Perfect continuous mathematical interpolation from edge to edge (Zero Clamp Jump)
                     const p = (h - rect.top) / (h + rect.height); // 0.0 at bottom edge to 1.0 at top edge
                     let percent = (0.5 - p) * 2; // 1.0 at bottom, 0.0 at center, -1.0 at top
@@ -1211,7 +1230,6 @@
 
                     // Deep Stack Folding Math using Translate3D for GPU Accel
                     const effectCurve = Math.pow(effectStrength, 1.4); 
-                    // Deepen fold to -60px for a more pronounced stack
                     const translateZ = -(effectCurve * 60); 
                     const rotateX = percent * 10; 
                     const translateY = percent * 12; 
