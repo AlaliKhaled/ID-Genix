@@ -242,31 +242,34 @@
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
-            cursor: pointer;
-            pointer-events: auto !important;
-            z-index: 10;
+            pointer-events: none !important; /* Visual only - interaction handled by trigger */
         }
         .glass-card * {
             pointer-events: none !important;
         }
         .service-wrapper {
             position: relative;
-            perspective: 1200px;
+            perspective: 1500px;
             transform-style: preserve-3d;
             height: 100%;
-            z-index: 1;
+            z-index: 50; /* Above section backgrounds */
         }
-        .service-wrapper:hover .glass-card, .glass-card.in-focus {
-            border-color: rgba(0, 210, 255, 0.6);
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 12px rgba(0, 210, 255, 0.2);
+        .service-trigger {
+            position: absolute;
+            inset: 0;
+            z-index: 100;
+            cursor: pointer;
+            pointer-events: auto !important;
+            background: transparent;
+            transform: translateZ(1px); /* Stay flat at the front of the 3D context */
         }
-        .service-wrapper:hover .glass-card::before, .glass-card.in-focus::before {
-            background: rgba(15, 23, 42, 0.8);
+        .service-wrapper:hover .glass-card, .service-wrapper.in-focus .glass-card {
+            border-color: rgba(0, 210, 255, 0.8) !important;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4) !important;
         }
-        .service-wrapper:active .glass-card, .glass-card:active {
+        .service-wrapper:active .glass-card {
             transform: scale(0.96) !important;
             transition: transform 0.1s !important;
-            border-color: var(--neon-blue) !important;
         }
         .glass-card::before {
             content: '';
@@ -663,7 +666,8 @@
         </div>
         <div class="row g-4 justify-content-center mt-3">
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp">
-                <div class="glass-card text-center" data-service="تطوير المنصات والمواقع" onclick="openOrderModal('تطوير المنصات والمواقع')">
+                <div class="service-trigger" onclick="openOrderModal('تطوير المنصات والمواقع')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body6.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Website"></div>
@@ -675,7 +679,8 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.1s">
-                <div class="glass-card text-center" data-service="الهوية البصرية" onclick="openOrderModal('الهوية البصرية')">
+                <div class="service-trigger" onclick="openOrderModal('الهوية البصرية')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body3.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Identity"></div>
@@ -687,7 +692,8 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.2s">
-                <div class="glass-card text-center" data-service="حلول الذكاء الاصطناعي" onclick="openOrderModal('حلول الذكاء الاصطناعي')">
+                <div class="service-trigger" onclick="openOrderModal('حلول الذكاء الاصطناعي')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body1.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="AI"></div>
@@ -699,7 +705,8 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.3s">
-                <div class="glass-card text-center" data-service="تطوير تطبيقات الجوال" onclick="openOrderModal('تطوير تطبيقات الجوال')">
+                <div class="service-trigger" onclick="openOrderModal('تطوير تطبيقات الجوال')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body2.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Mobile"></div>
@@ -711,7 +718,8 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.4s">
-                <div class="glass-card text-center" data-service="تحليل البيانات الضخمة" onclick="openOrderModal('تحليل البيانات الضخمة')">
+                <div class="service-trigger" onclick="openOrderModal('تحليل البيانات الضخمة')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body5.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Data"></div>
@@ -723,7 +731,8 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.5s">
-                <div class="glass-card text-center" data-service="إدارة المحتوى بالذكاء الاصطناعي" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">
+                <div class="service-trigger" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')"></div>
+                <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body4.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Social Media"></div>
@@ -1245,12 +1254,12 @@
                     
                     const effectStrength = Math.abs(percent);
 
-                    // Restore the preferred deep folding physics for the outer card
-                    const effectCurve = Math.pow(effectStrength, 1.4); 
-                    const translateZ = -(effectCurve * 35); // Reduced from 60 for better mobile accessibility
-                    const rotateX = percent * 8; // Slightly reduced from 10
-                    const translateY = percent * 10; // Slightly reduced from 12
-                    const opacity = 1 - (effectStrength * 0.35); // Slightly brighter on edges
+                    // Ultra-stable mobile physics to prevent hit-box drift
+                    const effectCurve = Math.pow(effectStrength, 1.2); 
+                    const translateZ = -(effectCurve * 15); // Significantly reduced to keep hitbox reachable
+                    const rotateX = percent * 5; // Reduced for stability
+                    const translateY = percent * 5; // Reduced for stability
+                    const opacity = 1 - (effectStrength * 0.25);
                     
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
