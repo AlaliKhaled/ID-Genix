@@ -569,6 +569,33 @@
                 margin-bottom: 2rem;
             }
         }
+
+        /* Essential Mobile Optimization for Services and Modal */
+        @media screen and (max-width: 767px) {
+            #services .row {
+                flex-direction: column !important;
+                flex-wrap: nowrap !important;
+            }
+            #services [class*="col-"] {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-bottom: 20px;
+            }
+            .glass-card {
+                padding: 30px 20px !important;
+                min-height: 250px;
+            }
+            .modal-content.glass-modal {
+                margin: 10px;
+            }
+            .modal-body {
+                padding: 30px 20px !important;
+            }
+            #orderModal .row > [class*="col-"] {
+                width: 100% !important;
+                flex: 0 0 100% !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -641,7 +668,7 @@
             <h2 class="section-title">الحلول التقنية</h2>
         </div>
         <div class="row g-4 justify-content-center mt-3">
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp">
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير المنصات')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -653,7 +680,7 @@
                     <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.1s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.1s">
                 <div class="glass-card text-center" onclick="openOrderModal('الهوية البصرية')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -665,7 +692,7 @@
                     <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
                 <div class="glass-card text-center" onclick="openOrderModal('حلول الذكاء الاصطناعي')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -677,7 +704,7 @@
                     <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.3s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.3s">
                 <div class="glass-card text-center" onclick="openOrderModal('تطوير تطبيقات الجوال')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -689,7 +716,7 @@
                     <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
                 <div class="glass-card text-center" onclick="openOrderModal('تحليل البيانات الضخمة')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -701,7 +728,7 @@
                     <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 hidden-element" data-animation="animate__fadeInUp" data-delay="0.5s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.5s">
                 <div class="glass-card text-center" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -800,22 +827,22 @@
                 <div class="modal-body p-5" id="modalBodyForm">
                     <form id="quickOrderForm">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label text-light opacity-75 small">الاسم الكامل أو اسم الجهة <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-dark" id="modalName" required>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label text-light opacity-75 small">الخدمة المرتبطة بالشأن <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-dark text-primary" id="modalService" readonly>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label text-light opacity-75 small">رقم الهاتف للتواصل <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-phone"></i></span>
                                     <input type="tel" class="form-control form-control-dark border-start-0" id="modalPhone" required dir="ltr" placeholder="+966 5X XXX XXXX">
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label text-light opacity-75 small">البريد الإلكتروني <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-envelope"></i></span>
@@ -1226,10 +1253,10 @@
 
                     // Restore the preferred deep folding physics for the outer card
                     const effectCurve = Math.pow(effectStrength, 1.4); 
-                    const translateZ = -(effectCurve * 60); 
-                    const rotateX = percent * 10; 
-                    const translateY = percent * 12; 
-                    const opacity = 1 - (effectStrength * 0.4); 
+                    const translateZ = -(effectCurve * 35); // Reduced from 60 for better mobile accessibility
+                    const rotateX = percent * 8; // Slightly reduced from 10
+                    const translateY = percent * 10; // Slightly reduced from 12
+                    const opacity = 1 - (effectStrength * 0.35); // Slightly brighter on edges
                     
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
