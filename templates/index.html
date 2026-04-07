@@ -221,12 +221,12 @@
             border-radius: 24px;
             padding: 40px 30px;
             height: 100%;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
             transform: translate3d(0,0,0); 
-            will-change: transform, box-shadow;
+            will-change: transform, box-shadow, opacity;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -268,7 +268,7 @@
             mix-blend-mode: screen; 
             filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
             background-color: transparent !important;
-            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d;
             position: relative;
             z-index: 10;
@@ -276,7 +276,8 @@
 
         @media (min-width: 769px) {
             .glass-card:hover .service-img {
-                filter: drop-shadow(0 0 22px rgba(0, 242, 255, 0.6));
+                transform: translateZ(30px) rotateY(-12deg) rotateX(12deg);
+                filter: drop-shadow(0 0 24px rgba(0, 242, 255, 0.7));
             }
         }
 
@@ -286,8 +287,8 @@
             }
             .glass-card::before {
                 background: rgba(10, 10, 12, 0.6) !important;
-                -webkit-backdrop-filter: blur(12px) !important;
-                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+                backdrop-filter: blur(10px) !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
             }
         }
@@ -1139,43 +1140,56 @@
                 });
             }
 
-            // Intersection Observer + Scroll Parallax Logic (Gyro-replacement)
+            // Stacked Folding Effect using Intersection Observer for Mobile
             const scrollCards = document.querySelectorAll('.glass-card');
             
-            const renderScrollTilt = () => {
-                const h = window.innerHeight;
-                scrollCards.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    const img = card.querySelector('.service-img');
-                    if (img && rect.top <= h && rect.bottom >= 0) {
-                        const midPoint = rect.top + (rect.height / 2);
-                        const distToCenter = midPoint - (h / 2);
-                        
-                        let percent = distToCenter / (h / 2);
-                        percent = Math.max(-1, Math.min(1, percent));
-                        
-                        const isMobile = window.innerWidth <= 768;
-                        const maxDeg = isMobile ? 6 : 12;
-                        const transZ = isMobile ? 10 : 30;
-                        
-                        // Inverse the Y relation for natural 3D lookup feeling
-                        const tiltX = percent * maxDeg;
-                        const tiltY = -(percent * maxDeg); 
-                        
-                        // Inline style overrides CSS transitions smoothly due to cubic-bezier
-                        img.style.transform = `translateZ(${transZ}px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-                    } else if (img) {
-                        img.style.transform = `translateZ(5px) rotateX(0deg) rotateY(0deg)`;
-                    }
-                });
+            // Build 100 thresholds for continuous tracking [0.0, 0.01, ... 1.0]
+            const buildThresholds = () => {
+                const arr = [];
+                for (let i = 0; i <= 1.0; i += 0.01) arr.push(i);
+                return arr;
             };
 
-            window.addEventListener('scroll', () => {
-                requestAnimationFrame(renderScrollTilt);
-            }, {passive: true});
-            
-            // Trigger 1 render instantly
-            renderScrollTilt();
+            const foldObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const card = entry.target;
+                    
+                    // Only apply on Mobile bounds to allow native desktop hover
+                    if (window.innerWidth > 768) {
+                        card.style.transform = '';
+                        card.style.opacity = '1';
+                        const img = card.querySelector('.service-img');
+                        if (img) img.style.transform = '';
+                        return;
+                    }
+                    
+                    const rect = entry.boundingClientRect;
+                    const h = window.innerHeight;
+                    const midPoint = rect.top + (rect.height / 2);
+                    const distToCenter = midPoint - (h / 2);
+                    
+                    // Normalize distance from -1 to 1 based on half viewport height
+                    let percent = distToCenter / (h / 2);
+                    percent = Math.max(-1, Math.min(1, percent));
+                    
+                    // Calculate effect magnitude: 0 at center, expands towards edges
+                    const effectStrength = Math.abs(percent);
+
+                    // Stack Folding Math
+                    const translateZ = -(effectStrength * 30); // Sink back to -30px
+                    const rotateX = percent * 15; // Rotate up to 15deg
+                    const translateY = percent * 20; // Shift translateY 20px
+                    const opacity = 1 - (effectStrength * 0.3); // Fade down to 0.7
+                    
+                    card.style.transform = `translateZ(${translateZ}px) rotateX(${rotateX}deg) translateY(${translateY}px)`;
+                    card.style.opacity = opacity.toFixed(2);
+                });
+            }, {
+                threshold: buildThresholds(),
+                rootMargin: '0px'
+            });
+
+            scrollCards.forEach(card => foldObserver.observe(card));
 
             // Retain Observer for Network Neural links linking active elements
             const focusObserver = new IntersectionObserver((entries) => {
