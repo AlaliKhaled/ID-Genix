@@ -1211,28 +1211,28 @@
                     
                     const effectStrength = Math.abs(percent);
 
-                    // Restore the preferred deep folding physics
+                    // Restore the preferred deep folding physics for the outer card
                     const effectCurve = Math.pow(effectStrength, 1.4); 
                     const translateZ = -(effectCurve * 60); 
                     const rotateX = percent * 10; 
                     const translateY = percent * 12; 
                     const opacity = 1 - (effectStrength * 0.4); 
                     
-                    // Enforce translate3d for GPU hardware acceleration
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
 
-                    // True 3D Semi-Circular Orbit mapping for the inside Icon image
+                    // Refined Stable Floating for inner Icon - Constant and Subdued
                     const img = card.querySelector('.service-img');
                     if (img) {
-                        // Cosine wave arch (peak 1.0 matching absolute center) Softened for refinement
+                        // Very subtle hover effect that scales with screen focus
                         const floatArcBase = Math.cos(percent * Math.PI * 0.5); 
-                        const imgTranslateZ = floatArcBase * 30; // 30px peak pop-out
-                        const imgTranslateY = Math.sin(percent * Math.PI) * -10; // vertical drift
-                        const imgRotateY = percent * -15;
-                        const imgRotateX = percent * 8;
+                        const imgTranslateZ = floatArcBase * 20; // Stable slight lift
+                        
+                        // Keep orientation mostly flat but with a hint of 3D depth
+                        const imgRotateY = percent * -5;
+                        const imgRotateX = percent * 3;
 
-                        img.style.transform = `translate3d(0, ${imgTranslateY}px, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
+                        img.style.transform = `translate3d(0, 0, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
                     }
                 });
                 ticking = false;
