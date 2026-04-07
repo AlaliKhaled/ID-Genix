@@ -251,7 +251,15 @@
             pointer-events: auto !important;
             touch-action: manipulation; /* Optimizes for mobile tapping */
         }
-        .glass-card * { pointer-events: none; } /* Ensure child clicks bubble up to card */
+        /* Ensure all internal elements let clicks pass through to the main card */
+        .glass-card .cube-container, 
+        .glass-card .cube, 
+        .glass-card .face, 
+        .glass-card .service-img,
+        .glass-card h4,
+        .glass-card p { 
+            pointer-events: none !important; 
+        }
         .glass-card::before {
             content: '';
             position: absolute;
@@ -1226,13 +1234,11 @@
                     card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
                     card.style.opacity = opacity.toFixed(2);
 
-                    // Stable Fixed 3D Float for Mobile - No Drift, No Jitter
+                    // Fixed 3D Float for Mobile - Zero Math Variation during scroll to stop Jitter
                     const img = card.querySelector('.service-img');
                     if (img) {
-                        // High-performance fixed depth
+                        // Using strictly static values to prevent sub-pixel "jumping" during scroll
                         const imgTranslateZ = 30; 
-                        
-                        // Static refined orientation that doesn't oscillate with scroll sub-pixels
                         const imgRotateY = -5;
                         const imgRotateX = 5;
 
