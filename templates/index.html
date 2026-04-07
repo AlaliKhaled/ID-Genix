@@ -263,24 +263,26 @@
             background: transparent;
             transform: translateZ(1px); /* Stay flat at the front of the 3D context */
         }
-        .service-wrapper:hover .glass-card, .service-wrapper.in-focus .glass-card {
-            border-color: rgba(0, 210, 255, 0.8) !important;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4) !important;
-        }
-        .service-wrapper:active .glass-card {
-            transform: scale(0.96) !important;
-            transition: transform 0.1s !important;
-        }
         .glass-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--card-glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: inherit;
-            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateZ(-1px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.05); /* The "Shine" base */
+        }
+        .service-wrapper:hover .glass-card, .service-wrapper.in-focus .glass-card {
+            border-color: rgba(0, 210, 255, 0.8) !important;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.3), inset 0 0 15px rgba(0, 210, 255, 0.2) !important;
+        }
+        .service-wrapper:active .glass-card {
+            transform: scale(0.96) !important;
+            transition: transform 0.1s !important;
         }
         
         .service-img {
@@ -312,16 +314,16 @@
         @media (max-width: 768px) {
             .glass-card {
                 background: transparent !important;
-                transition: none !important; /* Immediately execute physics mapping without animation trail */
-            }
-            .glass-card .service-img {
-                transition: none !important; /* Destroy CSS transition delay tracking for continuous JS orbit plotting */
+                transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
             }
             .glass-card::before {
-                background: rgba(10, 10, 12, 0.6) !important;
-                -webkit-backdrop-filter: blur(10px) !important;
-                backdrop-filter: blur(10px) !important;
-                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                background: rgba(255, 255, 255, 0.04) !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
+            }
+            .service-wrapper.in-focus .glass-card {
+                border-color: var(--neon-blue) !important;
+                box-shadow: 0 0 25px rgba(0, 210, 255, 0.3), inset 0 0 10px rgba(0, 210, 255, 0.15) !important;
             }
         }
         
@@ -1306,6 +1308,42 @@
             });
             scrollCards.forEach(el => focusObserver.observe(el));
             document.querySelectorAll('.portfolio-item').forEach(el => focusObserver.observe(el));
+
+            // Mobile-Only Auto-Snap logic
+            let isSnapping = false;
+            let snapTimeout;
+
+            const performSnap = () => {
+                if (window.innerWidth > 768 || isSnapping) return;
+                
+                const wrappers = document.querySelectorAll('.service-wrapper');
+                const viewportCenter = window.innerHeight / 2;
+                let closest = null;
+                let minDistance = Infinity;
+
+                wrappers.forEach(w => {
+                    const rect = w.getBoundingClientRect();
+                    const center = rect.top + (rect.height / 2);
+                    const distance = Math.abs(center - viewportCenter);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closest = w;
+                    }
+                });
+
+                if (closest && minDistance < window.innerHeight * 0.3) {
+                    isSnapping = true;
+                    closest.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Release lock after animation
+                    setTimeout(() => { isSnapping = false; }, 800);
+                }
+            };
+
+            window.addEventListener('scroll', () => {
+                if (window.innerWidth > 768) return;
+                clearTimeout(snapTimeout);
+                snapTimeout = setTimeout(performSnap, 600); // 600ms grace period after scroll
+            }, { passive: true });
         });
     </script>
 </body>
