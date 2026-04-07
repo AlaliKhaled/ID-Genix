@@ -21,7 +21,7 @@
             --neon-blue: #00f2ff;
             --neon-purple: #8b5cf6;
             --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
+            --text-muted: #cbd5e1;
         }
 
         #services {
@@ -266,9 +266,9 @@
             object-fit: contain;
             margin-bottom: 0;
             mix-blend-mode: screen; 
-            filter: drop-shadow(0 0 18px rgba(0, 242, 255, 0.5));
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
             background-color: transparent !important;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d;
             position: relative;
             z-index: 10;
@@ -276,14 +276,19 @@
 
         @media (min-width: 769px) {
             .glass-card:hover .service-img {
-                transform: translateZ(30px) rotateY(-12deg) rotateX(12deg);
-                filter: drop-shadow(0 0 24px rgba(0, 242, 255, 0.7));
+                filter: drop-shadow(0 0 22px rgba(0, 242, 255, 0.6));
             }
         }
+
         @media (max-width: 768px) {
-            .glass-card.in-focus .service-img {
-                transform: translateZ(10px) rotateY(-6deg) rotateX(6deg);
-                filter: drop-shadow(0 0 24px rgba(0, 242, 255, 0.6));
+            .glass-card {
+                background: transparent !important;
+            }
+            .glass-card::before {
+                background: rgba(10, 10, 12, 0.6) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+                backdrop-filter: blur(12px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
             }
         }
         
@@ -1115,7 +1120,7 @@
                     el.addEventListener('mouseleave', triggerOff);
                 });
             } else {
-                // Mobile: Robust overarching bounding tracking (fast Gyro interaction)
+                // Mobile: Strictly disable gyroscope and use only physical touch
                 const mobileElements = document.querySelectorAll(".portfolio-item");
                 VanillaTilt.init(mobileElements, {
                     max: 5,
@@ -1123,11 +1128,7 @@
                     glare: true,
                     "max-glare": 0.15,
                     scale: 1.02,
-                    gyroscope: true,
-                    gyroscopeMinAngleX: -45,
-                    gyroscopeMaxAngleX:  45,
-                    gyroscopeMinAngleY: -45,
-                    gyroscopeMaxAngleY:  45
+                    gyroscope: false
                 });
                 
                 mobileElements.forEach(el => {
@@ -1138,38 +1139,62 @@
                 });
             }
 
-            // iOS 13+ Gyroscope Permission Request Fallback
-            let gyroPermissionGranted = false;
-            document.body.addEventListener('click', () => {
-                if (!gyroPermissionGranted && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    DeviceOrientationEvent.requestPermission()
-                    .then(permissionState => {
-                        if (permissionState === 'granted') {
-                            gyroPermissionGranted = true;
-                        }
-                    }).catch(console.error);
-                }
-            }, { once: true });
+            // Intersection Observer + Scroll Parallax Logic (Gyro-replacement)
+            const scrollCards = document.querySelectorAll('.glass-card');
+            
+            const renderScrollTilt = () => {
+                const h = window.innerHeight;
+                scrollCards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const img = card.querySelector('.service-img');
+                    if (img && rect.top <= h && rect.bottom >= 0) {
+                        const midPoint = rect.top + (rect.height / 2);
+                        const distToCenter = midPoint - (h / 2);
+                        
+                        let percent = distToCenter / (h / 2);
+                        percent = Math.max(-1, Math.min(1, percent));
+                        
+                        const isMobile = window.innerWidth <= 768;
+                        const maxDeg = isMobile ? 6 : 12;
+                        const transZ = isMobile ? 10 : 30;
+                        
+                        // Inverse the Y relation for natural 3D lookup feeling
+                        const tiltX = percent * maxDeg;
+                        const tiltY = -(percent * maxDeg); 
+                        
+                        // Inline style overrides CSS transitions smoothly due to cubic-bezier
+                        img.style.transform = `translateZ(${transZ}px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+                    } else if (img) {
+                        img.style.transform = `translateZ(5px) rotateX(0deg) rotateY(0deg)`;
+                    }
+                });
+            };
 
-            // Mobile Auto-Scroll Center Focus (Intersection Observer)
+            window.addEventListener('scroll', () => {
+                requestAnimationFrame(renderScrollTilt);
+            }, {passive: true});
+            
+            // Trigger 1 render instantly
+            renderScrollTilt();
+
+            // Retain Observer for Network Neural links linking active elements
             const focusObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const el = entry.target;
                     if (entry.isIntersecting) {
-                        el.classList.add('in-focus');
                         activeCubes.add(el);
+                        el.classList.add('in-focus');
                     } else {
-                        el.classList.remove('in-focus');
                         activeCubes.delete(el);
+                        el.classList.remove('in-focus');
                     }
                 });
             }, {
-                rootMargin: '-25% 0px -25% 0px', // Mid-screen intersection trigger
+                rootMargin: '-25% 0px -25% 0px',
                 threshold: 0.1
             });
-            
-            // Apply observer to all interactive cards on mobile and desktop for consistency
-            document.querySelectorAll('.glass-card, .portfolio-item').forEach(el => focusObserver.observe(el));
+            scrollCards.forEach(el => focusObserver.observe(el));
+            document.querySelectorAll('.portfolio-item').forEach(el => focusObserver.observe(el));
         });
     </script>
 </body>
