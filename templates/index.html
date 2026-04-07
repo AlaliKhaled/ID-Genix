@@ -540,17 +540,31 @@
         }
 
         .architect-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.4s ease;
+            background: rgba(255, 255, 255, 0.05); /* Lighter for crystallized look */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .architect-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(255,255,255,0.05);
+        }
+        .architect-desc {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            line-height: 1.4;
+            opacity: 0.9;
         }
         .architect-role {
             display: block;
@@ -938,19 +952,22 @@
                         <div class="architect-card">
                             <span class="architect-role">Service Management</span>
                             <span class="architect-name">Mazen Alloush</span>
+                            <span class="architect-desc">لتنسيق الطلبات والمتابعة الفنية للمشاريع.</span>
                         </div>
                     </a>
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="architect-card">
-                        <span class="architect-role">Automation Models Designer</span>
+                        <span class="architect-role">Automation Designer</span>
                         <span class="architect-name">Qusai Al-Nabali</span>
+                        <span class="architect-desc">لخلق نماذج أتمتة الأعمال والحلول الذكية.</span>
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="architect-card">
                         <span class="architect-role">Content Designer</span>
                         <span class="architect-name">Mohamad Rifai</span>
+                        <span class="architect-desc">للإبداع البصري وصناعة المحتوى الرقمي.</span>
                     </div>
                 </div>
             </div>
@@ -971,9 +988,12 @@
 
             <div class="mt-5 pt-4 text-center border-top border-white border-opacity-10">
                 <p class="mb-2 opacity-75" style="font-size: 1.1rem;">جميع الحقوق محفوظة &copy; 2026 <strong>Genix</strong></p>
-                <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                    <span class="opacity-50 small">Developed by</span>
-                    <span style="color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);">Eng. Khaled Al-Ali</span>
+                <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap flex-column">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="opacity-50 small">Designed & Developed by</span>
+                        <span style="color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);">Eng. Khaled Al-Ali</span>
+                    </div>
+                    <span class="small opacity-50">مطور الأنظمة والمسؤول عن كافة الحلول البرمجية المتكاملة.</span>
                 </div>
                 <a href="/login" class="text-decoration-none text-muted opacity-25 small d-inline-block mt-3" style="transition: 0.3s;" onmouseover="this.style.opacity=1; this.style.color='#00d2ff';" onmouseout="this.style.opacity=0.25; this.style.color='';">
                     <i class="fa-solid fa-lock me-1"></i> وصول الإدارة
