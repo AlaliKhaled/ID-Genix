@@ -52,13 +52,14 @@
             position: fixed !important;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2; /* Keep it behind everything */
-            pointer-events: all; /* Ensure it feels the mouse */
+            pointer-events: none !important; /* CRITICAL: DO NOT CAPTURE TOUCH HERE */
             background: transparent;
         }
         
         #neural-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; pointer-events: none;
+            z-index: -1; 
+            pointer-events: none !important; /* CRITICAL: DO NOT CAPTURE TOUCH HERE */
         }
 
         /* Floating Animation for auto-trigger on mobile/desktop */
@@ -246,10 +247,11 @@
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
-            z-index: 100 !important; /* Ensure card is above background particles for touch */
+            z-index: 1000 !important; /* CRITICAL: Must be above EVERYTHING */
             pointer-events: auto !important;
+            touch-action: manipulation; /* Optimizes for mobile tapping */
         }
-        .glass-card * { pointer-events: none; } /* Let clicks bubble up to the card */
+        .glass-card * { pointer-events: none; } /* Ensure child clicks bubble up to card */
         .glass-card::before {
             content: '';
             position: absolute;
