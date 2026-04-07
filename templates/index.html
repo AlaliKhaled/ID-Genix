@@ -1200,11 +1200,11 @@
                     // Skip if completely out of view
                     if (rect.bottom < 0 || rect.top > h) return;
 
-                    const midPoint = rect.top + (rect.height / 2);
-                    const distToCenter = midPoint - (h / 2);
+                    // Perfect continuous mathematical interpolation from edge to edge (Zero Clamp Jump)
+                    const p = (h - rect.top) / (h + rect.height); // 0.0 at bottom edge to 1.0 at top edge
+                    let percent = (0.5 - p) * 2; // 1.0 at bottom, 0.0 at center, -1.0 at top
                     
-                    // Normalize distance from -1 to 1 based on half viewport height
-                    let percent = distToCenter / (h / 2);
+                    // Minor safety clamp to prevent browser subpixel overflow glitches
                     percent = Math.max(-1, Math.min(1, percent));
                     
                     const effectStrength = Math.abs(percent);
@@ -1224,17 +1224,16 @@
                     // True 3D Semi-Circular Orbit mapping for the inside Icon image
                     const img = card.querySelector('.service-img');
                     if (img) {
-                        // Cosine wave arch (peak 1.0 matching absolute center bounds)
+                        // Cosine wave arch (peak 1.0 matching absolute center) Softened for refinement
                         const floatArcBase = Math.cos(percent * Math.PI * 0.5); 
-                        // Extreme 45px Pop Forward strictly at Mid-Screen, dissolving away on edges
-                        const imgTranslateZ = floatArcBase * 45; 
+                        const imgTranslateZ = floatArcBase * 30; // Smoother 30px peak pop-out
                         
                         // Sine wave drifts the internal icon laterally opposite to the scroll curve
-                        const imgTranslateY = Math.sin(percent * Math.PI) * -15; 
+                        const imgTranslateY = Math.sin(percent * Math.PI) * -10; // Smoother vertical drift
                         
-                        // Continuous Pan View (Looking around feeling natively hooked)
-                        const imgRotateY = percent * -25;
-                        const imgRotateX = percent * 10;
+                        // Gentle Continuous Orbit
+                        const imgRotateY = percent * -15;
+                        const imgRotateX = percent * 8;
 
                         img.style.transform = `translate3d(0, ${imgTranslateY}px, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
                     }
