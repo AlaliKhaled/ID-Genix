@@ -12,7 +12,6 @@
     <meta property="og:url" content="https://id-genix.com">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <style>html, body { background-color: #0a0a0c !important; }</style>
     <!-- Switch back to Cairo font as requested -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
@@ -551,6 +550,26 @@
     </style>
 </head>
 <body>
+    <div id="startup-curtain" style="position: fixed; inset: 0; background-color: #0a0a0c; z-index: 999999; transition: opacity 0.5s ease;"></div>
+    <script>
+        window.addEventListener('load', () => {
+            const curtain = document.getElementById('startup-curtain');
+            if(curtain) {
+                curtain.style.opacity = '0';
+                setTimeout(() => curtain.remove(), 500);
+            }
+        });
+        // Fallback execution just in case
+        document.addEventListener('DOMContentLoaded', () => {
+            const curtain = document.getElementById('startup-curtain');
+            if(curtain) {
+                setTimeout(() => {
+                    curtain.style.opacity = '0';
+                    setTimeout(() => curtain.remove(), 500);
+                }, 1000); // 1 sec limit
+            }
+        });
+    </script>
 
     <div id="particles-js"></div>
     <canvas id="neural-canvas"></canvas>
