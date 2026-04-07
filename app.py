@@ -11,6 +11,7 @@ app = Flask(__name__)
 # Session Secret Key config
 app.secret_key = os.environ.get('SECRET_KEY', 'super_secret_key_id_genix_v3')
 app.permanent_session_lifetime = timedelta(days=7) # For Remember Me
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = int(os.environ.get('CACHE_MAX_AGE', 31536000)) # 1 Year Static Cache for returning users
 
 # Production-ready Database URI using OS environment, fallback to local sqlite
 basedir = os.path.abspath(os.path.dirname(__file__))
