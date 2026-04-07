@@ -504,30 +504,77 @@
             100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
         
+        @keyframes tiktokPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7), 0 0 0 0 rgba(238, 29, 82, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0), 0 0 0 20px rgba(238, 29, 82, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0), 0 0 0 0 rgba(238, 29, 82, 0); }
+        }
+        
         .social-icon {
             display: inline-flex;
             width: 55px;
             height: 55px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 50%;
             align-items: center;
             justify-content: center;
             color: #ffffff;
             font-size: 1.8rem;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-decoration: none;
-            backdrop-filter: blur(5px);
-            z-index: 50; 
+            backdrop-filter: blur(10px);
             position: relative;
-            margin: 0 10px;
         }
         .social-icon:hover {
             color: #fff;
-            background: rgba(168, 85, 247, 0.4);
-            border-color: #a855f7;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(168, 85, 247, 0.4);
-            transform: translateY(-5px) rotate(5deg);
+            transform: translateY(-8px) scale(1.1);
+            background: rgba(0, 242, 255, 0.2);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+        }
+        .social-icon.tiktok-btn:hover {
+            animation: tiktokPulse 1.5s infinite;
+            border-color: #ee1d52;
+            background: rgba(238, 29, 82, 0.2);
+        }
+
+        .architect-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        .architect-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        .architect-role {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--neon-blue);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .architect-name {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        .architect-link {
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .architect-link:hover .architect-name {
+            color: var(--neon-blue);
         }
 
         .hidden-element { opacity: 0; }
@@ -876,31 +923,62 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="footer-area position-relative z-index-10 mt-5 pt-3 pb-5 text-center" style="background: transparent !important; pointer-events: none;">
-        <div class="container" style="pointer-events: auto;">
-            <h4 class="text-white mb-4 fw-bold" style="text-shadow: 0 0 10px rgba(255,255,255,0.3);">اكتشف المزيد من ذكاء تصميمنا عبر قنواتنا</h4>
-            <div class="social-links d-flex justify-content-center gap-4 mb-4">
-                <a href="https://www.instagram.com/genix.team?igsh=MXFoMTB3dmU3cGtkcQ==" target="_blank" class="social-icon">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="#" target="_blank" class="social-icon">
-                    <i class="fa-brands fa-tiktok"></i>
+    <!-- Footer Section: Official Digital Architects Launch Design -->
+    <div class="footer-divider-glow mt-5" style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, var(--neon-blue), transparent); box-shadow: 0 0 15px var(--neon-blue); opacity: 0.3;"></div>
+    <footer class="footer-area py-5 position-relative" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h3 class="fw-bold mb-2">Digital Architects</h3>
+                <p class="text-muted-custom small text-uppercase" style="letter-spacing: 3px;">The Creative Team Behind ID-Genix</p>
+            </div>
+
+            <div class="row g-4 justify-content-center text-center mb-5">
+                <div class="col-12 col-md-4">
+                    <a href="mailto:Genix.team.id@gmail.com" class="architect-link">
+                        <div class="architect-card">
+                            <span class="architect-role">Service Management</span>
+                            <span class="architect-name">Mazen Alloush</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="architect-card">
+                        <span class="architect-role">Automation Models Designer</span>
+                        <span class="architect-name">Qusai Al-Nabali</span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="architect-card">
+                        <span class="architect-role">Content Designer</span>
+                        <span class="architect-name">Mohamad Rifai</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 1px; width: 80%; background: rgba(255,255,255,0.05); margin: 40px auto;"></div>
+
+            <div class="social-links-area text-center">
+                <h5 class="mb-4 small text-uppercase opacity-50" style="letter-spacing: 2px;">Official Channels</h5>
+                <div class="d-flex justify-content-center gap-4 align-items-center">
+                    <a href="https://www.instagram.com/genix.team?igsh=MXFoMTB3dmU3cGtkcQ==" target="_blank" class="social-icon" title="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@genix.team?_r=1&_t=ZS-95L3QLpDpjs" target="_blank" class="social-icon tiktok-btn" title="TikTok">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-4 text-center border-top border-white border-opacity-10">
+                <p class="mb-2 opacity-75" style="font-size: 1.1rem;">جميع الحقوق محفوظة &copy; 2026 <strong>Genix</strong></p>
+                <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                    <span class="opacity-50 small">Developed by</span>
+                    <span style="color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);">Eng. Khaled Al-Ali</span>
+                </div>
+                <a href="/login" class="text-decoration-none text-muted opacity-25 small d-inline-block mt-3" style="transition: 0.3s;" onmouseover="this.style.opacity=1; this.style.color='#00d2ff';" onmouseout="this.style.opacity=0.25; this.style.color='';">
+                    <i class="fa-solid fa-lock me-1"></i> وصول الإدارة
                 </a>
             </div>
-            
-            <!-- The Glowing Line -->
-            <div style="height: 1px; width: 100%; max-width: 500px; margin: 30px auto; background: linear-gradient(to right, transparent, rgba(168, 85, 247, 0.6), transparent); box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);"></div>
-            
-            <!-- Copyright & Branding Details -->
-            <p style="font-weight: 300; font-size: 1.25rem; color: #e2d5f8; text-shadow: 0 0 12px rgba(226, 213, 248, 0.4); margin-bottom: 8px; font-family: 'Cairo', sans-serif; letter-spacing: 1px;">
-                جميع الحقوق محفوظة &copy; 2026 Genix
-            </p>
-            <p style="font-weight: 300; font-size: 0.95rem; color: #e2d5f8; text-shadow: 0 0 8px rgba(226, 213, 248, 0.4); font-family: sans-serif !important; letter-spacing: 1.5px; opacity: 0.9;">
-                Developed by <br><span style="font-weight: 500; font-size: 1.2rem; color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.8); display: inline-block; margin-top: 8px; margin-bottom: 25px;">Eng. Khaled Al-Ali</span>
-            </p>
-            
-            <a href="/login" class="text-decoration-none text-muted opacity-25 small d-inline-block" style="transition: 0.3s; pointer-events: auto;" onmouseover="this.style.opacity=1; this.style.color='#c084fc';" onmouseout="this.style.opacity=0.25; this.style.color='';"><i class="fa-solid fa-lock"></i> وصول الإدارة</a>
         </div>
     </footer>
 
