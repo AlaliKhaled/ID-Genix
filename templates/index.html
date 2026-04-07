@@ -235,42 +235,44 @@
             padding: 40px 30px;
             height: 100%;
             transition: border-color 0.8s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.8s cubic-bezier(0.22, 1, 0.36, 1), background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
-            transform: translate3d(0,0,0); 
-            will-change: transform, box-shadow, opacity;
-            backface-visibility: hidden;
-            -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
-            z-index: 1000 !important; /* CRITICAL: Must be above EVERYTHING */
-            pointer-events: auto !important;
-            touch-action: manipulation; /* Optimizes for mobile tapping */
         }
         .glass-card > * {
             position: relative;
             z-index: 10;
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
+            top: 0;
+            pointer-events: none;
             background-color: transparent !important;
-            pointer-events: none; /* Let clicks fall through to the overlay */
         }
-        .card-click-target {
+        .service-wrapper {
+            position: relative;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+            height: 100%;
+        }
+        .service-trigger {
             position: absolute;
             inset: 0;
-            z-index: 100;
+            z-index: 2000;
             cursor: pointer;
             pointer-events: auto !important;
-            transform: translateZ(100px); /* Ensure it's above all 3D elements */
-            border-radius: inherit;
+            background: transparent;
         }
-        .glass-card:active {
+        .service-wrapper:hover .glass-card, .glass-card.in-focus {
+            border-color: rgba(0, 210, 255, 0.6);
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 12px rgba(0, 210, 255, 0.2);
+        }
+        .service-wrapper:hover .glass-card::before, .glass-card.in-focus::before {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        .service-wrapper:active .glass-card {
             transform: scale(0.97) !important;
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.6) !important;
             transition: transform 0.1s !important;
         }
         .glass-card::before {
@@ -283,20 +285,6 @@
             border-radius: inherit;
             transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateZ(-1px);
-        }
-        .glass-card > * {
-            position: relative;
-            z-index: 10;
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-            background-color: transparent !important;
-        }
-        .glass-card:hover, .glass-card.in-focus {
-            border-color: rgba(0, 210, 255, 0.6);
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 12px rgba(0, 210, 255, 0.2);
-        }
-        .glass-card:hover::before, .glass-card.in-focus::before {
-            background: rgba(15, 23, 42, 0.8);
         }
         
         .service-img {
@@ -319,7 +307,7 @@
         }
 
         @media (min-width: 769px) {
-            .glass-card:hover .service-img {
+            .service-wrapper:hover .service-img {
                 transform: translate3d(0, 0, 30px) rotateY(-12deg) rotateX(12deg);
                 filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.9)) drop-shadow(0 20px 20px rgba(0, 242, 255, 0.4)) drop-shadow(0 -10px 30px rgba(138, 43, 226, 0.5));
             }
@@ -681,9 +669,9 @@
             <h2 class="section-title">الحلول التقنية</h2>
         </div>
         <div class="row g-4 justify-content-center mt-3">
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp">
+                <div class="service-trigger" onclick="openOrderModal('تطوير المنصات')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('تطوير المنصات')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body6.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Website"></div>
@@ -694,9 +682,9 @@
                     <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.1s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.1s">
+                <div class="service-trigger" onclick="openOrderModal('الهوية البصرية')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('الهوية البصرية')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body3.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Identity"></div>
@@ -707,9 +695,9 @@
                     <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.2s">
+                <div class="service-trigger" onclick="openOrderModal('حلول الذكاء الاصطناعي')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('حلول الذكاء الاصطناعي')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body1.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="AI"></div>
@@ -720,9 +708,9 @@
                     <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.3s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.3s">
+                <div class="service-trigger" onclick="openOrderModal('تطوير تطبيقات الجوال')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('تطوير تطبيقات الجوال')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body2.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Mobile"></div>
@@ -733,9 +721,9 @@
                     <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.4s">
+                <div class="service-trigger" onclick="openOrderModal('تحليل البيانات الضخمة')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('تحليل البيانات الضخمة')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body5.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Data"></div>
@@ -746,9 +734,9 @@
                     <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.5s">
+            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.5s">
+                <div class="service-trigger" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')"></div>
                 <div class="glass-card text-center">
-                    <div class="card-click-target" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')"></div>
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
                             <div class="face front"><img src="{{ url_for('static', filename='images/body4.png') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="Social Media"></div>
