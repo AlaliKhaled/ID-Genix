@@ -48,648 +48,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
     <!-- Swiper CSS Removed for Performance -> Custom CSS3D Implemented -->
     
-    <style>
-        :root {
-            --bg-dark: #0a0a0c;
-            --card-glass: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --neon-blue: #00f2ff;
-            --neon-purple: #8b5cf6;
-            --text-main: #f1f5f9;
-            --text-muted: #cbd5e1;
-        }
-
-        #services {
-            perspective: 1200px;
-            transform-style: preserve-3d;
-        }
-        
-        #services .row, #services [class*="col-"], #services .hidden-element {
-            transform-style: preserve-3d;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        #particles-js {
-            position: fixed !important;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2; /* Keep it behind everything */
-            pointer-events: none !important; /* CRITICAL: DO NOT CAPTURE TOUCH HERE */
-            background: transparent;
-        }
-        
-        #neural-canvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; 
-            pointer-events: none !important; /* CRITICAL: DO NOT CAPTURE TOUCH HERE */
-        }
-
-        /* Floating Animation for auto-trigger on mobile/desktop */
-        @keyframes customFloat {
-            0% { transform: translateY(0px) translateZ(10px); }
-            50% { transform: translateY(-10px) translateZ(10px); }
-            100% { transform: translateY(0px) translateZ(10px); }
-        }
-
-        /* 3D Glass Cube System */
-        .cube-container {
-            position: relative;
-            perspective: 1200px;
-            transform-style: preserve-3d;
-        }
-        .cube {
-            position: relative; width: 100%; height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: translate3d(0,0,0);
-            will-change: transform;
-        }
-        .face {
-            position: absolute; left: 0; top: 0;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: inherit;
-            /* Removed backface-visibility: hidden to fix iOS Safari black box rendering bug */
-        }
-        .face.front { transform: translateZ(10px); z-index: 2; width: 100%; height: 100%; }
-        .face.back { transform: rotateY(180deg) translateZ(10px); width: 100%; height: 100%; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            box-shadow: inset 0 0 15px rgba(138, 43, 226, 0.1);
-        }
-        /* Thin Sides */
-        .face.left { width: 20px; height: 100%; left: -10px; transform: rotateY(-90deg); border-radius: 0; }
-        .face.right { width: 20px; height: 100%; right: -10px; left: auto; transform: rotateY(90deg); border-radius: 0; }
-        .face.top { height: 20px; width: 100%; top: -10px; transform: rotateX(90deg); border-radius: 0; }
-        .face.bottom { height: 20px; width: 100%; bottom: -10px; top: auto; transform: rotateX(-90deg); border-radius: 0; }
-        
-        .cube-core-light {
-            position: absolute; top: 50%; left: 50%; width: 60%; height: 60%;
-            transform: translate(-50%, -50%) translateZ(0px);
-            background: radial-gradient(circle, rgba(138, 43, 226, 0.8) 0%, transparent 70%);
-            border-radius: 50%; filter: blur(25px); opacity: 0;
-            transition: opacity 0.5s;
-        }
-        
-        /* Service Cards Cube Setup */
-        .service-img-wrap { width: 140px; height: 140px; margin: 0 auto; z-index: 10; display: flex; justify-content: center; position: relative; }
-        
-        /* Remove 3D boundaries for transparent PNG assets */
-        .service-img-wrap .face:not(.front) { display: none !important; }
-        .service-img-wrap .cube-core-light { display: none !important; }
-        
-        /* Removed customFloat animation from wrapping cube to allow precise image transformation */
-        .service-img-wrap .cube { transform: translateZ(5px); }
-        
-        @keyframes corePulse {
-            0% { transform: translate(-50%, -50%) translateZ(0px) scale(0.8); }
-            100% { transform: translate(-50%, -50%) translateZ(0px) scale(1.2); }
-        }
-        
-        .hero-section { position: relative; z-index: 10; }
-
-        .navbar-custom { 
-            position: relative; z-index: 10;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--card-border);
-            padding: 15px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .logo-container {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 5px 12px 5px 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-decoration: none;
-            transition: transform 0.3s;
-        }
-        .logo-container:hover {
-            transform: scale(1.05);
-        }
-        .logo-id { 
-            background: linear-gradient(135deg, #00d2ff, #8e44ad);
-            color: white;
-            padding: 2px 10px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.2rem;
-            margin-left: 6px;
-            font-family: sans-serif !important;
-        }
-        .logo-genix { 
-            color: #ffffff; 
-            font-weight: 900; 
-            font-size: 1.3rem; 
-            font-family: sans-serif !important;
-        }
-        
-        .nav-link { color: var(--text-muted); font-weight: 700; transition: color 0.3s; }
-        .nav-link:hover { color: var(--text-main); }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-        }
-        .btn-pulse {
-            animation: pulseGlow 2s infinite;
-            border-color: rgba(59, 130, 246, 0.8) !important;
-        }
-
-        .hero-section {
-            position: relative;
-            padding: 150px 0 100px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        .hero-title {
-            font-weight: 900;
-            font-size: 4.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.3;
-            min-height: 140px; 
-        }
-        .cursor-blink {
-            animation: blink 1s step-end infinite;
-            color: #3b82f6;
-            -webkit-text-fill-color: initial;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        @keyframes breathingGlowBtn {
-            0% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(0, 242, 255, 0.7), 0 0 15px rgba(139, 92, 246, 0.5); }
-            100% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
-        }
-
-        .btn-glow {
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-weight: 800;
-            animation: breathingGlowBtn 3s infinite;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-glow:hover {
-            transform: translateY(-5px) scale(1.05);
-            color: white;
-            animation-play-state: paused;
-        }
-
-        .glass-card {
-            background: transparent !important;
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px 30px;
-            height: 100%;
-            transition: border-color 0.8s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.8s cubic-bezier(0.22, 1, 0.36, 1), background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-            transform-style: preserve-3d;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 24px;
-            pointer-events: none !important; /* Visual only - interaction handled by trigger */
-        }
-        .glass-card * {
-            pointer-events: none !important;
-        }
-        .service-wrapper {
-            position: relative;
-            perspective: 1500px;
-            transform-style: preserve-3d;
-            height: 100%;
-            z-index: 50; /* Above section backgrounds */
-        }
-        .service-trigger {
-            position: absolute;
-            inset: 0;
-            z-index: 100;
-            cursor: pointer;
-            pointer-events: auto !important;
-            background: transparent;
-            transform: translateZ(1px); /* Stay flat at the front of the 3D context */
-        }
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--card-glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: inherit;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateZ(-1px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.05); /* The "Shine" base */
-        }
-        .service-wrapper:hover .glass-card, .service-wrapper.in-focus .glass-card {
-            border-color: rgba(0, 210, 255, 0.8) !important;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.3), inset 0 0 15px rgba(0, 210, 255, 0.2) !important;
-        }
-        .service-wrapper:active .glass-card {
-            transform: scale(0.96) !important;
-            transition: transform 0.1s !important;
-        }
-        
-        .service-img {
-            max-width: 140px;
-            height: 140px;
-            width: 100%;
-            object-fit: contain;
-            margin-bottom: 0;
-            mix-blend-mode: screen; 
-            filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.7)) drop-shadow(0 15px 15px rgba(0, 242, 255, 0.25)) drop-shadow(0 -5px 20px rgba(138, 43, 226, 0.3));
-            background-color: transparent !important;
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-            transform-style: preserve-3d;
-            transform: translate3d(0,0,0);
-            will-change: transform, filter;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            position: relative;
-            z-index: 10;
-        }
-
-        @media (min-width: 769px) {
-            .service-wrapper:hover .service-img {
-                transform: translate3d(0, 0, 30px) rotateY(-12deg) rotateX(12deg);
-                filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.9)) drop-shadow(0 20px 20px rgba(0, 242, 255, 0.4)) drop-shadow(0 -10px 30px rgba(138, 43, 226, 0.5));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .glass-card {
-                background: transparent !important;
-                transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
-            }
-            .glass-card::before {
-                background: rgba(255, 255, 255, 0.04) !important;
-                border: 1px solid rgba(255, 255, 255, 0.15) !important;
-                box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
-            }
-            .service-wrapper.in-focus .glass-card {
-                border-color: var(--neon-blue) !important;
-                box-shadow: 0 0 25px rgba(0, 210, 255, 0.3), inset 0 0 10px rgba(0, 210, 255, 0.15) !important;
-            }
-        }
-        
-        .tilt-icon {
-            display: inline-block;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateZ(5px);
-            mix-blend-mode: screen; /* Hologram Masking */
-            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
-            will-change: transform;
-        }
-        .glass-card:hover .tilt-icon, .glass-card.in-focus .tilt-icon {
-            transform: translateZ(10px) scale(1.05);
-        }
-
-        .section-title {
-            font-weight: 800;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            position: relative;
-            /* removed standard display to let override apply */
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            border-radius: 2px;
-        }
-
-        .text-muted-custom { color: var(--text-muted); line-height: 1.8; }
-
-        .modal-content.glass-modal {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: white;
-            border-radius: 24px;
-        }
-        .form-control-dark {
-            background: rgba(0,0,0,0.3) !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 12px 15px;
-        }
-        .form-control-dark:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
-            border-color: var(--neon-blue) !important;
-        }
-
-        /* 3D Glassy Spiral Gallery Engine */
-        .carousel-3d-wrapper {
-            position: relative;
-            width: 100%;
-            height: 70vh;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            perspective: 1500px;
-            z-index: 5;
-        }
-        .carousel-3d-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: pan-y;
-            cursor: grab;
-        }
-        .carousel-3d-container:active { cursor: grabbing; }
-        .carousel-3d-spinner {
-            position: relative;
-            width: 320px;
-            height: 480px;
-            transform-style: preserve-3d;
-            transition: none; /* Controlled purely via JS physics loop */
-            user-select: none;
-            -webkit-user-select: none;
-            transform-origin: 50% 50%;
-        }
-        @media (max-width: 768px) {
-            .carousel-3d-spinner {
-                width: 250px;
-                height: 380px;
-            }
-        }
-        .carousel-3d-item {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            transform-style: preserve-3d;
-            backface-visibility: visible;
-            transform-origin: 50% 50%;
-        }
-        
-        .nav-btn {
-            position: absolute;
-            top: 50%; transform: translateY(-50%); z-index: 10;
-            width: 60px; height: 60px;
-            background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            color: #fff; font-size: 1.4rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .nav-btn:hover {
-            background: rgba(139, 92, 246, 0.2);
-            border-color: rgba(139, 92, 246, 0.8);
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.6), inset 0 0 15px rgba(139, 92, 246, 0.4);
-            color: #c084fc;
-            transform: translateY(-50%) scale(1.1);
-        }
-        .nav-btn.left { left: 5%; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
-        .nav-btn.right { right: 5%; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
-        
-        .portfolio-item {
-            position: relative; overflow: hidden; cursor: pointer; display: block; width: 100%; height: 100%;
-            border-radius: 25px; transition: all 0.4s ease;
-            box-shadow: 0 10px 50px rgba(168, 85, 247, 0.4);
-            border: 1px solid transparent;
-            /* Hardware accel & 3D layout */
-            transform-style: preserve-3d;
-            transform: translateZ(0); 
-            will-change: transform, box-shadow;
-        }
-        .portfolio-item img {
-            width: 100%; height: 100%; object-fit: contain; /* Exact uncropped visibility */
-            display: block; border-radius: 25px; transition: transform 0.8s ease;
-        }
-        /* Neon Glow Effect when active/hovered */
-        .portfolio-item:hover, .centered-glassy .portfolio-item { 
-            border-color: rgba(168, 85, 247, 0.7);
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6), inset 0 0 15px rgba(168, 85, 247, 0.3);
-        }
-        .portfolio-item:hover img { transform: scale(1.05); }
-        .portfolio-item:hover .cube-core-light { opacity: 1; animation: corePulse 1s infinite alternate; }
-
-        .portfolio-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center; 
-            opacity: 0; transition: opacity 0.6s ease; border-radius: 25px;
-            background: rgba(0,0,0,0.5);
-        }
-        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
-        
-        .overlay-content { text-align: center; opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; transform: translateY(20px); mix-blend-mode: color-dodge; }
-        .portfolio-item:hover .overlay-content { opacity: 1; transform: translateY(0); }
-        .overlay-title { font-family: 'Cairo', sans-serif !important; color: white; font-size: 2.3rem; font-weight: 900; margin-bottom: 8px; letter-spacing: 2px !important; text-transform: uppercase; }
-        .overlay-subtitle { font-family: 'sans-serif' !important; color: white; font-size: 1rem; letter-spacing: 5px; font-weight: 300; }
-        
-        .whatsapp-btn {
-            position: fixed;
-            bottom: 30px; left: 30px;
-            background: #25D366; color: white;
-            width: 65px; height: 65px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 35px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
-            z-index: 1050; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
-            animation: whatsappPulse 2s infinite;
-        }
-        .whatsapp-btn:hover { transform: scale(1.15) rotate(-5deg); color: white; }
-        
-        @keyframes whatsappPulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-        
-        @keyframes tiktokPulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7), 0 0 0 0 rgba(238, 29, 82, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0), 0 0 0 20px rgba(238, 29, 82, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0), 0 0 0 0 rgba(238, 29, 82, 0); }
-        }
-        
-        .social-icon {
-            display: inline-flex;
-            width: 55px;
-            height: 55px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 1.8rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-        .social-icon:hover {
-            color: #fff;
-            transform: translateY(-8px) scale(1.1);
-            background: rgba(0, 242, 255, 0.2);
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
-        }
-        .social-icon.tiktok-btn:hover {
-            animation: tiktokPulse 1.5s infinite;
-            border-color: #ee1d52;
-            background: rgba(238, 29, 82, 0.2);
-        }
-
-        .architect-card {
-            background: rgba(15, 15, 18, 0.6); /* Deep professional dark glass */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.2); /* Premium highlight */
-            border-radius: 24px;
-            padding: 30px 25px;
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            height: 100%;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .architect-card:hover {
-            background: rgba(20, 20, 25, 0.8);
-            border-color: var(--neon-blue);
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 255, 0.2);
-        }
-        .architect-desc {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 10px;
-            line-height: 1.4;
-            opacity: 0.9;
-        }
-        .architect-role {
-            display: block;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--neon-blue);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            opacity: 0.8;
-        }
-        .architect-name {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-        .architect-link {
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .architect-link:hover .architect-name {
-            color: var(--neon-blue);
-        }
-
-        .hidden-element { opacity: 0; }
-
-        /* --- THE ULTIMATE OVERRIDE REQUESTED BY USER --- */
-        h1, h2, h3, h4, h5, h6, p, a, span, button {
-            letter-spacing: normal !important;
-            word-spacing: normal !important;
-            font-family: 'Cairo', sans-serif !important;
-        }
-
-        /* --- Landscape & Mobile Extreme Stabilization --- */
-        @media screen and (max-height: 480px), screen and (max-width: 900px) and (orientation: landscape) {
-            .glass-card, .portfolio-item {
-                transform: none !important;
-                transition: background-color 0.3s, border-color 0.3s !important;
-                will-change: auto;
-            }
-            .glass-card:hover, .glass-card.in-focus {
-                transform: scale(1.02) !important;
-                box-shadow: 0 0 15px rgba(0, 210, 255, 0.3) !important;
-            }
-            .service-img-wrap .cube, .tilt-icon {
-                transform: none !important;
-            }
-            .cube-container {
-                perspective: none;
-            }
-            .hero-section {
-                padding: 100px 0 50px;
-                min-height: auto;
-            }
-            .hero-title {
-                font-size: 3rem;
-                min-height: auto;
-            }
-            .section-title {
-                margin-bottom: 2rem;
-            }
-        }
-
-        /* Essential Mobile Optimization for Services and Modal */
-        @media screen and (max-width: 767px) {
-            #services .row {
-                flex-direction: column !important;
-                flex-wrap: nowrap !important;
-            }
-            #services [class*="col-"] {
-                width: 100% !important;
-                max-width: 100% !important;
-                margin-bottom: 20px;
-            }
-            .glass-card {
-                padding: 30px 20px !important;
-                min-height: 250px;
-            }
-            .modal-content.glass-modal {
-                margin: 10px;
-            }
-            .modal-body {
-                padding: 30px 20px !important;
-            }
-            #orderModal .row > [class*="col-"] {
-                width: 100% !important;
-                flex: 0 0 100% !important;
-            }
-        }
-    </style>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <!-- Main External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
 </head>
 <body>
     <div id="startup-curtain" style="position: fixed; inset: 0; background-color: #0a0a0c; z-index: 999999; transition: opacity 0.5s ease;"></div>
@@ -760,8 +122,9 @@
         <div class="text-center">
             <h2 class="section-title">الحلول التقنية</h2>
         </div>
-        <div class="row g-4 justify-content-center mt-3">
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp">
+        <div class="swiper services-swiper mt-3">
+            <div class="swiper-wrapper">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -772,10 +135,10 @@
                     <h4 class="fw-bold mb-3">تطوير المنصات والمواقع</h4>
                     <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('تطوير المنصات والمواقع')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير المنصات والمواقع', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.1s">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.1s">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -786,10 +149,10 @@
                     <h4 class="fw-bold mb-3">الهوية البصرية</h4>
                     <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('الهوية البصرية')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة الهوية البصرية', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.2s">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.2s">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -800,10 +163,10 @@
                     <h4 class="fw-bold mb-3">حلول الذكاء الاصطناعي</h4>
                     <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('حلول الذكاء الاصطناعي')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة حلول الذكاء الاصطناعي', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.3s">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.3s">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -814,10 +177,10 @@
                     <h4 class="fw-bold mb-3">تطبيقات الجوال المتقدمة</h4>
                     <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('تطوير تطبيقات الجوال')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير تطبيقات الجوال', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.4s">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.4s">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -828,10 +191,10 @@
                     <h4 class="fw-bold mb-3">تحليل البيانات الضخمة (Big Data)</h4>
                     <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('تحليل البيانات الضخمة')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تحليل البيانات الضخمة', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.5s">
+            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.5s">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -842,9 +205,12 @@
                     <h4 class="fw-bold mb-3">إدارة حسابات التواصل الذكية</h4>
                     <p class="text-muted-custom small">أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.</p>
                 
-                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="openOrderModal('إدارة المحتوى بالذكاء الاصطناعي')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
+                    <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة إدارة المحتوى بالذكاء الاصطناعي', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
+            </div>
+            <!-- Pagination -->
+            <div class="swiper-pagination mt-4 position-relative"></div>
         </div>
     </section>
 
@@ -1043,6 +409,28 @@
     </footer>
 
     <!-- Scripts -->
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            const swiper = new Swiper('.services-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                centeredSlides: true,
+                grabCursor: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: { slidesPerView: 2, centeredSlides: false },
+                    1024: { slidesPerView: 3, centeredSlides: false },
+                }
+            });
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
     <!-- GLightbox JS -->
@@ -1371,54 +759,7 @@
             const scrollCards = document.querySelectorAll('.glass-card');
             let ticking = false;
             
-            const handleScrollFold = () => {
-                const h = window.innerHeight;
-                scrollCards.forEach(card => {
-                    // Only apply on Mobile bounds to allow native desktop hover
-                    if (window.innerWidth > 768) {
-                        card.style.transform = '';
-                        card.style.opacity = '1';
-                        const img = card.querySelector('.service-img');
-                        if (img) img.style.transform = '';
-                        return;
-                    }
-                    
-                    const rect = card.getBoundingClientRect();
-                    // Skip if completely out of view
-                    if (rect.bottom < -50 || rect.top > h + 50) return;
-
-                    // Perfect continuous mathematical interpolation from edge to edge (Zero Clamp Jump)
-                    const p = (h - rect.top) / (h + rect.height); // 0.0 at bottom edge to 1.0 at top edge
-                    let percent = (0.5 - p) * 2; // 1.0 at bottom, 0.0 at center, -1.0 at top
-                    
-                    // Minor safety clamp to prevent browser subpixel overflow glitches
-                    percent = Math.max(-1, Math.min(1, percent));
-                    
-                    const effectStrength = Math.abs(percent);
-
-                    // Ultra-stable mobile physics to prevent hit-box drift
-                    const effectCurve = Math.pow(effectStrength, 1.2); 
-                    const translateZ = -(effectCurve * 8); 
-                    const rotateX = percent * 3; 
-                    const translateY = percent * 4; 
-                    const opacity = Math.max(0.4, 1 - (effectStrength * 0.5));
-                    
-                    card.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateX(${rotateX}deg)`;
-                    card.style.opacity = opacity.toFixed(2);
-
-                    // Fixed 3D Float for Mobile - Zero Math Variation during scroll to stop Jitter
-                    const img = card.querySelector('.service-img');
-                    if (img) {
-                        // Using strictly static values to prevent sub-pixel "jumping" during scroll
-                        const imgTranslateZ = 30; 
-                        const imgRotateY = -5;
-                        const imgRotateX = 5;
-
-                        img.style.transform = `translate3d(0, 0, ${imgTranslateZ}px) rotateX(${imgRotateX}deg) rotateY(${imgRotateY}deg)`;
-                    }
-                });
-                ticking = false;
-            };
+            const handleScrollFold = () => {};
 
             window.addEventListener('scroll', () => {
                 if (!ticking) {
@@ -1448,22 +789,6 @@
             });
             scrollCards.forEach(el => focusObserver.observe(el));
             document.querySelectorAll('.portfolio-item').forEach(el => focusObserver.observe(el));
-
-                    });
-
-                if (closest && minDistance < window.innerHeight * 0.3) {
-                    isSnapping = true;
-                    closest.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Release lock after animation
-                    setTimeout(() => { isSnapping = false; }, 800);
-                }
-            };
-
-            window.addEventListener('scroll', () => {
-                if (window.innerWidth > 768) return;
-                clearTimeout(snapTimeout);
-                snapTimeout = setTimeout(performSnap, 600); // 600ms grace period after scroll
-            }, { passive: true });
         });
     </script>
 </body>
