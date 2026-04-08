@@ -210,8 +210,8 @@
             </div>
             </div>
             <!-- Navigation -->
-            <div class="swiper-button-next" style="color: var(--neon-blue); right: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
-            <div class="swiper-button-prev" style="color: var(--neon-blue); left: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
+            <div class="swiper-button-next d-none d-md-flex" style="color: var(--neon-blue); right: 15px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
+            <div class="swiper-button-prev d-none d-md-flex" style="color: var(--neon-blue); left: 15px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
             <!-- Pagination -->
             <div class="swiper-pagination mt-4 position-relative"></div>
         </div>
@@ -418,9 +418,9 @@
     <script defer>
         document.addEventListener('DOMContentLoaded', () => {
             const swiper = new Swiper('.services-swiper', {
-                slidesPerView: 1.2,
-                spaceBetween: 30,
-                centeredSlides: true,
+                slidesPerView: 1.15,
+                spaceBetween: 15,
+                centeredSlides: false,
                 grabCursor: true,
                 loop: true,
                 navigation: {
@@ -433,8 +433,29 @@
                     dynamicBullets: true,
                 },
                 breakpoints: {
-                    768: { slidesPerView: 2, centeredSlides: false },
-                    1024: { slidesPerView: 3, centeredSlides: false },
+                    768: { slidesPerView: 2, spaceBetween: 20, centeredSlides: false },
+                    1024: { slidesPerView: 3, spaceBetween: 30, centeredSlides: false },
+                },
+                on: {
+                    init: function () {
+                        const swiperObserver = new IntersectionObserver((entries, obs) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    const el = entry.target;
+                                    const anim = el.getAttribute('data-animation') || 'animate__fadeInUp';
+                                    const delay = el.getAttribute('data-delay');
+                                    if (delay) el.style.animationDelay = delay;
+                                    el.classList.remove('hidden-element');
+                                    el.classList.add('animate__animated', anim);
+                                    obs.unobserve(el);
+                                }
+                            });
+                        }, { threshold: 0.1 });
+                        
+                        this.slides.forEach(slide => {
+                            swiperObserver.observe(slide);
+                        });
+                    }
                 }
             });
         });

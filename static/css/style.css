@@ -18,6 +18,16 @@
             transform-style: preserve-3d;
         }
 
+        .services-swiper {
+            padding: 20px 0 !important;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .services-swiper {
+                padding: 20px 60px !important;
+            }
+        }
+
         html {
             scroll-behavior: smooth;
         }
