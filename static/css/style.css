@@ -1,8 +1,8 @@
 
         :root {
             --bg-dark: #0a0a0c;
-            --card-glass: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.05);
+            --card-glass: rgba(255, 255, 255, 0.015);
+            --card-border: rgba(255, 255, 255, 0.03);
             --neon-blue: #00f2ff;
             --neon-purple: #8b5cf6;
             --text-main: #f1f5f9;
@@ -234,15 +234,6 @@
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
-            pointer-events: none !important; /* Visual only - interaction handled by trigger */
-        }
-        .glass-card * {
-            pointer-events: none !important;
-        }
-        .glass-card button, .glass-card a {
-            pointer-events: auto !important;
-            z-index: 100 !important;
-            cursor: pointer !important;
         }
         .service-wrapper {
             position: relative;
@@ -265,21 +256,21 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--card-glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             border-radius: inherit;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateZ(-1px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.05); /* The "Shine" base */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.02); /* The "Shine" base */
         }
         .service-wrapper:hover .glass-card, .service-wrapper.in-focus .glass-card {
-            border-color: rgba(0, 210, 255, 0.8) !important;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.3), inset 0 0 15px rgba(0, 210, 255, 0.2) !important;
+            border-color: rgba(0, 210, 255, 0.4) !important;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2), inset 0 0 15px rgba(0, 210, 255, 0.1) !important;
         }
         .service-wrapper:active .glass-card {
-            transform: scale(0.96) !important;
-            transition: transform 0.1s !important;
+            /* Removed vanishing scale transition to fix mobile touch 3D clipping bug */
+            border-color: var(--neon-blue) !important;
         }
         
         .service-img {

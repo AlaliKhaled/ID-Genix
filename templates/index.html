@@ -118,13 +118,14 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="container py-5 mt-5">
+    <section id="services" class="container py-5 mt-5 hidden-element" data-animation="animate__fadeInUp">
         <div class="text-center">
             <h2 class="section-title">الحلول التقنية</h2>
         </div>
-        <div class="swiper services-swiper mt-3">
-            <div class="swiper-wrapper">
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp">
+        <div class="position-relative px-md-5">
+            <div class="swiper services-swiper mt-3">
+                <div class="swiper-wrapper">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -138,7 +139,7 @@
                     <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير المنصات والمواقع', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.1s">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -152,7 +153,7 @@
                     <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة الهوية البصرية', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.2s">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -166,7 +167,7 @@
                     <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة حلول الذكاء الاصطناعي', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.3s">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -180,7 +181,7 @@
                     <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير تطبيقات الجوال', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.4s">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -194,7 +195,7 @@
                     <button class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold" style="letter-spacing: 1px; position: relative; z-index: 10; font-size: 1rem;" onclick="window.open('https://wa.me/905527223847?text=أرغب في حجز خدمة تحليل البيانات الضخمة', '_blank')">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></button>
                 </div>
             </div>
-            <div class="swiper-slide hidden-element service-wrapper" data-animation="animate__fadeInUp" data-delay="0.5s">
+            <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
                     <div class="cube-container service-img-wrap mx-auto mb-4">
                         <div class="cube">
@@ -209,11 +210,12 @@
                 </div>
             </div>
             </div>
+                <!-- Pagination -->
+                <div class="swiper-pagination mt-4 position-relative"></div>
+            </div>
             <!-- Navigation -->
-            <div class="swiper-button-next d-none d-md-flex" style="color: var(--neon-blue); right: 15px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
-            <div class="swiper-button-prev d-none d-md-flex" style="color: var(--neon-blue); left: 15px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
-            <!-- Pagination -->
-            <div class="swiper-pagination mt-4 position-relative"></div>
+            <div class="swiper-button-next d-none d-md-flex" style="color: var(--neon-blue); right: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
+            <div class="swiper-button-prev d-none d-md-flex" style="color: var(--neon-blue); left: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
         </div>
     </section>
 
@@ -435,27 +437,6 @@
                 breakpoints: {
                     768: { slidesPerView: 2, spaceBetween: 20, centeredSlides: false },
                     1024: { slidesPerView: 3, spaceBetween: 30, centeredSlides: false },
-                },
-                on: {
-                    init: function () {
-                        const swiperObserver = new IntersectionObserver((entries, obs) => {
-                            entries.forEach(entry => {
-                                if (entry.isIntersecting) {
-                                    const el = entry.target;
-                                    const anim = el.getAttribute('data-animation') || 'animate__fadeInUp';
-                                    const delay = el.getAttribute('data-delay');
-                                    if (delay) el.style.animationDelay = delay;
-                                    el.classList.remove('hidden-element');
-                                    el.classList.add('animate__animated', anim);
-                                    obs.unobserve(el);
-                                }
-                            });
-                        }, { threshold: 0.1 });
-                        
-                        this.slides.forEach(slide => {
-                            swiperObserver.observe(slide);
-                        });
-                    }
                 }
             });
         });
