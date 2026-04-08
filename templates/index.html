@@ -97,7 +97,7 @@
                     <li class="nav-item"><a class="nav-link" href="#portfolio">المعرض والذكاء الاصطناعي</a></li>
                     <li class="nav-item"><a class="nav-link" href="#why-us">لماذا نحن</a></li>
                     <li class="nav-item ms-lg-3">
-                        <a class="btn btn-outline-light rounded-pill px-4 fw-bold btn-pulse" href="#" onclick="openOrderModal('استشارة عامة')">اطلب الآن</a>
+                        <a class="btn btn-outline-light rounded-pill px-4 fw-bold btn-pulse" href="#" onclick="window.open('https://wa.me/905527223847?text=أرغب في استشارة أو طلب مشروع جديد', '_blank')">اطلب الآن</a>
                     </li>
                 </ul>
             </div>
@@ -209,6 +209,9 @@
                 </div>
             </div>
             </div>
+            <!-- Navigation -->
+            <div class="swiper-button-next" style="color: var(--neon-blue); right: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
+            <div class="swiper-button-prev" style="color: var(--neon-blue); left: 0px; filter: drop-shadow(0 0 5px rgba(0,242,255,0.8));"></div>
             <!-- Pagination -->
             <div class="swiper-pagination mt-4 position-relative"></div>
         </div>
@@ -415,13 +418,19 @@
     <script defer>
         document.addEventListener('DOMContentLoaded', () => {
             const swiper = new Swiper('.services-swiper', {
-                slidesPerView: 1,
+                slidesPerView: 1.2,
                 spaceBetween: 30,
                 centeredSlides: true,
                 grabCursor: true,
+                loop: true,
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
                 pagination: {
                     el: ".swiper-pagination",
                     clickable: true,
+                    dynamicBullets: true,
                 },
                 breakpoints: {
                     768: { slidesPerView: 2, centeredSlides: false },

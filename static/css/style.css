@@ -229,6 +229,11 @@
         .glass-card * {
             pointer-events: none !important;
         }
+        .glass-card button, .glass-card a {
+            pointer-events: auto !important;
+            z-index: 100 !important;
+            cursor: pointer !important;
+        }
         .service-wrapper {
             position: relative;
             perspective: 1500px;
