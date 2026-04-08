@@ -22,6 +22,15 @@
             padding: 20px 0 !important;
             position: relative;
         }
+        .services-swiper .swiper-slide {
+            opacity: 0.35;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+        .services-swiper .swiper-slide-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
         @media (min-width: 768px) {
             .services-swiper {
                 padding: 20px 60px !important;
@@ -234,6 +243,10 @@
             align-items: center;
             justify-content: flex-start;
             gap: 24px;
+        }
+        .glass-card button, .glass-card a {
+            pointer-events: auto !important;
+            cursor: pointer !important;
         }
         .service-wrapper {
             position: relative;
