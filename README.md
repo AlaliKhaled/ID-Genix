@@ -1,13 +1,13 @@
 # 🚀 ID-Genix: AI Tech Portal & Portfolio
 
-[![Live Demo](https://www.id-genix.com)
+[![Live Demo](https://genix-id.com/))
 
 **ID-Genix** is a professional full-stack platform designed to showcase AI-driven solutions and high-tier tech services. This project emphasizes modern UI/UX principles, specifically **Glassmorphism**, integrated with a robust Python backend.
 
 ---
 
 ## 🌐 Live Production
-The platform is fully deployed and accessible at: **[www.id-genix.com](https://www.id-genix.com)**
+The platform is fully deployed and accessible at: **[www.id-genix.com][(https://genix-id.com/))**
 
 ## 🛠 Tech Stack
 * **Backend:** Python (Flask/Django) with SQLAlchemy ORM.
