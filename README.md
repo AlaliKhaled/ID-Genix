@@ -7,7 +7,7 @@
 ---
 
 ## 🌐 Live Production
-The platform is fully deployed and accessible at: **[www.id-genix.com][(https://genix-id.com/))**
+The platform is fully deployed and accessible at: **(https://genix-id.com/)**
 
 ## 🛠 Tech Stack
 * **Backend:** Python (Flask/Django) with SQLAlchemy ORM.
