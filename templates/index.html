@@ -447,14 +447,37 @@
     </div>
 
     <!-- Contact CTA Section -->
-    <section id="contact-cta" class="py-5 position-relative mt-5" style="background: url('{{ url_for('static', filename='portfolio/contact.png') }}') center/cover no-repeat; min-height: 50vh; background-position: center top;">
-        <div class="position-absolute w-100 h-100" style="background: rgba(10, 10, 12, 0.6); top:0; left:0; backdrop-filter: blur(2px);"></div>
-        <div class="container text-center position-relative d-flex flex-column justify-content-center align-items-center" style="z-index: 2; min-height: 50vh;">
-            <div class="contact-glass-container col-12 col-md-8 mx-auto my-4 p-4 p-md-5">
-                <h2 class="section-title text-white mb-4 fs-2 fs-md-1" data-i18n="contact_title" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">هل أنت مستعد للبدء؟</h2>
-                <p class="text-white-50 fs-6 fs-md-5 mb-5 px-2" data-i18n="contact_desc">تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.</p>
-                <button class="btn btn-glow px-4 py-3 px-md-5 fs-6 fs-md-5 fw-bold" onclick="window.open('https://wa.me/905527223847', '_blank')"><span data-i18n="contact_btn">تواصل معنا الآن</span> <i class="fa-brands fa-whatsapp ms-2"></i></button>
-            </div>
+    <style>
+        .contact-section-bg {
+            background: url('{{ url_for('static', filename='portfolio/contact.png') }}') center/cover no-repeat;
+            min-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .contact-section-bg {
+                background-size: 100% auto;
+                background-position: top center;
+                background-color: var(--bg-dark);
+                min-height: 60vh;
+            }
+            .contact-overlay-mobile {
+                background: linear-gradient(to bottom, rgba(10, 10, 12, 0.4) 0%, rgba(10, 10, 12, 0.95) 80%, rgba(10, 10, 12, 1) 100%) !important;
+            }
+            .contact-content-mobile {
+                justify-content: flex-end !important;
+                padding-bottom: 2rem;
+            }
+            .contact-title-mobile {
+                font-size: 2.2rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+        }
+    </style>
+    <section id="contact-cta" class="contact-section-bg py-5 position-relative mt-5">
+        <div class="position-absolute w-100 h-100 contact-overlay-mobile" style="background: rgba(10, 10, 12, 0.7); top:0; left:0;"></div>
+        <div class="container text-center position-relative d-flex flex-column justify-content-center align-items-center contact-content-mobile" style="z-index: 2; min-height: inherit;">
+            <h2 class="section-title text-white contact-title-mobile" data-i18n="contact_title" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">هل أنت مستعد للبدء؟</h2>
+            <p class="text-white-50 fs-5 mb-5 px-3" data-i18n="contact_desc">تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.</p>
+            <button class="btn btn-glow px-5 py-3 fs-5 fw-bold" onclick="window.open('https://wa.me/905527223847', '_blank')"><span data-i18n="contact_btn">تواصل معنا الآن</span> <i class="fa-brands fa-whatsapp ms-2"></i></button>
         </div>
     </section>
 
