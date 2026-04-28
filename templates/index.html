@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center px-0 d-flex justify-content-center">
-                    <img src="{{ url_for('static', filename='portfolio/hero-banner.png') }}" alt="Hero Image" class="img-fluid animate__animated animate__fadeIn" style="max-height: 80vh; object-fit: contain; width: auto; max-width: 100%;">
+                    <img src="{{ url_for('static', filename='portfolio/hero-banner.png') }}" alt="Hero Image" class="img-fluid animate__animated animate__fadeIn" style="max-height: 80vh; object-fit: contain; width: auto; max-width: 100%;" fetchpriority="high">
                 </div>
             </div>
         </div>
@@ -447,12 +447,14 @@
     </div>
 
     <!-- Contact CTA Section -->
-    <section id="contact-cta" class="py-5 position-relative mt-5" style="background: url('{{ url_for('static', filename='portfolio/contact.png') }}') center/cover no-repeat; min-height: 50vh;">
-        <div class="position-absolute w-100 h-100" style="background: rgba(10, 10, 12, 0.7); top:0; left:0;"></div>
+    <section id="contact-cta" class="py-5 position-relative mt-5" style="background: url('{{ url_for('static', filename='portfolio/contact.png') }}') center/cover no-repeat; min-height: 50vh; background-position: center top;">
+        <div class="position-absolute w-100 h-100" style="background: rgba(10, 10, 12, 0.6); top:0; left:0; backdrop-filter: blur(2px);"></div>
         <div class="container text-center position-relative d-flex flex-column justify-content-center align-items-center" style="z-index: 2; min-height: 50vh;">
-            <h2 class="section-title text-white" data-i18n="contact_title" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">هل أنت مستعد للبدء؟</h2>
-            <p class="text-white-50 fs-5 mb-5" data-i18n="contact_desc">تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.</p>
-            <button class="btn btn-glow px-5 py-3 fs-5 fw-bold" onclick="window.open('https://wa.me/905527223847', '_blank')"><span data-i18n="contact_btn">تواصل معنا الآن</span> <i class="fa-brands fa-whatsapp ms-2"></i></button>
+            <div class="contact-glass-container col-12 col-md-8 mx-auto my-4 p-4 p-md-5">
+                <h2 class="section-title text-white mb-4 fs-2 fs-md-1" data-i18n="contact_title" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">هل أنت مستعد للبدء؟</h2>
+                <p class="text-white-50 fs-6 fs-md-5 mb-5 px-2" data-i18n="contact_desc">تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.</p>
+                <button class="btn btn-glow px-4 py-3 px-md-5 fs-6 fs-md-5 fw-bold" onclick="window.open('https://wa.me/905527223847', '_blank')"><span data-i18n="contact_btn">تواصل معنا الآن</span> <i class="fa-brands fa-whatsapp ms-2"></i></button>
+            </div>
         </div>
     </section>
 
@@ -539,7 +541,20 @@
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js" defer></script>
-    <script>document.addEventListener('DOMContentLoaded', () => { const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, openEffect: 'zoom', closeEffect: 'zoom', slideEffect: 'slide', zoomable: true }); });</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { 
+            const lightbox = GLightbox({ 
+                selector: '.glightbox', 
+                touchNavigation: true, 
+                loop: true, 
+                openEffect: 'zoom', 
+                closeEffect: 'zoom', 
+                slideEffect: 'fade', 
+                zoomable: true,
+                preload: true
+            }); 
+        });
+    </script>
     <!-- Custom CSS3D Gallery implies Swiper removed -->
     <!-- Vanilla Tilt JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
