@@ -17,6 +17,9 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://genix-id.com" />
     
+    <!-- Prevent automatic browser translation -->
+    <meta name="google" content="notranslate">
+    
     <!-- Force HTTPS Header Script -->
     <script>
         if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
@@ -51,7 +54,8 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
     <!-- Main External CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.5">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
 </head>
 <body>
     <div id="startup-curtain" style="position: fixed; inset: 0; background-color: #0a0a0c; z-index: 999999; transition: opacity 0.5s ease;"></div>
@@ -93,11 +97,21 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#services">خدماتنا</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">المعرض والذكاء الاصطناعي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#why-us">لماذا نحن</a></li>
-                    <li class="nav-item ms-lg-3">
-                        <a class="btn btn-outline-light rounded-pill px-4 fw-bold btn-pulse" href="#" onclick="window.open('https://wa.me/905527223847?text=أرغب في استشارة أو طلب مشروع جديد', '_blank')">اطلب الآن</a>
+                    <li class="nav-item"><a class="nav-link" href="#services" data-i18n="nav_services">خدماتنا</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio" data-i18n="nav_portfolio">المعرض والذكاء الاصطناعي</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#why-us" data-i18n="nav_why_us">لماذا نحن</a></li>
+                    <li class="nav-item dropdown ms-lg-3">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="current-lang"><span class="fi fi-sa me-1"></span> العربية</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark glass-panel" aria-labelledby="langDropdown" style="min-width: 120px;">
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="changeLang('ar')"><span class="fi fi-sa me-2"></span> العربية</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="changeLang('en')"><span class="fi fi-gb me-2"></span> English</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="changeLang('tr')"><span class="fi fi-tr me-2"></span> Türkçe</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-outline-light rounded-pill px-4 fw-bold btn-pulse" href="#" data-i18n="nav_order" onclick="window.open('https://wa.me/905527223847?text=أرغب في استشارة أو طلب مشروع جديد', '_blank')">اطلب الآن</a>
                     </li>
                 </ul>
             </div>
@@ -105,14 +119,38 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container text-center">
-            <h1 class="hero-title" id="typewriter-text"><span class="cursor-blink">|</span></h1>
-            <p class="lead mt-4 mb-5 text-muted-custom w-75 mx-auto animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1.2rem;">
-                نحن نصمم أنظمة وتجارب رقمية متكاملة مدعومة بالذكاء الاصطناعي المتقدم لترتقي بأعمالك إلى آفاق غير مسبوقة.
-            </p>
-            <div class="animate__animated animate__zoomIn animate__delay-2s">
-                <a href="#services" class="btn btn-glow">استكشف خدماتنا <i class="fa-solid fa-arrow-left ms-2"></i></a>
+    <section class="hero-section d-flex align-items-stretch" style="min-height: 100vh; position: relative; overflow: hidden; padding-top: 100px; padding-bottom: 40px;">
+        <div class="container-fluid px-0 h-100" style="position: relative; z-index: 2;">
+            <div class="row align-items-center flex-column-reverse flex-lg-row-reverse h-100 m-0">
+                <div class="col-lg-6 text-center text-lg-start d-flex flex-column justify-content-center px-4 px-lg-5">
+                    <h1 class="hero-title" id="typewriter-text"><span class="cursor-blink">|</span></h1>
+                    <p class="lead mt-4 mb-5 text-muted-custom animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8);" data-i18n="hero_desc">
+                        نحن نصمم أنظمة وتجارب رقمية متكاملة مدعومة بالذكاء الاصطناعي المتقدم لترتقي بأعمالك إلى آفاق غير مسبوقة.
+                    </p>
+                    <div class="animate__animated animate__zoomIn animate__delay-2s">
+                        <a href="#portfolio" class="btn btn-glow"><span data-i18n="hero_btn">استكشف أعمالنا</span> <i class="fa-solid fa-arrow-left ms-2 dir-icon"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center px-0 d-flex justify-content-center">
+                    <img src="{{ url_for('static', filename='portfolio/hero-banner.png') }}" alt="Hero Image" class="img-fluid animate__animated animate__fadeIn" style="max-height: 80vh; object-fit: contain; width: auto; max-width: 100%;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container py-5 my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 hidden-element" data-animation="animate__fadeInRight">
+                <h2 class="section-title text-start" data-i18n="about_title">رؤيتنا الإبداعية</h2>
+                <p class="text-muted-custom fs-5" style="line-height: 1.8;" data-i18n="about_desc">
+                    نسعى لتقديم تجارب بصرية مبهرة تدمج بين الابتكار التقني والتصميم الحديث لترك بصمة لا تُنسى في عالم الأعمال الرقمية. نحن نستلهم من المستقبل لنبني لك واجهة تميزك وتتجاوز التوقعات.
+                </p>
+            </div>
+            <div class="col-lg-6 hidden-element" data-animation="animate__fadeInLeft">
+                <div class="p-2" style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 20px; box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);">
+                    <img src="{{ url_for('static', filename='portfolio/about-vision.png') }}" class="w-100 rounded-4" style="object-fit: cover; max-height: 400px;" alt="رؤيتنا" loading="lazy">
+                </div>
             </div>
         </div>
     </section>
@@ -120,93 +158,75 @@
     <!-- Services Section -->
     <section id="services" class="container py-5 mt-5 hidden-element" data-animation="animate__fadeInUp">
         <div class="text-center">
-            <h2 class="section-title">الحلول التقنية</h2>
+            <h2 class="section-title" data-i18n="services_title">الحلول التقنية</h2>
         </div>
         <div class="position-relative px-md-5">
             <div class="swiper services-swiper mt-3">
                 <div class="swiper-wrapper">
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body6.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" width="140" height="140" alt="تطوير المنصات والمواقع ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body6.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">تطوير المنصات والمواقع</h4>
-                    <p class="text-muted-custom small">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_1_title">تطوير المنصات والمواقع</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_1_desc">أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير المنصات والمواقع" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير المنصات والمواقع" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body3.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" width="140" height="140" alt="الهوية البصرية ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body3.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">الهوية البصرية</h4>
-                    <p class="text-muted-custom small">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_2_title">الهوية البصرية</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_2_desc">تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة الهوية البصرية" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة الهوية البصرية" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body1.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" alt="حلول الذكاء الاصطناعي ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body1.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">حلول الذكاء الاصطناعي</h4>
-                    <p class="text-muted-custom small">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_3_title">حلول الذكاء الاصطناعي</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_3_desc">دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة حلول الذكاء الاصطناعي" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة حلول الذكاء الاصطناعي" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body2.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" width="140" height="140" alt="تطبيقات الجوال المتقدمة ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body2.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">تطبيقات الجوال المتقدمة</h4>
-                    <p class="text-muted-custom small">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_4_title">تطبيقات الجوال المتقدمة</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_4_desc">تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير تطبيقات الجوال" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تطوير تطبيقات الجوال" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body5.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" width="140" height="140" alt="تحليل البيانات الضخمة ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body5.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">تحليل البيانات الضخمة (Big Data)</h4>
-                    <p class="text-muted-custom small">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_5_title">تحليل البيانات الضخمة (Big Data)</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_5_desc">تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تحليل البيانات الضخمة" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة تحليل البيانات الضخمة" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             <div class="swiper-slide service-wrapper">
                 <div class="glass-card text-center">
-                    <div class="cube-container service-img-wrap mx-auto mb-4">
-                        <div class="cube">
-                            <div class="face front"><img src="{{ url_for('static', filename='images/body4.webp') }}" class="service-img w-100 h-100 object-fit-contain m-0" width="140" height="140" alt="إدارة حسابات التواصل الذكية ID-Genix" loading="lazy"></div>
-                            <div class="face back glass-panel"></div><div class="face left glass-panel"></div><div class="face right glass-panel"></div><div class="face top glass-panel"></div><div class="face bottom glass-panel"></div><div class="cube-core-light"></div>
-                        </div>
+                    <div class="service-img-wrap mx-auto mb-4" style="width: 150px; height: 150px; border-radius: 50%; padding: 20px; background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 25px rgba(0, 242, 255, 0.15); border: 1px solid rgba(0, 242, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                        <img src="{{ url_for('static', filename='images/body4.webp') }}" class="w-100 h-100 drop-shadow-glow" style="object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));" loading="lazy">
                     </div>
-                    <h4 class="fw-bold mb-3">إدارة حسابات التواصل الذكية</h4>
-                    <p class="text-muted-custom small">أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.</p>
+                    <h4 class="fw-bold mb-3" data-i18n="srv_6_title">إدارة حسابات التواصل الذكية</h4>
+                    <p class="text-muted-custom small" data-i18n="srv_6_desc">أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.</p>
                 
-                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة إدارة المحتوى بالذكاء الاصطناعي" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;">حجز وتسعير الخدمة <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
+                    <a href="https://wa.me/905527223847?text=أرغب في حجز خدمة إدارة المحتوى بالذكاء الاصطناعي" target="_blank" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold d-inline-block" style="letter-spacing: 1px; position: relative; z-index: 105; font-size: 1rem; pointer-events: auto !important;"><span data-i18n="srv_btn">حجز وتسعير الخدمة</span> <i class="fa-solid fa-arrow-left fa-sm ms-2"></i></a>
                 </div>
             </div>
             </div>
@@ -219,73 +239,152 @@
         </div>
     </section>
 
-    <!-- AI Portfolio Section (Premium Interactive Swiper) -->
+    <!-- Categorized Tab Portfolio Section -->
     <section id="portfolio" class="container py-5 my-5">
-        <div class="text-center">
-            <h2 class="section-title">إبداعاتنا التقنية</h2>
-            <p class="text-muted-custom mb-5">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي المتطورة التي نستخدمها.</p>
+        <div class="text-center hidden-element" data-animation="animate__fadeInUp">
+            <h2 class="section-title" data-i18n="portfolio_title">معرض الأعمال</h2>
+            <p class="text-muted-custom mb-4" data-i18n="portfolio_desc">مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي والمصممة لتلبية تطلعاتك.</p>
         </div>
         
-        <div class="carousel-3d-wrapper">
-            <div class="carousel-3d-container" id="carousel3D">
-                <div class="carousel-3d-spinner" id="carouselSpinner">
-                    {% for image in portfolio_images %}
-                    <div class="carousel-3d-item">
-                        <a href="{{ url_for('static', filename='portfolio/' ~ image) }}" class="portfolio-item glightbox cube-container" data-gallery="portfolio-gallery">
-                            <div class="cube" style="width: 100%; height: 100%;">
-                                <div class="face front">
-                                    <img src="{{ url_for('static', filename='portfolio/' ~ image) }}" alt="إبداعاتنا - النماذج التقنية التفاعلية ID-Genix" style="width: 100%; height: 100%; object-fit: contain; border-radius: 25px;">
-                                    <div class="portfolio-overlay">
-                                        <div class="overlay-content english-text">
-                                            <h4 class="overlay-title">BRAND IDENTITY</h4>
-                                            <span class="overlay-subtitle">CLICK TO EXPLORE</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="face back glass-panel"></div>
-                                <div class="face left glass-panel"></div>
-                                <div class="face right glass-panel"></div>
-                                <div class="face top glass-panel"></div>
-                                <div class="face bottom glass-panel"></div>
-                                <div class="cube-core-light pulse-dot"></div>
+        <!-- Filter Tabs -->
+        <div class="portfolio-tabs-wrapper mb-5 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
+            <ul class="nav nav-pills justify-content-lg-center flex-nowrap pb-2 portfolio-tabs" id="portfolio-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active glass-btn" id="tab-premium" data-bs-toggle="pill" data-bs-target="#content-premium" type="button" role="tab" data-i18n="tab_premium">باقات احترافية</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link glass-btn" id="tab-media" data-bs-toggle="pill" data-bs-target="#content-media" type="button" role="tab" data-i18n="tab_media">إنتاج مرئي</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link glass-btn" id="tab-branding" data-bs-toggle="pill" data-bs-target="#content-branding" type="button" role="tab" data-i18n="tab_branding">هوية وويب</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link glass-btn" id="tab-general" data-bs-toggle="pill" data-bs-target="#content-general" type="button" role="tab" data-i18n="tab_general">خدمات عامة</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="portfolio-tabContent">
+            <!-- Premium Packages -->
+            <div class="tab-pane fade show active" id="content-premium" role="tabpanel">
+                <div class="d-flex justify-content-center align-items-center py-5">
+                    <div class="gallery-stack" onclick="document.getElementById('premium-trigger').click()">
+                        <div class="stack-bg stack-bg-3" style="background-image: url('{{ url_for('static', filename='portfolio/Premium-Packages4.png') }}'); background-size: cover; background-position: center; filter: brightness(0.4);"></div>
+                        <div class="stack-bg stack-bg-2" style="background-image: url('{{ url_for('static', filename='portfolio/Premium-Packages3.png') }}'); background-size: cover; background-position: center; filter: brightness(0.6);"></div>
+                        <div class="stack-bg stack-bg-1" style="background-image: url('{{ url_for('static', filename='portfolio/Premium-Packages2.png') }}'); background-size: cover; background-position: center; filter: brightness(0.8);"></div>
+                        <div class="front-cover portfolio-glass-card">
+                            <img src="{{ url_for('static', filename='portfolio/Premium-Packages1.png') }}" class="w-100 h-100" style="object-fit: cover;" alt="Premium Packages Cover" loading="lazy">
+                            <div class="cover-overlay d-flex flex-column align-items-center justify-content-center">
+                                <i class="fa-solid fa-layer-group fs-1 text-white shadow-sm mb-3"></i>
+                                <span class="text-white fw-bold px-4 py-2 rounded-pill" style="letter-spacing: 1px; background: rgba(0,242,255,0.2); border: 1px solid rgba(0,242,255,0.4); backdrop-filter: blur(5px);">تصفح معرض الأعمال</span>
                             </div>
-                        </a>
+                        </div>
                     </div>
+                </div>
+                <div class="d-none">
+                    {% for i in range(1, 9) %}
+                    <a href="{{ url_for('static', filename='portfolio/Premium-Packages' ~ i ~ '.png') }}" class="glightbox" data-gallery="portfolio-premium" {% if loop.first %}id="premium-trigger"{% endif %}></a>
                     {% endfor %}
                 </div>
             </div>
             
-            <!-- Neon Space Arrows (Desktop) -->
-            <button class="nav-btn left d-none d-md-flex" id="spinLeft"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="nav-btn right d-none d-md-flex" id="spinRight"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- Media Production -->
+            <div class="tab-pane fade" id="content-media" role="tabpanel">
+                <div class="d-flex justify-content-center align-items-center py-5">
+                    <div class="gallery-stack" onclick="document.getElementById('media-trigger').click()">
+                        <div class="stack-bg stack-bg-3" style="background-image: url('{{ url_for('static', filename='portfolio/Media-Production4.png') }}'); background-size: cover; background-position: center; filter: brightness(0.4);"></div>
+                        <div class="stack-bg stack-bg-2" style="background-image: url('{{ url_for('static', filename='portfolio/Media-Production3.png') }}'); background-size: cover; background-position: center; filter: brightness(0.6);"></div>
+                        <div class="stack-bg stack-bg-1" style="background-image: url('{{ url_for('static', filename='portfolio/Media-Production2.png') }}'); background-size: cover; background-position: center; filter: brightness(0.8);"></div>
+                        <div class="front-cover portfolio-glass-card">
+                            <img src="{{ url_for('static', filename='portfolio/Media-Production1.png') }}" class="w-100 h-100" style="object-fit: cover;" alt="Media Production Cover" loading="lazy">
+                            <div class="cover-overlay d-flex flex-column align-items-center justify-content-center">
+                                <i class="fa-solid fa-layer-group fs-1 text-white shadow-sm mb-3"></i>
+                                <span class="text-white fw-bold px-4 py-2 rounded-pill" style="letter-spacing: 1px; background: rgba(0,242,255,0.2); border: 1px solid rgba(0,242,255,0.4); backdrop-filter: blur(5px);">تصفح معرض الأعمال</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-none">
+                    {% for i in range(1, 5) %}
+                    <a href="{{ url_for('static', filename='portfolio/Media-Production' ~ i ~ '.png') }}" class="glightbox" data-gallery="portfolio-media" {% if loop.first %}id="media-trigger"{% endif %}></a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Digital Branding -->
+            <div class="tab-pane fade" id="content-branding" role="tabpanel">
+                <div class="d-flex justify-content-center align-items-center py-5">
+                    <div class="gallery-stack" onclick="document.getElementById('branding-trigger').click()">
+                        <div class="stack-bg stack-bg-3" style="background-image: url('{{ url_for('static', filename='portfolio/Digital-Branding4.png') }}'); background-size: cover; background-position: center; filter: brightness(0.4);"></div>
+                        <div class="stack-bg stack-bg-2" style="background-image: url('{{ url_for('static', filename='portfolio/Digital-Branding3.png') }}'); background-size: cover; background-position: center; filter: brightness(0.6);"></div>
+                        <div class="stack-bg stack-bg-1" style="background-image: url('{{ url_for('static', filename='portfolio/Digital-Branding2.png') }}'); background-size: cover; background-position: center; filter: brightness(0.8);"></div>
+                        <div class="front-cover portfolio-glass-card">
+                            <img src="{{ url_for('static', filename='portfolio/Digital-Branding1.png') }}" class="w-100 h-100" style="object-fit: cover;" alt="Digital Branding Cover" loading="lazy">
+                            <div class="cover-overlay d-flex flex-column align-items-center justify-content-center">
+                                <i class="fa-solid fa-layer-group fs-1 text-white shadow-sm mb-3"></i>
+                                <span class="text-white fw-bold px-4 py-2 rounded-pill" style="letter-spacing: 1px; background: rgba(0,242,255,0.2); border: 1px solid rgba(0,242,255,0.4); backdrop-filter: blur(5px);">تصفح معرض الأعمال</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-none">
+                    {% for i in range(1, 7) %}
+                    <a href="{{ url_for('static', filename='portfolio/Digital-Branding' ~ i ~ '.png') }}" class="glightbox" data-gallery="portfolio-branding" {% if loop.first %}id="branding-trigger"{% endif %}></a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- General Services -->
+            <div class="tab-pane fade" id="content-general" role="tabpanel">
+                <div class="d-flex justify-content-center align-items-center py-5">
+                    <div class="gallery-stack" onclick="document.getElementById('general-trigger').click()">
+                        <div class="stack-bg stack-bg-3" style="background-image: url('{{ url_for('static', filename='portfolio/service-4.png') }}'); background-size: cover; background-position: center; filter: brightness(0.4);"></div>
+                        <div class="stack-bg stack-bg-2" style="background-image: url('{{ url_for('static', filename='portfolio/service-3.png') }}'); background-size: cover; background-position: center; filter: brightness(0.6);"></div>
+                        <div class="stack-bg stack-bg-1" style="background-image: url('{{ url_for('static', filename='portfolio/service-2.png') }}'); background-size: cover; background-position: center; filter: brightness(0.8);"></div>
+                        <div class="front-cover portfolio-glass-card">
+                            <img src="{{ url_for('static', filename='portfolio/service-1.png') }}" class="w-100 h-100" style="object-fit: cover;" alt="General Services Cover" loading="lazy">
+                            <div class="cover-overlay d-flex flex-column align-items-center justify-content-center">
+                                <i class="fa-solid fa-layer-group fs-1 text-white shadow-sm mb-3"></i>
+                                <span class="text-white fw-bold px-4 py-2 rounded-pill" style="letter-spacing: 1px; background: rgba(0,242,255,0.2); border: 1px solid rgba(0,242,255,0.4); backdrop-filter: blur(5px);">تصفح معرض الأعمال</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-none">
+                    {% for i in range(1, 5) %}
+                    <a href="{{ url_for('static', filename='portfolio/service-' ~ i ~ '.png') }}" class="glightbox" data-gallery="portfolio-general" {% if loop.first %}id="general-trigger"{% endif %}></a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Why Us Section -->
     <section id="why-us" class="container py-5 my-5">
         <div class="text-center">
-            <h2 class="section-title">لماذا نحن؟</h2>
+            <h2 class="section-title" data-i18n="why_title">لماذا نحن؟</h2>
         </div>
         <div class="row g-4 mt-3">
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp">
-                <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-network-wired fs-1 text-primary mb-3 tilt-icon"></i>
-                    <h4 class="fw-bold">بنية تحتية متطورة</h4>
-                    <p class="text-muted-custom small">نقدم حلولاً برمجية متكاملة تعتمد على أحدث تقنيات السحاب والذكاء الاصطناعي لضمان استقرار ونمو أعمالكم.</p>
+                <div class="glass-card text-center p-3" style="min-height: 220px;">
+                    <i class="fa-solid fa-network-wired fs-2 text-primary mb-3 tilt-icon"></i>
+                    <h5 class="fw-bold" data-i18n="why_1_title">بنية تحتية متطورة</h5>
+                    <p class="text-muted-custom small mb-0" style="font-size: 0.85rem;" data-i18n="why_1_desc">نقدم حلولاً برمجية متكاملة تعتمد على أحدث تقنيات السحاب والذكاء الاصطناعي لضمان استقرار ونمو أعمالكم.</p>
                 </div>
             </div>
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.2s">
-                <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-shield-halved fs-1 text-info mb-3 tilt-icon"></i>
-                    <h4 class="fw-bold">تشفير وأمان فائق</h4>
-                    <p class="text-muted-custom small">نظام أمني متين يضمن سرية الأعمال ومعلومات عملائك بأقصى مستويات التشفير للبيانات وحمايتها.</p>
+                <div class="glass-card text-center p-3" style="min-height: 220px;">
+                    <i class="fa-solid fa-shield-halved fs-2 text-info mb-3 tilt-icon"></i>
+                    <h5 class="fw-bold" data-i18n="why_2_title">تشفير وأمان فائق</h5>
+                    <p class="text-muted-custom small mb-0" style="font-size: 0.85rem;" data-i18n="why_2_desc">نظام أمني متين يضمن سرية الأعمال ومعلومات عملائك بأقصى مستويات التشفير للبيانات وحمايتها.</p>
                 </div>
             </div>
             <div class="col-md-4 hidden-element" data-animation="animate__fadeInUp" data-delay="0.4s">
-                <div class="glass-card text-center p-4">
-                    <i class="fa-solid fa-headset fs-1 text-success mb-3 tilt-icon"></i>
-                    <h4 class="fw-bold">ارتباط مستمر</h4>
-                    <p class="text-muted-custom small">فريق مخصص للتواصل الدائم والدعم الفني، يشاركك مراحل التطور لضمان خروج المنتج كما تتمنى تماماً.</p>
+                <div class="glass-card text-center p-3" style="min-height: 220px;">
+                    <i class="fa-solid fa-headset fs-2 text-success mb-3 tilt-icon"></i>
+                    <h5 class="fw-bold" data-i18n="why_3_title">ارتباط مستمر</h5>
+                    <p class="text-muted-custom small mb-0" style="font-size: 0.85rem;" data-i18n="why_3_desc">فريق مخصص للتواصل الدائم والدعم الفني، يشاركك مراحل التطور لضمان خروج المنتج كما تتمنى تماماً.</p>
                 </div>
             </div>
         </div>
@@ -297,29 +396,29 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content glass-modal animate__animated animate__zoomIn">
                 <div class="modal-header border-bottom border-secondary border-opacity-25 py-3">
-                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-rocket ms-2 text-primary"></i> تسجيل طلب مشروع تقني</h5>
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-rocket ms-2 text-primary"></i> <span data-i18n="mod_title">تسجيل طلب مشروع تقني</span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5" id="modalBodyForm">
                     <form id="quickOrderForm">
                         <div class="row">
                             <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label text-light opacity-75 small">الاسم الكامل أو اسم الجهة <span class="text-danger">*</span></label>
+                                <label class="form-label text-light opacity-75 small"><span data-i18n="mod_name">الاسم الكامل أو اسم الجهة</span> <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-dark" id="modalName" required>
                             </div>
                             <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label text-light opacity-75 small">الخدمة المرتبطة بالشأن <span class="text-danger">*</span></label>
+                                <label class="form-label text-light opacity-75 small"><span data-i18n="mod_srv">الخدمة المرتبطة بالشأن</span> <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-dark text-primary" id="modalService" readonly>
                             </div>
                             <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label text-light opacity-75 small">رقم الهاتف للتواصل <span class="text-danger">*</span></label>
+                                <label class="form-label text-light opacity-75 small"><span data-i18n="mod_phone">رقم الهاتف للتواصل</span> <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-phone"></i></span>
                                     <input type="tel" class="form-control form-control-dark border-start-0" id="modalPhone" required dir="ltr" placeholder="+966 5X XXX XXXX">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label text-light opacity-75 small">البريد الإلكتروني <span class="text-danger">*</span></label>
+                                <label class="form-label text-light opacity-75 small"><span data-i18n="mod_email">البريد الإلكتروني</span> <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-dark border-secondary text-white"><i class="fa-solid fa-envelope"></i></span>
                                     <input type="email" class="form-control form-control-dark border-start-0" id="modalEmail" required dir="ltr" placeholder="example@domain.com">
@@ -327,72 +426,42 @@
                             </div>
                         </div>
                         <div class="mb-4 mt-2">
-                            <label class="form-label text-light opacity-75 small">نظرة عامة على متطلبات المشروع <span class="text-danger">*</span></label>
-                            <textarea class="form-control form-control-dark" id="modalDetails" rows="4" required placeholder="يرجى كتابة تفاصيل المشكلة التقنية أو فكرة المشروع باختصار لفهم أعمق للحل المناسب..."></textarea>
+                            <label class="form-label text-light opacity-75 small"><span data-i18n="mod_req">نظرة عامة على متطلبات المشروع</span> <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-dark" id="modalDetails" rows="4" required placeholder="يرجى كتابة تفاصيل المشكلة التقنية أو فكرة المشروع باختصار لفهم أعمق للحل المناسب..." data-i18n="mod_ph"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-glow w-100 py-3 fs-5" id="submitBtn">تأكيد إرسال الطلب الآمن <i class="fa-solid fa-paper-plane ms-2"></i></button>
+                        <button type="submit" class="btn btn-glow w-100 py-3 fs-5" id="submitBtn"><span data-i18n="mod_btn">تأكيد إرسال الطلب الآمن</span> <i class="fa-solid fa-paper-plane ms-2"></i></button>
                     </form>
                 </div>
                 
                 <!-- Success State (Hidden initially) -->
                 <div class="modal-body p-5 text-center d-none" id="modalBodySuccess">
                     <i class="fa-regular fa-circle-check text-success mb-3 animate__animated animate__bounceIn" style="font-size: 6rem;"></i>
-                    <h3 class="fw-bold animate__animated animate__fadeInUp">تم استلام طلبك بنجاح وفي أمان!</h3>
+                    <h3 class="fw-bold animate__animated animate__fadeInUp" data-i18n="mod_succ_t">تم استلام طلبك بنجاح وفي أمان!</h3>
                     <p class="text-muted-custom mt-3 animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1.1rem;">
-                        يسرنا اختيارك لمعايير الجودة التقنية.<br>لقد تم إبلاغ فريق المطورين والإدارة بشكل فوري وسيتم التواصل معك قريباً.
+                        <span data-i18n="mod_succ_d">يسرنا اختيارك لمعايير الجودة التقنية.<br>لقد تم إبلاغ فريق المطورين والإدارة بشكل فوري وسيتم التواصل معك قريباً.</span>
                     </p>
-                    <button class="btn btn-primary mt-4 px-5 py-2 rounded-pill animate__animated animate__fadeInUp animate__delay-2s fw-bold" data-bs-dismiss="modal">العودة للموقع</button>
+                    <button class="btn btn-primary mt-4 px-5 py-2 rounded-pill animate__animated animate__fadeInUp animate__delay-2s fw-bold" data-bs-dismiss="modal" data-i18n="mod_succ_b">العودة للموقع</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Contact CTA Section -->
+    <section id="contact-cta" class="py-5 position-relative mt-5" style="background: url('{{ url_for('static', filename='portfolio/contact.png') }}') center/cover no-repeat; min-height: 50vh;">
+        <div class="position-absolute w-100 h-100" style="background: rgba(10, 10, 12, 0.7); top:0; left:0;"></div>
+        <div class="container text-center position-relative d-flex flex-column justify-content-center align-items-center" style="z-index: 2; min-height: 50vh;">
+            <h2 class="section-title text-white" data-i18n="contact_title" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">هل أنت مستعد للبدء؟</h2>
+            <p class="text-white-50 fs-5 mb-5" data-i18n="contact_desc">تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.</p>
+            <button class="btn btn-glow px-5 py-3 fs-5 fw-bold" onclick="window.open('https://wa.me/905527223847', '_blank')"><span data-i18n="contact_btn">تواصل معنا الآن</span> <i class="fa-brands fa-whatsapp ms-2"></i></button>
+        </div>
+    </section>
+
     <!-- Footer Section: Official Digital Architects Launch Design -->
-    <div class="footer-divider-glow mt-5" style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, var(--neon-blue), transparent); box-shadow: 0 0 15px var(--neon-blue); opacity: 0.3;"></div>
+    <div class="footer-divider-glow" style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, var(--neon-blue), transparent); box-shadow: 0 0 15px var(--neon-blue); opacity: 0.3;"></div>
     <footer class="footer-area py-5 position-relative" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
         <div class="container">
-            <div class="text-center mb-5">
-                <h3 class="fw-bold mb-2">Digital Architects</h3>
-                <p class="text-muted-custom small text-uppercase" style="letter-spacing: 3px;">The Creative Team Behind ID-Genix</p>
-            </div>
-
-            <div class="row g-4 justify-content-center text-center mb-5">
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="architect-card">
-                        <span class="architect-role" style="color: var(--neon-blue); letter-spacing: 1px; font-weight: bold;">Designed & Developed By</span>
-                        <span class="architect-name" style="color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);">Eng. Khaled Al-Ali</span>
-                        <span class="architect-desc">مطور الأنظمة والمسؤول عن كافة الحلول البرمجية المتكاملة.</span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <a href="mailto:Genix.team.id@gmail.com" class="architect-link">
-                        <div class="architect-card">
-                            <span class="architect-role">Service Management</span>
-                            <span class="architect-name">Mazen Alloush</span>
-                            <span class="architect-email" style="display: block; font-size: 0.8rem; color: #cbd5e1; margin-top: 5px; opacity: 0.8;"><i class="fa-solid fa-envelope me-1"></i>genix.team.id@gmail.com</span>
-                            <span class="architect-desc">لتنسيق الطلبات والمتابعة الفنية للمشاريع.</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="architect-card">
-                        <span class="architect-role">Automation Designer</span>
-                        <span class="architect-name">Qusai Al-Nabali</span>
-                        <span class="architect-desc">لإنتاج نماذج أتمتة الأعمال والحلول الذكية.</span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="architect-card">
-                        <span class="architect-role">Content Designer</span>
-                        <span class="architect-name">Mohamad Rifai</span>
-                        <span class="architect-desc">للإبداع البصري وصناعة المحتوى الرقمي.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="height: 1px; width: 80%; background: rgba(255,255,255,0.05); margin: 40px auto;"></div>
-
-            <div class="social-links-area text-center">
+            <!-- Social Links Area -->
+            <div class="social-links-area text-center mb-5">
                 <h5 class="mb-4 small text-uppercase opacity-50" style="letter-spacing: 2px;">Official Channels</h5>
                 <div class="d-flex justify-content-center gap-4 align-items-center">
                     <a href="https://www.instagram.com/genix.team" target="_blank" class="social-icon" title="Instagram">
@@ -404,11 +473,27 @@
                 </div>
             </div>
 
-            <div class="mt-5 pt-4 text-center border-top border-white border-opacity-10">
-                <p class="mb-2 opacity-75" style="font-size: 1.1rem;">جميع الحقوق محفوظة &copy; 2026 <strong>Genix</strong></p>
-                <a href="/login" class="text-decoration-none text-muted opacity-25 small d-inline-block mt-3" style="transition: 0.3s;" onmouseover="this.style.opacity=1; this.style.color='#00d2ff';" onmouseout="this.style.opacity=0.25; this.style.color='';">
-                    <i class="fa-solid fa-lock me-1"></i> وصول الإدارة
-                </a>
+            <!-- Bottom Footer Area -->
+            <div class="text-center border-top border-white border-opacity-10 pt-5">
+                <p class="mb-4 opacity-75" style="font-size: 1.1rem;"><span data-i18n="ftr_copy">جميع الحقوق محفوظة &copy; 2026 <strong>Genix</strong></span></p>
+                
+                <!-- Simple Developer Credit -->
+                <div class="d-inline-flex flex-column flex-md-row align-items-center justify-content-center gap-2 gap-md-3 py-2 px-4 rounded-pill" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem;">
+                    <div>
+                        <span class="text-muted-custom me-1" data-i18n="ftr_r1">Designed & Developed By</span>
+                        <strong style="color: #fbbf24; letter-spacing: 0.5px;">Eng. Khaled Al-Ali</strong>
+                    </div>
+                    <div class="d-none d-md-block" style="width: 1px; height: 15px; background: rgba(255,255,255,0.2);"></div>
+                    <a href="mailto:genix.team.id@gmail.com" class="text-decoration-none d-flex align-items-center" style="color: var(--neon-blue); transition: 0.3s;" onmouseover="this.style.textShadow='0 0 10px rgba(0,242,255,0.5)'" onmouseout="this.style.textShadow='none'">
+                        <i class="fa-solid fa-envelope mx-2"></i> genix.team.id@gmail.com
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="/login" class="text-decoration-none text-muted opacity-25 small d-inline-block" style="transition: 0.3s;" onmouseover="this.style.opacity=1; this.style.color='#00d2ff';" onmouseout="this.style.opacity=0.25; this.style.color='';">
+                        <i class="fa-solid fa-lock me-1"></i> <span data-i18n="ftr_admin">وصول الإدارة</span>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
@@ -418,20 +503,18 @@
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
     <script defer>
-        document.addEventListener('DOMContentLoaded', () => {
-            const swiper = new Swiper('.services-swiper', {
-                effect: 'coverflow',
+        window.initServicesSwiper = function() {
+            window.servicesSwiper = new Swiper('.services-swiper', {
+                effect: 'slide',
                 grabCursor: true,
                 centeredSlides: true,
-                slidesPerView: 1.3,
-                coverflowEffect: {
-                    rotate: 10,
-                    stretch: -30,
-                    depth: 100,
-                    modifier: 1,
-                    slideShadows: false,
-                },
+                slidesPerView: 1.2,
+                spaceBetween: 20,
                 loop: true,
+                autoplay: {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                },
                 navigation: {
                     nextEl: ".swiper-button-next",
                     prevEl: ".swiper-button-prev",
@@ -442,10 +525,13 @@
                     dynamicBullets: true,
                 },
                 breakpoints: {
-                    768: { slidesPerView: 2, coverflowEffect: { stretch: 0, depth: 80 } },
-                    1024: { slidesPerView: 3, coverflowEffect: { stretch: 0, depth: 80 } },
+                    768: { slidesPerView: 2.2, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 40 },
                 }
             });
+        };
+        document.addEventListener('DOMContentLoaded', () => {
+            window.initServicesSwiper();
         });
     </script>
 
@@ -453,7 +539,7 @@
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js" defer></script>
-    <script>document.addEventListener('DOMContentLoaded', () => { const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true }); });</script>
+    <script>document.addEventListener('DOMContentLoaded', () => { const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, openEffect: 'zoom', closeEffect: 'zoom', slideEffect: 'slide', zoomable: true }); });</script>
     <!-- Custom CSS3D Gallery implies Swiper removed -->
     <!-- Vanilla Tilt JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
@@ -559,22 +645,23 @@
     
     <script>
         // JS Typewriter Effect for Hero
-        const textToType = "تقنيات المستقبل،\nنلهم بها الواقع.";
+        let textToType = "تقنيات المستقبل،^نلهم بها الواقع.";
         const speed = 80; 
         let i = 0;
         let currentText = "";
+        let typewriterTimeout;
         function typeWriter() {
             const el = document.getElementById("typewriter-text");
             if (i < textToType.length) {
                 let char = textToType.charAt(i);
-                if (char === '\n') {
+                if (char === '^') {
                     currentText += "<br>";
                 } else {
                     currentText += char;
                 }
                 el.innerHTML = currentText + '<span class="cursor-blink">|</span>';
                 i++;
-                setTimeout(typeWriter, speed);
+                typewriterTimeout = setTimeout(typeWriter, speed);
             } else {
                 el.innerHTML = currentText;
             }
@@ -807,6 +894,278 @@
             });
             scrollCards.forEach(el => focusObserver.observe(el));
             document.querySelectorAll('.portfolio-item').forEach(el => focusObserver.observe(el));
+        });
+    </script>
+    <script>
+        const translations = {
+            'ar': {
+                'nav_services': 'خدماتنا',
+                'nav_portfolio': 'المعرض والذكاء الاصطناعي',
+                'nav_why_us': 'لماذا نحن',
+                'nav_order': 'اطلب الآن',
+                'hero_title_text': 'تقنيات المستقبل،^نلهم بها الواقع.',
+                'hero_desc': 'نحن نصمم أنظمة وتجارب رقمية متكاملة مدعومة بالذكاء الاصطناعي المتقدم لترتقي بأعمالك إلى آفاق غير مسبوقة.',
+                'hero_btn': 'استكشف أعمالنا',
+                'services_title': 'الحلول التقنية',
+                'about_title': 'رؤيتنا الإبداعية',
+                'about_desc': 'نسعى لتقديم تجارب بصرية مبهرة تدمج بين الابتكار التقني والتصميم الحديث لترك بصمة لا تُنسى في عالم الأعمال الرقمية. نحن نستلهم من المستقبل لنبني لك واجهة تميزك وتتجاوز التوقعات.',
+                'portfolio_title': 'معرض الأعمال',
+                'portfolio_desc': 'مجموعة من النماذج الإبداعية المولدة بأنظمة الذكاء الاصطناعي والمصممة لتلبية تطلعاتك.',
+                'tab_premium': 'باقات احترافية',
+                'tab_media': 'إنتاج مرئي',
+                'tab_branding': 'هوية وويب',
+                'tab_general': 'خدمات عامة',
+                'contact_title': 'هل أنت مستعد للبدء؟',
+                'contact_desc': 'تواصل معنا اليوم لتحويل فكرتك إلى واقع تقني ملموس.',
+                'contact_btn': 'تواصل معنا الآن',
+                
+                'why_title': 'لماذا نحن؟',
+                'why_1_title': 'بنية تحتية متطورة',
+                'why_1_desc': 'نقدم حلولاً برمجية متكاملة تعتمد على أحدث تقنيات السحاب والذكاء الاصطناعي لضمان استقرار ونمو أعمالكم.',
+                'why_2_title': 'تشفير وأمان فائق',
+                'why_2_desc': 'نظام أمني متين يضمن سرية الأعمال ومعلومات عملائك بأقصى مستويات التشفير للبيانات وحمايتها.',
+                'why_3_title': 'ارتباط مستمر',
+                'why_3_desc': 'فريق مخصص للتواصل الدائم والدعم الفني، يشاركك مراحل التطور لضمان خروج المنتج كما تتمنى تماماً.',
+                
+                'srv_1_title': 'تطوير المنصات والمواقع',
+                'srv_1_desc': 'أنظمة ويب متكاملة، سريعة، وقابلة للتوسع تناسب احتياجات الشركات والمؤسسات.',
+                'srv_2_title': 'الهوية البصرية',
+                'srv_2_desc': 'تصميم هويات بصرية حديثة ومرتكزة على البيانات لتعزيز حضور علامتك التجارية بشكل فريد.',
+                'srv_3_title': 'حلول الذكاء الاصطناعي',
+                'srv_3_desc': 'دمج نماذج الذكاء الاصطناعي التوليدي في عمليات عملك لزيادة الإنتاجية وتقليل التكاليف بشكل فعال.',
+                'srv_4_title': 'تطبيقات الجوال المتقدمة',
+                'srv_4_desc': 'تطبيقات عالية الجودة لأجهزة iOS و Android بأداء فائق وتجربة مستخدم لا تُضاهى.',
+                'srv_5_title': 'تحليل البيانات الضخمة (Big Data)',
+                'srv_5_desc': 'تحويل البيانات الخام إلى رؤى استراتيجية ومؤشرات قابلة للتنفيذ تدعم أقسام الإدارة.',
+                'srv_6_title': 'إدارة حسابات التواصل الذكية',
+                'srv_6_desc': 'أياً كان نشاطك التجاري، نقوم بابتكار وإدارة محتوى حساباتك التسويقية بالكامل عبر خوارزميات الذكاء الاصطناعي لضمان أقصى تفاعل.',
+                'srv_btn': 'حجز وتسعير الخدمة',
+                
+                'mod_title': 'تسجيل طلب مشروع تقني',
+                'mod_name': 'الاسم الكامل أو اسم الجهة',
+                'mod_srv': 'الخدمة المرتبطة بالشأن',
+                'mod_phone': 'رقم الهاتف للتواصل',
+                'mod_email': 'البريد الإلكتروني',
+                'mod_req': 'نظرة عامة على متطلبات المشروع',
+                'mod_ph': 'يرجى كتابة تفاصيل المشكلة التقنية أو فكرة المشروع باختصار لفهم أعمق للحل المناسب...',
+                'mod_btn': 'تأكيد إرسال الطلب الآمن',
+                'mod_succ_t': 'تم استلام طلبك بنجاح وفي أمان!',
+                'mod_succ_d': 'يسرنا اختيارك لمعايير الجودة التقنية.<br>لقد تم إبلاغ فريق المطورين والإدارة بشكل فوري وسيتم التواصل معك قريباً.',
+                'mod_succ_b': 'العودة للموقع',
+                
+                'ftr_team': 'The Creative Team Behind ID-Genix',
+                'ftr_r1': 'Designed & Developed By',
+                'ftr_d1': 'مطور الأنظمة والمسؤول عن كافة الحلول البرمجية المتكاملة.',
+                'ftr_r2': 'Service Management',
+                'ftr_d2': 'لتنسيق الطلبات والمتابعة الفنية للمشاريع.',
+                'ftr_r3': 'Automation Designer',
+                'ftr_d3': 'لإنتاج نماذج أتمتة الأعمال والحلول الذكية.',
+                'ftr_r4': 'Content Designer',
+                'ftr_d4': 'للإبداع البصري وصناعة المحتوى الرقمي.',
+                'ftr_copy': 'جميع الحقوق محفوظة &copy; 2026 <strong>Genix</strong>',
+                'ftr_admin': 'وصول الإدارة'
+            },
+            'en': {
+                'nav_services': 'Services',
+                'nav_portfolio': 'Portfolio & AI',
+                'nav_why_us': 'Why Us',
+                'nav_order': 'Order Now',
+                'hero_title_text': 'Future Technologies,^Inspiring Reality.',
+                'hero_desc': 'We design integrated digital systems and experiences powered by advanced AI to elevate your business to unprecedented heights.',
+                'hero_btn': 'Explore Our Work',
+                'services_title': 'Technical Solutions',
+                'about_title': 'Our Creative Vision',
+                'about_desc': 'We strive to deliver stunning visual experiences that blend technical innovation with modern design to leave an unforgettable mark in the digital business world.',
+                'portfolio_title': 'Our Portfolio',
+                'portfolio_desc': 'A collection of creative models generated by advanced AI systems tailored to meet your aspirations.',
+                'tab_premium': 'Premium Packages',
+                'tab_media': 'Media Production',
+                'tab_branding': 'Digital Branding',
+                'tab_general': 'General Services',
+                'contact_title': 'Ready to start?',
+                'contact_desc': 'Contact us today to turn your idea into a tangible technical reality.',
+                'contact_btn': 'Contact Us Now',
+                
+                'why_title': 'Why Us?',
+                'why_1_title': 'Advanced Infrastructure',
+                'why_1_desc': 'We provide integrated software solutions based on the latest cloud and AI technologies to ensure the stability and growth of your business.',
+                'why_2_title': 'Superior Encryption & Security',
+                'why_2_desc': 'A robust security system that ensures the confidentiality of your business and customer information with the highest levels of data encryption and protection.',
+                'why_3_title': 'Continuous Connection',
+                'why_3_desc': 'A dedicated team for continuous communication and technical support, sharing the stages of development with you to ensure the product comes out exactly as you wish.',
+                
+                'srv_1_title': 'Platform & Website Development',
+                'srv_1_desc': 'Integrated, fast, and scalable web systems tailored to the needs of companies and institutions.',
+                'srv_2_title': 'Visual Identity',
+                'srv_2_desc': 'Designing modern, data-driven visual identities to uniquely enhance your brand presence.',
+                'srv_3_title': 'AI Solutions',
+                'srv_3_desc': 'Integrating generative AI models into your business processes to increase productivity and effectively reduce costs.',
+                'srv_4_title': 'Advanced Mobile Apps',
+                'srv_4_desc': 'High-quality applications for iOS and Android with superior performance and an unmatched user experience.',
+                'srv_5_title': 'Big Data Analytics',
+                'srv_5_desc': 'Transforming raw data into strategic insights and actionable indicators that support management departments.',
+                'srv_6_title': 'Smart Social Media Management',
+                'srv_6_desc': 'Whatever your business, we create and fully manage the content of your marketing accounts via AI algorithms to ensure maximum engagement.',
+                'srv_btn': 'Reserve & Price Service',
+                
+                'mod_title': 'Technical Project Request Registration',
+                'mod_name': 'Full Name or Entity Name',
+                'mod_srv': 'Related Service',
+                'mod_phone': 'Contact Phone Number',
+                'mod_email': 'Email',
+                'mod_req': 'Project Requirements Overview',
+                'mod_ph': 'Please briefly write the details of the technical problem or project idea for a deeper understanding of the appropriate solution...',
+                'mod_btn': 'Confirm Secure Request Submission',
+                'mod_succ_t': 'Your request has been received successfully and securely!',
+                'mod_succ_d': 'We are pleased you chose our technical quality standards.<br>The development and management team has been notified immediately and will contact you shortly.',
+                'mod_succ_b': 'Return to Site',
+                
+                'ftr_team': 'The Creative Team Behind ID-Genix',
+                'ftr_r1': 'Designed & Developed By',
+                'ftr_d1': 'Systems Developer and responsible for all integrated software solutions.',
+                'ftr_r2': 'Service Management',
+                'ftr_d2': 'To coordinate requests and technical follow-up of projects.',
+                'ftr_r3': 'Automation Designer',
+                'ftr_d3': 'To produce business automation models and smart solutions.',
+                'ftr_r4': 'Content Designer',
+                'ftr_d4': 'For visual creativity and digital content creation.',
+                'ftr_copy': 'All rights reserved &copy; 2026 <strong>Genix</strong>',
+                'ftr_admin': 'Admin Access'
+            },
+            'tr': {
+                'nav_services': 'Hizmetlerimiz',
+                'nav_portfolio': 'Portföy & YZ',
+                'nav_why_us': 'Neden Biz',
+                'nav_order': 'Şimdi Sipariş Ver',
+                'hero_title_text': 'Geleceğin Teknolojileri,^Gerçekliğe İlham Veriyor.',
+                'hero_desc': 'İşletmenizi benzeri görülmemiş yüksekliklere taşımak için gelişmiş yapay zeka tarafından desteklenen entegre dijital sistemler ve deneyimler tasarlıyoruz.',
+                'hero_btn': 'Çalışmalarımızı Keşfedin',
+                'services_title': 'Teknik Çözümler',
+                'about_title': 'Yaratıcı Vizyonumuz',
+                'about_desc': 'Dijital iş dünyasında unutulmaz bir iz bırakmak için teknik yeniliği modern tasarımla harmanlayan çarpıcı görsel deneyimler sunmaya çalışıyoruz.',
+                'portfolio_title': 'Portföyümüz',
+                'portfolio_desc': 'Beklentilerinizi karşılamak üzere tasarlanmış, gelişmiş YZ sistemleri tarafından üretilen yaratıcı modeller koleksiyonu.',
+                'tab_premium': 'Premium Paketler',
+                'tab_media': 'Medya Üretimi',
+                'tab_branding': 'Dijital Markalaşma',
+                'tab_general': 'Genel Hizmetler',
+                'contact_title': 'Başlamaya hazır mısınız?',
+                'contact_desc': 'Fikrinizi somut bir teknik gerçeğe dönüştürmek için bugün bizimle iletişime geçin.',
+                'contact_btn': 'Şimdi İletişime Geçin',
+                
+                'why_title': 'Neden Biz?',
+                'why_1_title': 'Gelişmiş Altyapı',
+                'why_1_desc': 'İşletmenizin istikrarını ve büyümesini sağlamak için en son bulut ve YZ teknolojilerine dayalı entegre yazılım çözümleri sunuyoruz.',
+                'why_2_title': 'Üstün Şifreleme ve Güvenlik',
+                'why_2_desc': 'En yüksek veri şifreleme ve koruma seviyeleriyle işletmenizin ve müşteri bilgilerinizin gizliliğini sağlayan sağlam bir güvenlik sistemi.',
+                'why_3_title': 'Sürekli Bağlantı',
+                'why_3_desc': 'Sürekli iletişim ve teknik destek için özel bir ekip, ürünün tam olarak istediğiniz gibi çıkmasını sağlamak için geliştirme aşamalarını sizinle paylaşır.',
+                
+                'srv_1_title': 'Platform ve Web Sitesi Geliştirme',
+                'srv_1_desc': 'Şirketlerin ve kurumların ihtiyaçlarına göre uyarlanmış entegre, hızlı ve ölçeklenebilir web sistemleri.',
+                'srv_2_title': 'Görsel Kimlik',
+                'srv_2_desc': 'Marka varlığınızı benzersiz bir şekilde geliştirmek için modern, veriye dayalı görsel kimlikler tasarlamak.',
+                'srv_3_title': 'YZ Çözümleri',
+                'srv_3_desc': 'Üretkenliği artırmak ve maliyetleri etkili bir şekilde azaltmak için üretken YZ modellerini iş süreçlerinize entegre etmek.',
+                'srv_4_title': 'Gelişmiş Mobil Uygulamalar',
+                'srv_4_desc': 'Üstün performans ve eşsiz bir kullanıcı deneyimi ile iOS ve Android için yüksek kaliteli uygulamalar.',
+                'srv_5_title': 'Büyük Veri Analitiği',
+                'srv_5_desc': 'Ham verileri yönetim departmanlarını destekleyen stratejik içgörülere ve eyleme dönüştürülebilir göstergelere dönüştürmek.',
+                'srv_6_title': 'Akıllı Sosyal Medya Yönetimi',
+                'srv_6_desc': 'İşletmeniz ne olursa olsun, maksimum etkileşim sağlamak için pazarlama hesaplarınızın içeriğini YZ algoritmaları aracılığıyla oluşturuyor ve tamamen yönetiyoruz.',
+                'srv_btn': 'Hizmeti Rezerve Et ve Fiyatlandır',
+                
+                'mod_title': 'Teknik Proje Talebi Kaydı',
+                'mod_name': 'Tam Ad veya Kurum Adı',
+                'mod_srv': 'İlgili Hizmet',
+                'mod_phone': 'İletişim Telefon Numarası',
+                'mod_email': 'E-posta',
+                'mod_req': 'Proje Gereksinimlerine Genel Bakış',
+                'mod_ph': 'Uygun çözümün daha iyi anlaşılması için lütfen teknik sorunun veya proje fikrinin ayrıntılarını kısaca yazın...',
+                'mod_btn': 'Güvenli Talep Gönderimini Onayla',
+                'mod_succ_t': 'Talebiniz başarıyla ve güvenli bir şekilde alındı!',
+                'mod_succ_d': 'Teknik kalite standartlarımızı seçtiğiniz için memnunuz.<br>Geliştirme ve yönetim ekibi derhal bilgilendirildi ve kısa süre içinde sizinle iletişime geçecek.',
+                'mod_succ_b': 'Siteye Dön',
+                
+                'ftr_team': 'The Creative Team Behind ID-Genix',
+                'ftr_r1': 'Designed & Developed By',
+                'ftr_d1': 'Sistem Geliştirici ve tüm entegre yazılım çözümlerinden sorumlu.',
+                'ftr_r2': 'Service Management',
+                'ftr_d2': 'Talepleri ve projelerin teknik takibini koordine etmek.',
+                'ftr_r3': 'Automation Designer',
+                'ftr_d3': 'İş otomasyon modelleri ve akıllı çözümler üretmek.',
+                'ftr_r4': 'Content Designer',
+                'ftr_d4': 'Görsel yaratıcılık ve dijital içerik oluşturma için.',
+                'ftr_copy': 'Tüm hakları saklıdır &copy; 2026 <strong>Genix</strong>',
+                'ftr_admin': 'Yönetici Erişimi'
+            }
+        };
+
+        let currentLanguage = 'ar';
+        function changeLang(lang) {
+            currentLanguage = lang;
+            const t = translations[lang];
+            
+            // Text Replacement
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = t[key];
+                    } else {
+                        el.innerHTML = t[key];
+                    }
+                }
+            });
+            
+            // RTL and Fonts
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                document.body.style.fontFamily = "'Cairo', sans-serif";
+                document.getElementById('current-lang').innerHTML = '<span class="fi fi-sa me-1"></span> العربية';
+                document.querySelectorAll('.dir-icon').forEach(i => i.classList.replace('fa-arrow-right', 'fa-arrow-left'));
+                
+                // Fix Bootstrap RTL classes manually if needed for grid layout
+                document.querySelectorAll('.flex-lg-row').forEach(e => e.classList.replace('flex-lg-row', 'flex-lg-row-reverse'));
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = lang;
+                document.body.style.fontFamily = "'Inter', 'Roboto', sans-serif";
+                document.getElementById('current-lang').innerHTML = lang === 'en' ? '<span class="fi fi-gb me-1"></span> English' : '<span class="fi fi-tr me-1"></span> Türkçe';
+                document.querySelectorAll('.dir-icon').forEach(i => i.classList.replace('fa-arrow-left', 'fa-arrow-right'));
+                
+                // LTR Row Fix
+                document.querySelectorAll('.flex-lg-row-reverse').forEach(e => e.classList.replace('flex-lg-row-reverse', 'flex-lg-row'));
+            }
+            
+            // Reinitialize Swiper for new direction
+            if (window.servicesSwiper && typeof window.servicesSwiper.destroy === 'function') {
+                window.servicesSwiper.destroy(true, true);
+                setTimeout(() => {
+                    if (typeof window.initServicesSwiper === 'function') {
+                        window.initServicesSwiper();
+                    }
+                }, 50);
+            }
+            
+            // Retrigger Typewriter
+            clearTimeout(typewriterTimeout);
+            textToType = t['hero_title_text'];
+            i = 0;
+            currentText = "";
+            document.getElementById("typewriter-text").innerHTML = '<span class="cursor-blink">|</span>';
+            setTimeout(typeWriter, 100);
+            
+            // Save Preference
+            localStorage.setItem('idgenix_lang', lang);
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('idgenix_lang') || 'ar';
+            if (savedLang !== 'ar') {
+                changeLang(savedLang);
+            }
         });
     </script>
 </body>
